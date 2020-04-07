@@ -3,6 +3,7 @@
     <Loader />
     <nav class="router">
       <router-link to="/" class="router__link">Home</router-link>
+      <router-link to="/game" class="router__link">Game</router-link>
       <router-link to="/a-props" class="router__link">About</router-link>
     </nav>
     <router-view />
