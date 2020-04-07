@@ -1,6 +1,5 @@
 import * as THREE from 'three'
 import gsap from 'gsap';
-import { toRadian } from "../utils";
 import { InputManager } from "./InputManager";
 
 export class Character {
@@ -12,18 +11,20 @@ export class Character {
   walkAction;
   group;
   character;
+  speed = 9;
   wakable = true;
 
-  constructor(gltf, camera) {
+  constructor(gltf, camera, scene) {
     this.inputManager = new InputManager();
     this.inputManager.setInputReceiver(this);
+    this.scene = scene;
 
     gltf.scene.scale.set(0.2, 0.2, 0.2);
     gltf.scene.position.set(0, 0, 0);
     this.character = gltf.scene.children[0];
     this.camera = camera;
-    this.camera.position.set(0, 250, -150);
-
+    this.camera.position.set(-130, 350, -250);
+    this.raycaster = new THREE.Raycaster();
     this.group = new THREE.Group();
     this.group.add(this.character);
     this.group.add(this.camera);
@@ -31,10 +32,13 @@ export class Character {
     this.character.position.set(0,10,0);
     this.character.scale.set(1,1,1);
     this.mixer = new THREE.AnimationMixer(this.character);
-    gsap.to(this.character.rotation, {
-      z: toRadian(180),
-      duration: .3,
-    });
+    this.mouse = {
+      x: 0,
+      y: 0,
+    };
+
+    window.addEventListener( 'mousemove', (e) => this.mouseMoveHandler(e), false );
+    window.addEventListener( 'click', (e) => this.mouseClickHandler(e), false );
 
     this.setAnimations(gltf.animations);
     this.activateAllActions();
@@ -45,6 +49,22 @@ export class Character {
     this.inputManager.setInputReceiver(null);
   }
 
+  mouseMoveHandler(event) {
+    this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+    this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+    const obj = this.raycaster.intersectObjects( this.scene.children );
+    if (obj.length) {
+      obj.forEach(el => {
+        if (el.object.name !== "Floor") return;
+        this.character.rotation.z = Math.atan2(el.point.x - this.group.position.x, el.point.z - this.group.position.z) + Math.PI
+      });
+    }
+  }
+
+  mouseClickHandler() {
+    console.log(this.character);
+  }
+
   handleKeyboardEvent(event, code, pressed) {
     if (!this.wakable) return;
     if (!pressed) {
@@ -52,45 +72,55 @@ export class Character {
       this.prepareCrossFade(this.walkAction, this.idleAction);
       return
     }
-
+    const direction = {
+      x: Math.sin(this.character.rotation.z) * this.speed,
+      z: Math.cos(this.character.rotation.z) * this.speed,
+    }
     switch (code) {
       case 38:
         // Up key
-        gsap.to(this.character.rotation, {
-          z: toRadian(180),
-          duration: .3,
+        /*gsap.to(this.character.rotation, {
+         z: toRadian(180),
+         duration: .3,
+         });*/
+        gsap.to(this.group.position, {
+          x: `-=${direction.x}`,
+          z: `-=${direction.z}`,
+          duration: .1,
         });
-        this.group.position.z += 10;
         this.setWalking();
         break;
 
       case 40:
         // down key
-        gsap.to(this.character.rotation, {
-          z: toRadian(0),
-          duration: .3,
+        gsap.to(this.group.position, {
+          x: `+=${direction.x}`,
+          z: `+=${direction.z}`,
+          duration: .1,
         });
-        this.group.position.z -= 10;
+        // this.group.position.z -= 10;
         this.setWalking();
         break;
 
       case 37:
         // Left key
-        gsap.to(this.character.rotation, {
-          z: toRadian(-90),
-          duration: 0.3,
+        gsap.to(this.group.position, {
+          x: `-=${direction.x}`,
+          z: `+=${direction.z}`,
+          duration: .1,
         });
-        this.group.position.x +=10;
+        // this.group.position.x +=10;
         this.setWalking();
         break;
 
       case 39:
         // Right key
-        gsap.to(this.character.rotation, {
-          z: toRadian(90),
-          duration: 0.3,
+        gsap.to(this.group.position, {
+          x: `+=${direction.x}`,
+          z: `-=${direction.z}`,
+          duration: .1,
         });
-        this.group.position.x -= 10;
+        // this.group.position.x -= 10;
         this.setWalking();
         break;
       default:
@@ -100,14 +130,11 @@ export class Character {
   }
 
   updateLookAt() {
-    this.camera.lookAt(
-      this.group.position.x,
-      this.group.position.y,
-      this.group.position.z + 150,
-    );
+    this.camera.lookAt(this.group.position.x + 135, this.group.position.y - 65,  this.group.position.z + 150);
   }
 
   update() {
+    this.raycaster.setFromCamera( this.mouse, this.camera );
     this.mixer.update( 0.01 );
   }
 
@@ -136,12 +163,12 @@ export class Character {
     // If the current action is 'idle' (duration 4 sec), execute the crossfade immediately;
     // else wait until the current action has finished its current loop// debugger;
 
-/*    if ( startAction === this.idleAction ) {
-      this.executeCrossFade( startAction, endAction, duration );
-    } else {
-      console.log('synch');
-      this.synchronizeCrossFade( startAction, endAction, duration );
-    }*/
+    /*    if ( startAction === this.idleAction ) {
+     this.executeCrossFade( startAction, endAction, duration );
+     } else {
+     console.log('synch');
+     this.synchronizeCrossFade( startAction, endAction, duration );
+     }*/
   }
 
 

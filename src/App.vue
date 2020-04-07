@@ -51,6 +51,9 @@
 
 <style lang="scss">
   body {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
     margin: 0;
     font-family: sans-serif;
   }
