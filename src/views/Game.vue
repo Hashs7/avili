@@ -2,7 +2,7 @@
     <div id="scenes-selector">
         <ul>
             <li v-for="(scene, index) in scenes" :key="scene.title">
-                <button v-on:click="switchScene(index)">
+                <button @click="switchScene(index)">
                     {{scene.title}}
                 </button>
             </li>
