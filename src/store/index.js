@@ -10,6 +10,7 @@ export default new Vuex.Store({
     renderer: null,
     canvasRef: null,
     isLoading: false,
+    quality: null,
   },
   mutations: {
     initScene(state, canvas) {
@@ -31,6 +32,9 @@ export default new Vuex.Store({
     setLoader(state, value) {
       state.isLoading = value;
     },
+    setQuality(state, value) {
+      state.quality = value;
+    }
   },
   actions: {
   },

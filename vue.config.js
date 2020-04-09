@@ -8,7 +8,11 @@ module.exports = {
   css: {
     loaderOptions: {
       scss: {
-        prependData: `@import "~@/styles/variables.scss";`,
+        prependData: `
+          @import 
+            "~@/styles/0-settings/_settings-color.scss",
+            "~@/styles/0-settings/_settings-media.scss";
+          `,
         // font: `@import "~@/style/fonts.scss";`,
       },
     }

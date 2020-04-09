@@ -7,7 +7,7 @@
                 </button>
             </li>
         </ul>
-        <p>{{ currentScene.title }}</p>
+        <p v-if="currentScene">{{ currentScene.title }}</p>
     </div>
 </template>
 

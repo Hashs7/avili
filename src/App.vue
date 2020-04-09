@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <Loader />
+    <Follower />
     <nav class="router">
       <router-link to="/" class="router__link">Home</router-link>
       <router-link to="/game" class="router__link">Game</router-link>
@@ -13,11 +14,13 @@
 
 <script>
   import Loader from '@/components/Loader';
+  import Follower from '@/components/Follower';
 
   export default {
     name: 'App',
     components: {
       Loader,
+      Follower,
     },
     data() {
       return {

@@ -1,15 +1,19 @@
 <template>
-  <div>Home</div>
+  <div>
+    <QualitySelection v-if="!qualitySet"/>
+  </div>
 </template>
 
 <script>
 import gsap from 'gsap';
 import * as THREE from 'three'
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import QualitySelection from '@/components/QualitySelection';
 
 export default {
   name: 'Home',
   components: {
+    QualitySelection,
   },
   data() {
     return {
@@ -26,6 +30,9 @@ export default {
     },
     renderer() {
       return this.$store.state.renderer;
+    },
+    qualitySet() {
+      return this.$store.state.quality;
     }
   },
   mounted() {

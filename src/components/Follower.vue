@@ -1,5 +1,5 @@
 <template>
-    <div class="follower" ref="follower" @mousedown="pressIn"></div>
+    <div class="follower" ref="follower"></div>
 </template>
 
 <script>
@@ -7,6 +7,11 @@
 
   export default {
     name: 'Follower',
+    data() {
+      return {
+        state: 'initial'
+      }
+    },
     mounted() {
       document.body.style.cursor = 'none';
       window.addEventListener('mousemove',  (e) => this.mouseFollower(e));
@@ -44,15 +49,21 @@
 
         switch(e.target.dataset.hover) {
           case "big":
+            this.state = 'big';
             follower.style.mixBlendMode = "difference";
-            gsap.to(follower, 0.3, { scale: 2 });
+            gsap.to(follower, { scale: 2, duration: 0.5 });
             break;
           case "none":
-            gsap.to(follower, 0.5, { scale: 0 });
+            this.state = 'none';
+            gsap.to(follower, { scale: 0, duration: 0.5 });
             break;
           default:
+            if (this.state === 'initial') return;
+            this.state = 'initial';
             follower.style.mixBlendMode = "initial";
-            // gsap.to(follower, 0.2, { scale: 1 });
+            console.log('change state');
+            gsap.killTweensOf(this.$refs.follower, 'scale');
+            gsap.to(follower, { scale: 1, duration: 0.3 });
             break;
         }
       }
@@ -69,8 +80,8 @@
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  /*border: 1px solid antiquewhite;*/
-  background-color: #f6f6f6;
+  border: 1px solid antiquewhite;
+  /*background-color: #f6f6f6;*/
   pointer-events: none;
 }
 </style>
