@@ -14,20 +14,19 @@
     },
     mounted() {
       document.body.style.cursor = 'none';
-      window.addEventListener('mousemove',  (e) => this.mouseFollower(e));
+      window.addEventListener('mousemove',  (e) => this.mouseMove(e));
       window.addEventListener('mousedown',  () => this.pressIn());
       window.addEventListener('mouseup',  () => this.pressOut());
       document.addEventListener('mouseenter',  () => this.enterFollower());
       document.addEventListener('mouseleave',  () => this.leaveFollower());
     },
-    beforeDestroy() {
-      // TODO remove all listener
-    },
     methods: {
       enterFollower() {
+        this.state = 'initial';
         gsap.to(this.$refs.follower, 0.3, { scale: 1, opacity: 1 });
       },
       leaveFollower() {
+        this.state = 'leave';
         gsap.to(this.$refs.follower, 0.5, { scale: 0, opacity: 0 });
       },
       pressIn(){
@@ -40,8 +39,9 @@
           ease: 'elastic.out(1.8, 0.5)',
         });
       },
-      mouseFollower(e) {
-        const follower = this.$refs.follower;
+      mouseMove(e) {
+        if (this.state === 'none') this.enterFollower();
+        const { follower } = this.$refs;
         const relX = e.pageX  - (follower.offsetWidth / 2) ;
         const relY = e.pageY - (follower.offsetHeight / 2);
 
@@ -54,6 +54,7 @@
             gsap.to(follower, { scale: 2, duration: 0.5 });
             break;
           case "none":
+            // à debug si on utilise
             this.state = 'none';
             gsap.to(follower, { scale: 0, duration: 0.5 });
             break;
@@ -61,7 +62,6 @@
             if (this.state === 'initial') return;
             this.state = 'initial';
             follower.style.mixBlendMode = "initial";
-            console.log('change state');
             gsap.killTweensOf(this.$refs.follower, 'scale');
             gsap.to(follower, { scale: 1, duration: 0.3 });
             break;

@@ -1,5 +1,5 @@
-import * as THREE from "three";
-import { Body, Box, ConeTwistConstraint, PointToPointConstraint, Sphere, Vec3 } from "cannon-es";
+import * as THREE from "three/src/Three";
+import { Body, Box, ConeTwistConstraint, PointToPointConstraint, Sphere, Vec3 } from "cannon-es/dist/index";
 
 const margin = 15;
 const force = 25;

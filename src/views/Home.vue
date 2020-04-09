@@ -22,15 +22,6 @@ export default {
     }
   },
   computed: {
-    scene() {
-      return this.$store.state.scene;
-    },
-    camera() {
-      return this.$store.state.camera;
-    },
-    renderer() {
-      return this.$store.state.renderer;
-    },
     qualitySet() {
       return this.$store.state.quality;
     }
@@ -45,28 +36,9 @@ export default {
   },
   methods: {
     init() {
-      this.scene.background = new THREE.Color(0xababab);
-      gsap.to(this.camera.position, {
-        x: 0,
-        y: -10,
-        z: 5,
-      })
+      // this.scene.background = new THREE.Color(0xababab);
       // this.camera.position.set(0, -10, 0);
 
-      this.axes = new THREE.AxesHelper(5);
-      this.scene.add(this.axes);
-      this.controls = new OrbitControls( this.camera, this.$store.state.canvasRef);
-      this.controls.update();
-
-      this.mainLoop();
-    },
-    destroy() {
-      this.scene.remove(this.axes);
-      this.scene.remove(this.cube);
-    },
-    mainLoop() {
-      this.renderer.render(this.scene, this.camera);
-      requestAnimationFrame(this.mainLoop);
     },
   },
 }

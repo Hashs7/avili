@@ -1,6 +1,6 @@
-import * as THREE from "three";
+import * as THREE from "three/src/Three";
 import WordFactory from "./WordFactory";
-import { World } from "cannon-es";
+import { World } from "cannon-es/dist/index";
 
 export default class NWordScene {
   constructor() {

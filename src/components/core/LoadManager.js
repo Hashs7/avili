@@ -1,4 +1,4 @@
-import * as THREE from "three";
+import * as THREE from "three/src/Three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 class LoadManager {

@@ -12,6 +12,7 @@
 </template>
 
 <script>
+  import World from '@/components/core/World';
   import Loader from '@/components/Loader';
   import Follower from '@/components/Follower';
   import Navigation from '@/components/layout/Navigation';
@@ -27,6 +28,7 @@
       return {
         width: 0,
         height: 0,
+        world: null,
       }
     },
     computed: {
@@ -41,17 +43,15 @@
       }
     },
     mounted() {
-      this.$store.commit('initScene', this.$refs.canvas);
+      this.world = new World(this.$refs.canvas);
       this.resize();
-      window.addEventListener('resize', this.resize)
+      window.addEventListener('resize', this.resize);
     },
     methods: {
       resize() {
         this.width = this.$refs.canvas.clientWidth;
         this.height = this.$refs.canvas.clientHeight;
-        this.camera.aspect = window.innerWidth / window.innerHeight;
-        this.camera.updateProjectionMatrix();
-        this.renderer.setSize(this.width, this.height, false);
+        this.world.resize();
       },
     },
   }

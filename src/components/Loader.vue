@@ -12,7 +12,7 @@
 </template>
 
 <script>
-  import LoadManager from "../core/LoadManager";
+  import LoadManager from "./core/LoadManager";
   import gsap from 'gsap';
 
   export default {

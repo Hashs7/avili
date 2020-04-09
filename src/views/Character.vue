@@ -8,8 +8,8 @@
 <script>
   import * as THREE from 'three'
   import { TextureLoader } from "three/src/loaders/TextureLoader";
-  import { Character } from "../core/Character";
-  import LoadManager from "../core/LoadManager";
+  import { Character } from "../components/core/Character";
+  import LoadManager from "../components/core/LoadManager";
   import Follower from '@/components/Follower'
 
   export default {

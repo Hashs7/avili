@@ -12,7 +12,7 @@
 </template>
 
 <script>
-    import LoadManager from "../core/LoadManager";
+    import LoadManager from "../components/core/LoadManager";
     import * as THREE from "three";
 
     export default {
