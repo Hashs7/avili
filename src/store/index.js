@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import * as THREE from 'three'
 
 Vue.use(Vuex);
 

@@ -1,6 +1,5 @@
 <template>
   <div>
-    <Follower />
     <span class="help">Utilisez les flèches directionnels pour vous déplacer</span>
   </div>
 </template>
@@ -10,13 +9,9 @@
   import { TextureLoader } from "three/src/loaders/TextureLoader";
   import { Character } from "../components/core/Character";
   import LoadManager from "../components/core/LoadManager";
-  import Follower from '@/components/Follower'
 
   export default {
     name: 'Character',
-    components: {
-      Follower,
-    },
     data() {
       return {
         gui: null,

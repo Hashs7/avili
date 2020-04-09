@@ -9,6 +9,12 @@ export default class {
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
 
+    // RenderLoop
+    this.clock = new THREE.Clock();
+    this.renderDelta = 0;
+    this.logicDelta = 0;
+    this.sinceLastFrame = 0;
+
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 8000);
     this.cameraOperator = new CameraOperator(this, this.camera);
 
@@ -41,11 +47,26 @@ export default class {
    */
   render() {
     this.stats.begin();
+    this.renderDelta = this.clock.getDelta();
+    let timeStep = this.renderDelta + this.logicDelta;
     // let timeStep = (this.renderDelta + this.logicDelta) * this.params.Time_Scale;
-    this.update();
+    this.update(timeStep);
+    this.logicDelta = this.clock.getDelta();
     requestAnimationFrame(() => this.render());
     this.stats.end();
   }
+
+  /**
+   * Add Object to the world
+   * @param object
+   */
+  add(object) {}
+
+  /**
+   * Remove Object to the world
+   * @param object
+   */
+  remove(object) {}
 
   /**
    * Auto window resize

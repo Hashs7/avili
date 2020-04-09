@@ -12,8 +12,8 @@
 </template>
 
 <script>
-  import LoadManager from "./core/LoadManager";
   import gsap from 'gsap';
+  import LoadManager from "../core/LoadManager";
 
   export default {
     name: "Loader",

@@ -13,9 +13,9 @@
 
 <script>
   import World from '@/components/core/World';
-  import Loader from '@/components/Loader';
-  import Follower from '@/components/Follower';
-  import Navigation from '@/components/layout/Navigation';
+  import Loader from '@/components/UI/Loader';
+  import Follower from '@/components/UI/Follower';
+  import Navigation from '@/components/UI/layout/Navigation';
 
   export default {
     name: 'App',

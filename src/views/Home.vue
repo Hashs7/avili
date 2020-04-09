@@ -5,10 +5,7 @@
 </template>
 
 <script>
-import gsap from 'gsap';
-import * as THREE from 'three'
-import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
-import QualitySelection from '@/components/QualitySelection';
+import QualitySelection from '@/components/UI/QualitySelection';
 
 export default {
   name: 'Home',

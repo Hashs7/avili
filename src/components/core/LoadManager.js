@@ -2,12 +2,6 @@ import * as THREE from "three/src/Three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 class LoadManager {
-  // printProgress = false;
-  // loadingTracker = {};
-  manager;
-  gltfLoader;
-  receiver;
-
   constructor() {
     this.manager = new THREE.LoadingManager();
     this.gltfLoader = new GLTFLoader(this.manager);

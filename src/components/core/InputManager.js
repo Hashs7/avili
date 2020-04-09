@@ -1,11 +1,11 @@
-export class InputManager {
+export default class {
   inputReceiver;
   boundOnKeyDown;
   boundOnKeyUp;
 
   constructor() {
-    this.boundOnKeyDown = (evt) => this.onKeyDown(evt);
-    this.boundOnKeyUp = (evt) => this.onKeyUp(evt);
+    this.boundOnKeyDown = (e) => this.onKeyDown(e);
+    this.boundOnKeyUp = (e) => this.onKeyUp(e);
     document.addEventListener('keydown', this.boundOnKeyDown, false);
     document.addEventListener('keyup', this.boundOnKeyUp, false);
   }
