@@ -7,7 +7,7 @@
 <script>
   import * as THREE from 'three'
   import { TextureLoader } from "three/src/loaders/TextureLoader";
-  import { Character } from "../components/core/Character";
+  import { Character } from "../components/characters/Character";
   import LoadManager from "../components/core/LoadManager";
 
   export default {

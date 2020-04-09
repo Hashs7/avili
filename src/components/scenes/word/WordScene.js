@@ -1,9 +1,11 @@
 import * as THREE from "three/src/Three";
 import WordFactory from "./WordFactory";
+import Scene from "../Scene";
 import { World } from "cannon-es/dist/index";
 
-export default class NWordScene {
+export default class extends Scene {
   constructor() {
+    super();
     this.setup();
 
     return {

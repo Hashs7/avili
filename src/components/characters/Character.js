@@ -1,6 +1,6 @@
 import * as THREE from 'three/src/Three'
 import gsap from 'gsap';
-import InputManager from "./InputManager";
+import InputManager from "../core/InputManager";
 
 export class Character {
   camera;
