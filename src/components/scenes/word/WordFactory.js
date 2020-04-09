@@ -12,11 +12,11 @@ export default class WordFactory {
   constructor(scene, world, camera) {
     this.scene = scene;
     this.world = world;
+    this.camera = camera;
     this.clickMarker = false;
     this.loader = new THREE.FontLoader();
     this.words = [];
     this.offset = this.words.length * margin * 0.5;
-    this.camera = camera;
 
     this.mouse = {
       x: 0,
@@ -27,8 +27,38 @@ export default class WordFactory {
     // document.addEventListener("click", () => this.onClick());
     document.addEventListener("mousedown", (e) => this.onMouseDown(e));
     document.addEventListener("mouseup", () => this.onMouseUp());
-    window.addEventListener('mousemove', (e) => this.onMouseMove(e))
+    window.addEventListener('mousemove', (e) => this.onMouseMove(e));
     this.loader.load('./assets/fonts/Anton/Anton-Regular.json', f => this.setup(f));
+  }
+
+  setup(f) {
+    // These options give us a more candy-ish render on the font
+    this.fontOption = {
+      font: f,
+      size: 150,
+      height: 20,
+      curveSegments: 24,
+      bevelEnabled: true,
+      bevelThickness: 0.9,
+      bevelSize: 0.3,
+      bevelOffset: 0,
+      bevelSegments: 10
+    };
+
+
+    /*ground.addEventListener('collide', (e) => {
+     console.log('collide ', e);
+     })*/
+
+    const shape = new Sphere(0.1);
+    this.jointBody = new Body({ mass: 0 });
+    this.jointBody.addShape(shape);
+    this.jointBody.collisionFilterGroup = 0;
+    this.jointBody.collisionFilterMask = 0;
+    this.world.addBody(this.jointBody);
+
+
+    this.addWord('Pute');
   }
 
   setConstraints() {
@@ -59,14 +89,14 @@ export default class WordFactory {
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
     this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    if (this.gplane && this.mouseConstraint) {
-      const pos = this.projectOntoPlane(this.gplane, this.camera);
-      if(pos){
-        this.setClickMarker(pos.x,pos.y,pos.z, this.scene);
-        this.moveJointToPoint(pos.x,pos.y,pos.z);
-      }
-    }
+    if (!this.gplane || !this.mouseConstraint) return;
+    const pos = this.projectOntoPlane(this.gplane, this.camera);
+
+    if(!pos) return;
+    this.setClickMarker(pos.x,pos.y,pos.z, this.scene);
+    this.moveJointToPoint(pos.x,pos.y,pos.z);
   }
+
   onClick() {
     // update the picking ray with the camera and mouse position
     this.raycaster.setFromCamera(this.mouse, this.camera);
@@ -102,43 +132,8 @@ export default class WordFactory {
     }
   }
 
-  setup(f) {
-    // These options give us a more candy-ish render on the font
-    this.fontOption = {
-      font: f,
-      size: 3,
-      height: 0.4,
-      curveSegments: 24,
-      bevelEnabled: true,
-      bevelThickness: 0.9,
-      bevelSize: 0.3,
-      bevelOffset: 0,
-      bevelSegments: 10
-    };
-    const ground = new Body({
-      mass: 0,
-      shape: new Box(new Vec3(50, 0.1, 50)),
-      position: new Vec3(0, this.words.length * margin - this.offset, 0)
-    });
-
-    /*ground.addEventListener('collide', (e) => {
-     console.log('collide ', e);
-     })*/
-
-    const shape = new Sphere(0.1);
-    this.jointBody = new Body({ mass: 0 });
-    this.jointBody.addShape(shape);
-    this.jointBody.collisionFilterGroup = 0;
-    this.jointBody.collisionFilterMask = 0;
-    this.world.addBody(this.jointBody);
-
-    this.world.addBody(ground);
-
-    this.addWord('Cuisine');
-  }
-
   addWord(text) {
-    const totalMass = 1;
+    const totalMass = 100;
     const words = new THREE.Group();
     words.letterOff = 0;
     this.offset = this.words.length * margin * 0.5;
@@ -153,6 +148,7 @@ export default class WordFactory {
       geometry.computeBoundingSphere();
 
       const mesh = new THREE.Mesh(geometry, material);
+      // mesh.scale.set(50, 50, 50)
       mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
       // We'll use this accumulator to get the offset of each letter. Notice that this is not perfect because each character of each font has specific kerning.
       words.letterOff += mesh.size.x;
@@ -160,10 +156,11 @@ export default class WordFactory {
       // Create the shape of our letter
       // Note that we need to scale down our geometry because of Box's Cannon.js class setup
       // Attach the body directly to the mesh
+      console.log(totalMass / text.length);
       mesh.body = new Body({
         // We divide the totalmass by the length of the string to have a common weight for each words.
         mass: totalMass / text.length,
-        position: new Vec3(words.letterOff, 20, 0),
+        position: new Vec3(words.letterOff, 100, 200),
       });
 
       // Add the shape to the body and offset it to match the center of our mesh
@@ -180,8 +177,7 @@ export default class WordFactory {
 
     this.words.push(words);
     this.scene.add(words);
-    this.setConstraints()
-
+    // this.setConstraints()
   }
 
   update() {
@@ -243,7 +239,7 @@ export default class WordFactory {
   setScreenPerpCenter(point, camera) {
     // If it does not exist, create a new one
     if(!this.gplane) {
-      const planeGeo = new THREE.PlaneGeometry(100,100);
+      const planeGeo = new THREE.PlaneGeometry(1000,1000);
       const material = new THREE.MeshLambertMaterial( { color: 0xffffff, transparent: true, opacity: 0 } );
       this.gplane = new THREE.Mesh(planeGeo, material);
       // this.gplane.visible = false;
@@ -318,10 +314,5 @@ export default class WordFactory {
     // Remove constriant from world
     this.world.removeConstraint(this.mouseConstraint);
     this.mouseConstraint = false;
-  }
-
-
-  getOffsetY(i) {
-    return (this.words.length - i + 1) * margin - this.offset;
   }
 }

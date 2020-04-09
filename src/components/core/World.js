@@ -2,14 +2,13 @@ import * as THREE from "three";
 import Stats from 'stats.js'
 import CameraOperator from "./CameraOperator";
 import { GameManager } from "./GameManager";
-import Skybox from "./Skybox";
 import { Character } from "../characters/Character";
 import LoadManager from './LoadManager';
+import { World } from "cannon-es";
 
 export default class {
   constructor(canvas) {
     this.canvas = canvas;
-    this.gameManager = new GameManager();
 
     this.renderer = new THREE.WebGLRenderer({ canvas });
     this.renderer.setPixelRatio(window.devicePixelRatio);
@@ -24,11 +23,15 @@ export default class {
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 8000);
     this.cameraOperator = new CameraOperator(this, this.camera);
 
+    this.world = new World();
+    this.world.gravity.set(0, -50, 0);
+
+    this.gameManager = new GameManager(this.world, this.camera);
+
     // Stats showing fps
     this.stats = new Stats();
     this.stats.showPanel(0);
     document.body.appendChild( this.stats.dom );
-
     this.resize();
     this.loadProps();
     this.render()
@@ -53,6 +56,7 @@ export default class {
     if(this.character) {
       this.character.update()
     }
+    this.gameManager.sceneManager.update();
     this.updatePhysics(timeStep);
     this.cameraOperator.update();
   }
@@ -61,7 +65,10 @@ export default class {
    * Handle physics logic
    * @param timeStep
    */
-  updatePhysics(timeStep) {}
+  updatePhysics(timeStep) {
+    this.world.step(1 / 60);
+    this.world.step(timeStep);
+  }
 
   /**
    * Rendering loop

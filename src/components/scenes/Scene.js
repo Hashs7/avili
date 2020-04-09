@@ -8,4 +8,6 @@ export default class {
   loadScene(gtlf) {
     this.scene = gtlf.scene;
   }
+
+  update() {}
 }

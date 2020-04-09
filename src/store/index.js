@@ -6,8 +6,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     canvasRef: null,
-    quality: null,
-    isLoading: true,
+    quality: 'Basse',
+    isLoading: false,
   },
   mutations: {
     initScene(state, canvas) {

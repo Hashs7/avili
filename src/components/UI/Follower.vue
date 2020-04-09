@@ -9,10 +9,12 @@
     name: 'Follower',
     data() {
       return {
+        enable: false,
         state: 'initial'
       }
     },
     mounted() {
+      if (!this.enable) return;
       document.body.style.cursor = 'none';
       this.boundMouseMove = (e) => this.mouseMove(e);
       this.boundPressIn = (e) => this.pressIn(e);
@@ -65,7 +67,7 @@
         switch(e.target.dataset.hover) {
           case "big":
             this.state = 'big';
-            follower.style.mixBlendMode = "difference";
+            // follower.style.mixBlendMode = "difference";
             gsap.to(follower, { scale: 2, duration: 0.5 });
             break;
           case "none":
@@ -88,14 +90,15 @@
 
 <style scoped>
 .follower {
-  mix-blend-mode: difference;
+  /*mix-blend-mode: difference;*/
   position: absolute;
   top: 0;
   z-index: 1500;
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  border: 1px solid antiquewhite;
+  /*border: 1px solid antiquewhite;*/
+  background-color: red;
   /*background-color: #f6f6f6;*/
   pointer-events: none;
 }

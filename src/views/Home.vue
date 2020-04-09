@@ -28,14 +28,10 @@ export default {
       this.init();
     });
   },
-  beforeDestroy() {
-    this.destroy()
-  },
   methods: {
     init() {
       // this.scene.background = new THREE.Color(0xababab);
       // this.camera.position.set(0, -10, 0);
-
     },
   },
 }
