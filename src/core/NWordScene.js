@@ -1,6 +1,6 @@
 import * as THREE from "three";
-import { World } from "cannon-es";
 import WordFactory from "./WordFactory";
+import { World } from "cannon-es";
 
 export default class NWordScene {
   constructor() {
@@ -20,16 +20,15 @@ export default class NWordScene {
 
     this.scene = new THREE.Scene();
     this.scene.fog = new THREE.Fog(0x202533, -1, 100);
-    this.factory = new WordFactory(this.scene, this.world);
-    this.clock = new THREE.Clock();
 
     this.setCamera();
     this.setLights();
+    this.factory = new WordFactory(this.scene, this.world, this.camera);
     // this.renderer.setAnimationLoop(() => { this.draw() })
   }
 
   setCamera() {
-    const aspect = window.innerWidth / window.innerHeight
+    const aspect = window.innerWidth / window.innerHeight;
     const distance = 15;
 
     this.camera = new THREE.OrthographicCamera(-distance * aspect, distance * aspect, distance, -distance, -1, 1000)
