@@ -23,7 +23,11 @@ export default class {
   addFloor() {
     new THREE.TextureLoader().load('./assets/textures/FloorsCheckerboard_S_Diffuse.jpg', (texture) => {
       console.log(texture);
-      const geometry = new THREE.BoxGeometry(500, 1, 500);
+      texture.wrapS = THREE.RepeatWrapping;
+      texture.wrapT = THREE.RepeatWrapping;
+      texture.repeat.x = 10;
+      texture.repeat.y = 10;
+      const geometry = new THREE.BoxGeometry(5000, 1, 5000);
       const material = new THREE.MeshBasicMaterial({ map: texture });
       const plane = new THREE.Mesh(geometry, material);
       plane.name = "Floor";
