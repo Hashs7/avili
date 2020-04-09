@@ -48,6 +48,7 @@
 
 <style lang="scss" scoped>
   .quality-selection {
+    z-index: 1000;
     position: fixed;
     top: 0;
     bottom: 0;

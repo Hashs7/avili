@@ -14,11 +14,26 @@
     },
     mounted() {
       document.body.style.cursor = 'none';
-      window.addEventListener('mousemove',  (e) => this.mouseMove(e));
-      window.addEventListener('mousedown',  () => this.pressIn());
-      window.addEventListener('mouseup',  () => this.pressOut());
-      document.addEventListener('mouseenter',  () => this.enterFollower());
-      document.addEventListener('mouseleave',  () => this.leaveFollower());
+      this.boundMouseMove = (e) => this.mouseMove(e);
+      this.boundPressIn = (e) => this.pressIn(e);
+      this.boundPressOut = (e) => this.pressOut(e);
+      this.boundEnterFollower = () => this.enterFollower();
+      this.boundLeaveFollower = () => this.leaveFollower();
+
+      window.addEventListener('mousemove',  (e) => this.boundMouseMove(e));
+      window.addEventListener('mousedown',  () => this.boundPressIn());
+      window.addEventListener('mouseup',  () => this.boundPressOut());
+      document.addEventListener('mouseenter',  () => this.boundEnterFollower());
+      document.addEventListener('mouseleave',  () => this.boundLeaveFollower ());
+    },
+    beforeDestroy() {
+      console.log('destroy');
+      document.removeEventListener('keydown', this.boundOnKeyDown);
+      window.addEventListener('mousemove', this.boundMouseMove);
+      window.removeEventListener('mousedown', this.boundPressIn);
+      window.removeEventListener('mouseup', this.boundPressOut);
+      document.removeEventListener('mouseenter', this.boundEnterFollower);
+      document.removeEventListener('mouseleave', this.boundLeaveFollower);
     },
     methods: {
       enterFollower() {
@@ -76,7 +91,7 @@
   mix-blend-mode: difference;
   position: absolute;
   top: 0;
-  z-index: 1000;
+  z-index: 1500;
   border-radius: 50%;
   width: 50px;
   height: 50px;

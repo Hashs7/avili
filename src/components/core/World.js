@@ -1,10 +1,16 @@
-import * as THREE from "three/src/Three";
+import * as THREE from "three";
 import Stats from 'stats.js'
 import CameraOperator from "./CameraOperator";
+import { GameManager } from "./GameManager";
+import Skybox from "./Skybox";
+import { Character } from "../characters/Character";
+import LoadManager from './LoadManager';
 
 export default class {
   constructor(canvas) {
     this.canvas = canvas;
+    this.gameManager = new GameManager();
+
     this.renderer = new THREE.WebGLRenderer({ canvas });
     this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -24,14 +30,29 @@ export default class {
     document.body.appendChild( this.stats.dom );
 
     this.resize();
+    this.loadProps();
     this.render()
   }
+
+  /**
+   * Load all environement props
+   */
+  loadProps() {
+    LoadManager.loadGLTF('./assets/models/characters/soldier.glb', (gltf) => {
+      this.character = new Character(gltf, this.camera, this.gameManager.sceneManager.mainScene);
+      this.gameManager.sceneManager.mainSceneAddObject(this.character.group);
+    });
+  }
+
 
   /**
    * Handle logic to update each frame
    * @param timeStep
    */
   update(timeStep) {
+    if(this.character) {
+      this.character.update()
+    }
     this.updatePhysics(timeStep);
     this.cameraOperator.update();
   }
@@ -52,6 +73,7 @@ export default class {
     // let timeStep = (this.renderDelta + this.logicDelta) * this.params.Time_Scale;
     this.update(timeStep);
     this.logicDelta = this.clock.getDelta();
+    this.renderer.render(this.gameManager.sceneManager.mainScene, this.camera);
     requestAnimationFrame(() => this.render());
     this.stats.end();
   }

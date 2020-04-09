@@ -1,6 +1,6 @@
 <template>
   <transition>
-    <div v-if="isLoading" class="modal">
+    <div v-show="isLoading" class="modal">
       <div class="loader">
         <div class="loader__container">
           <span ref="progress" class="loader__progress"></span>
@@ -16,7 +16,7 @@
   import LoadManager from "../core/LoadManager";
 
   export default {
-    name: "Loader",
+    name: 'Loader',
     data() {
       return {
         percent: 0,
@@ -28,8 +28,7 @@
       }
     },
     mounted() {
-      const loaderInstance = LoadManager;
-      loaderInstance.setReceiver(this);
+      LoadManager.setReceiver(this);
     },
     methods: {
       progressHandler(percent) {
@@ -58,7 +57,7 @@
 
 <style scoped>
   .modal {
-    z-index: 1000;
+    z-index: 100;
     position: fixed;
     top: 0;
     bottom: 0;
