@@ -2,25 +2,26 @@
   <div id="app">
     <Loader />
     <Follower />
-    <nav class="router">
-      <router-link to="/" class="router__link">Home</router-link>
-      <router-link to="/game" class="router__link">Game</router-link>
-      <router-link to="/a-props" class="router__link">About</router-link>
-    </nav>
+    <Navigation />
     <router-view />
     <canvas ref="canvas" />
+    <div v-if="notSupported" class="not-supported">
+      <p>L'expérience n'a pas été prévu pour cet appareil</p>
+    </div>
   </div>
 </template>
 
 <script>
   import Loader from '@/components/Loader';
   import Follower from '@/components/Follower';
+  import Navigation from '@/components/layout/Navigation';
 
   export default {
     name: 'App',
     components: {
       Loader,
       Follower,
+      Navigation,
     },
     data() {
       return {
@@ -35,6 +36,9 @@
       renderer() {
         return this.$store.state.renderer;
       },
+      notSupported() {
+        return this.width < 425;
+      }
     },
     mounted() {
       this.$store.commit('initScene', this.$refs.canvas);
@@ -66,22 +70,17 @@
     width: 100vw;
     height: 100vh;
   }
-  .router {
-    position: absolute;
-    top: 16px;
-    left: 32px;
-  }
-  .router__link {
-    color: white;
-    font-size: 20px;
-    text-decoration: none;
-
-    &:not(:last-child) {
-      margin-right: 32px;
-    }
-
-    &.router-link-exact-active {
-      text-decoration: underline;
-    }
+  .not-supported {
+    z-index: 1000;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: $white;
+    background-color: #2A2A2A;
   }
 </style>
