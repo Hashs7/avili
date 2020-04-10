@@ -58,13 +58,6 @@
 </script>
 
 <style lang="scss">
-  body {
-    width: 100vw;
-    height: 100vh;
-    overflow: hidden;
-    margin: 0;
-    font-family: sans-serif;
-  }
   .webgl-render {
     display: block;
     width: 100vw !important;
@@ -80,7 +73,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    padding: 32px;
     color: $white;
+    text-align: center;
     background-color: #2A2A2A;
   }
 </style>

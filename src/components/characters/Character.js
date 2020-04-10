@@ -23,7 +23,7 @@ export class Character {
     gltf.scene.position.set(0, 0, 0);
     this.character = gltf.scene.children[0];
     this.camera = camera;
-    this.camera.position.set(-130, 350, -250);
+    this.camera.position.set(130, 350, 250);
     this.raycaster = new THREE.Raycaster();
     this.group = new THREE.Group();
     this.group.add(this.character);
@@ -130,7 +130,7 @@ export class Character {
   }
 
   updateLookAt() {
-    this.camera.lookAt(this.group.position.x + 135, this.group.position.y - 65,  this.group.position.z + 150);
+    this.camera.lookAt(this.group.position.x - 135, this.group.position.y - 65,  this.group.position.z - 150);
   }
 
   update() {

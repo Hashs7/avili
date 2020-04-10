@@ -24,7 +24,7 @@ export default class {
     this.cameraOperator = new CameraOperator(this, this.camera);
 
     this.world = new World();
-    this.world.gravity.set(0, -50, 0);
+    this.world.gravity.set(0, -10, 0);
 
     this.gameManager = new GameManager(this.world, this.camera);
 

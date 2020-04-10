@@ -21,7 +21,7 @@ export default class WordFactory {
     this.mouse = {
       x: 0,
       y: 0,
-    }
+    };
     this.raycaster = new THREE.Raycaster();
     // Push with cursor
     // document.addEventListener("click", () => this.onClick());
@@ -58,7 +58,7 @@ export default class WordFactory {
     this.world.addBody(this.jointBody);
 
 
-    this.addWord('Pute');
+    this.addWord('Miche');
   }
 
   setConstraints() {
@@ -133,11 +133,10 @@ export default class WordFactory {
   }
 
   addWord(text) {
-    const totalMass = 100;
+    const totalMass = 30;
     const words = new THREE.Group();
     words.letterOff = 0;
     this.offset = this.words.length * margin * 0.5;
-
 
     // ... and parse each letter to generate a mesh
     Array.from(text).forEach((letter) => {
@@ -151,20 +150,22 @@ export default class WordFactory {
       // mesh.scale.set(50, 50, 50)
       mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
       // We'll use this accumulator to get the offset of each letter. Notice that this is not perfect because each character of each font has specific kerning.
-      words.letterOff += mesh.size.x;
+      words.letterOff += mesh.size.x + 10;
 
       // Create the shape of our letter
       // Note that we need to scale down our geometry because of Box's Cannon.js class setup
       // Attach the body directly to the mesh
-      console.log(totalMass / text.length);
       mesh.body = new Body({
         // We divide the totalmass by the length of the string to have a common weight for each words.
-        mass: totalMass / text.length,
-        position: new Vec3(words.letterOff, 100, 200),
+        mass: 0,
+        // mass: totalMass / text.length,
+        position: new Vec3(words.letterOff, 0, -200),
       });
+
 
       // Add the shape to the body and offset it to match the center of our mesh
       const { center } = mesh.geometry.boundingSphere;
+      console.log(letter, mesh.size, words.letterOff);
       const box = new Box(new Vec3().copy(mesh.size).scale(0.5));
       mesh.body.addShape(box, new Vec3(center.x, center.y, center.z));
       this.world.addBody(mesh.body);
@@ -174,6 +175,7 @@ export default class WordFactory {
     words.children.forEach(letter => {
       letter.body.position.x -= letter.size.x + words.letterOff * 0.5;
     });
+    // console.log(words);
 
     this.words.push(words);
     this.scene.add(words);
@@ -182,20 +184,17 @@ export default class WordFactory {
 
   update() {
     if (!this.words.length) return;
-
     this.words.forEach((word) => {
-      for (let i = 0; i < word.children.length; i++) {
-        const letter = word.children[i];
-
+      word.children.forEach(letter => {
         letter.position.copy(letter.body.position);
         letter.quaternion.copy(letter.body.quaternion);
-      }
+      })
     });
   }
 
   setClickMarker(x,y,z) {
     if(!this.clickMarker){
-      const shape = new THREE.SphereGeometry(0.2, 8, 8);
+      const shape = new THREE.SphereGeometry(5, 8, 8);
       const markerMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
       this.clickMarker = new THREE.Mesh(shape, markerMaterial);
       this.scene.add(this.clickMarker);
@@ -208,7 +207,6 @@ export default class WordFactory {
     if (!this.clickMarker) return;
     this.clickMarker.visible = false;
   }
-
 
   onMouseDown(){
     // Find mesh from a ray
@@ -226,7 +224,7 @@ export default class WordFactory {
     }
   }
 
-  onMouseUp(e) {
+  onMouseUp() {
     this.constraintDown = false;
     // remove the marker
     this.removeClickMarker();
@@ -242,9 +240,7 @@ export default class WordFactory {
       const planeGeo = new THREE.PlaneGeometry(1000,1000);
       const material = new THREE.MeshLambertMaterial( { color: 0xffffff, transparent: true, opacity: 0 } );
       this.gplane = new THREE.Mesh(planeGeo, material);
-      // this.gplane.visible = false;
       this.scene.add(this.gplane);
-      console.log(this.gplane);
     }
 
     // Center at mouse position
