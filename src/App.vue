@@ -4,7 +4,7 @@
     <Follower />
     <Navigation />
     <router-view />
-    <canvas ref="canvas" />
+    <canvas class="webgl-render" ref="canvas" />
     <div v-if="notSupported" class="not-supported">
       <p>L'expérience n'a pas été prévu pour cet appareil</p>
     </div>
@@ -26,8 +26,8 @@
     },
     data() {
       return {
-        width: 0,
-        height: 0,
+        width: 1200,
+        height: 500,
         world: null,
       }
     },
@@ -49,8 +49,8 @@
     },
     methods: {
       resize() {
-        this.width = this.$refs.canvas.clientWidth;
-        this.height = this.$refs.canvas.clientHeight;
+        this.width = window.innerWidth;
+        this.height = window.innerHeight;
         this.world.resize();
       },
     },
@@ -65,10 +65,10 @@
     margin: 0;
     font-family: sans-serif;
   }
-  canvas {
+  .webgl-render {
     display: block;
-    width: 100vw;
-    height: 100vh;
+    width: 100vw !important;
+    height: 100vh !important;
   }
   .not-supported {
     z-index: 1000;
