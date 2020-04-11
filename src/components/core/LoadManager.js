@@ -21,14 +21,14 @@ class LoadManager {
   }
 
   startHandler(url, itemsLoaded, itemsTotal) {
-    console.log('start ', url, itemsLoaded, itemsTotal);
+    //console.log('start ', url, itemsLoaded, itemsTotal);
   }
 
   loadedHandler() {
   }
 
   progressHandler( url, itemsLoaded, itemsTotal ) {
-    console.log(`${itemsLoaded / itemsTotal * 100 | 0}%`);
+    //console.log(`${itemsLoaded / itemsTotal * 100 | 0}%`);
     if(!this.receiver) return;
     this.receiver.progressHandler(itemsLoaded / itemsTotal * 100 | 0)
   }

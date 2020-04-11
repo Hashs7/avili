@@ -29,7 +29,7 @@
       document.addEventListener('mouseleave',  () => this.boundLeaveFollower ());
     },
     beforeDestroy() {
-      console.log('destroy');
+      //console.log('destroy');
       document.removeEventListener('keydown', this.boundOnKeyDown);
       window.addEventListener('mousemove', this.boundMouseMove);
       window.removeEventListener('mousedown', this.boundPressIn);
