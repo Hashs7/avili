@@ -2,7 +2,6 @@
   <div id="app">
     <Loader />
     <Follower />
-    <Navigation />
     <router-view />
     <canvas class="webgl-render" ref="canvas" />
     <div v-if="notSupported" class="not-supported">
@@ -15,14 +14,12 @@
   import World from '@/components/core/World';
   import Loader from '@/components/UI/Loader';
   import Follower from '@/components/UI/Follower';
-  import Navigation from '@/components/UI/layout/Navigation';
 
   export default {
     name: 'App',
     components: {
       Loader,
       Follower,
-      Navigation,
     },
     data() {
       return {
