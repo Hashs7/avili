@@ -57,8 +57,7 @@ export default class WordFactory {
     this.jointBody.collisionFilterMask = 0;
     this.world.addBody(this.jointBody);
 
-
-    this.addWord('Miche');
+    this.addWord('jeanmariebigard');
   }
 
   setConstraints() {
@@ -165,7 +164,6 @@ export default class WordFactory {
 
       // Add the shape to the body and offset it to match the center of our mesh
       const { center } = mesh.geometry.boundingSphere;
-      console.log(letter, mesh.size, words.letterOff);
       const box = new Box(new Vec3().copy(mesh.size).scale(0.5));
       mesh.body.addShape(box, new Vec3(center.x, center.y, center.z));
       this.world.addBody(mesh.body);
@@ -175,7 +173,6 @@ export default class WordFactory {
     words.children.forEach(letter => {
       letter.body.position.x -= letter.size.x + words.letterOff * 0.5;
     });
-    // console.log(words);
 
     this.words.push(words);
     this.scene.add(words);
@@ -208,7 +205,7 @@ export default class WordFactory {
     this.clickMarker.visible = false;
   }
 
-  onMouseDown(){
+  onMouseDown() {
     // Find mesh from a ray
     const objs = this.words.map(group => group.children);
     const entity = this.findNearestIntersectingObject(this.camera, objs.flat());
@@ -257,7 +254,6 @@ export default class WordFactory {
     this.lastx = this.mouse.x;
     this.lasty = this.mouse.y;
     this.last = now;
-    // console.log(hit);
     if(hit)
       return hit.point;
     return false;

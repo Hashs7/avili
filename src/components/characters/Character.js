@@ -3,34 +3,32 @@ import gsap from 'gsap';
 import InputManager from "../core/InputManager";
 
 export class Character {
-  camera;
-  mixer;
-  actions;
-  isWalking;
-  idleAction;
-  walkAction;
-  group;
-  character;
   speed = 9;
   wakable = true;
 
-  constructor(gltf, camera, scene) {
+  constructor(gltf, camera, sceneManager) {
     this.inputManager = new InputManager();
     this.inputManager.setInputReceiver(this);
-    this.scene = scene;
+    this.sceneManager = sceneManager;
 
     gltf.scene.scale.set(0.2, 0.2, 0.2);
     gltf.scene.position.set(0, 0, 0);
-    this.character = gltf.scene.children[0];
-    this.camera = camera;
+
+    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 8000);
     this.camera.position.set(130, 350, 250);
     this.raycaster = new THREE.Raycaster();
+    console.log(gltf.scene.children[0]);
+
+    this.character = gltf.scene.children[0];
+    this.character.position.set(0,10,0);
+    this.character.scale.set(1,1,1);
+
     this.group = new THREE.Group();
     this.group.add(this.character);
     this.group.add(this.camera);
     this.group.position.set(0,0,0);
-    this.character.position.set(0,10,0);
-    this.character.scale.set(1,1,1);
+
+    console.log(gltf.scene);
     this.mixer = new THREE.AnimationMixer(this.character);
     this.mouse = {
       x: 0,
@@ -43,6 +41,7 @@ export class Character {
     this.setAnimations(gltf.animations);
     this.activateAllActions();
     this.updateLookAt();
+    sceneManager.mainSceneAddObject(this.group);
   }
 
   destroy() {
@@ -52,7 +51,7 @@ export class Character {
   mouseMoveHandler(event) {
     this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
-    const obj = this.raycaster.intersectObjects( this.scene.children );
+    const obj = this.raycaster.intersectObjects( this.sceneManager.mainScene.children );
     if (obj.length) {
       obj.forEach(el => {
         if (el.object.name !== "Floor") return;
@@ -75,14 +74,10 @@ export class Character {
     const direction = {
       x: Math.sin(this.character.rotation.z) * this.speed,
       z: Math.cos(this.character.rotation.z) * this.speed,
-    }
+    };
     switch (code) {
       case 38:
         // Up key
-        /*gsap.to(this.character.rotation, {
-         z: toRadian(180),
-         duration: .3,
-         });*/
         gsap.to(this.group.position, {
           x: `-=${direction.x}`,
           z: `-=${direction.z}`,

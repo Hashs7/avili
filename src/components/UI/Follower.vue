@@ -9,7 +9,7 @@
     name: 'Follower',
     data() {
       return {
-        enable: false,
+        enable: true,
         state: 'initial'
       }
     },
@@ -97,8 +97,8 @@
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  /*border: 1px solid antiquewhite;*/
-  background-color: red;
+  border: 1px solid antiquewhite;
+  /*background-color: red;*/
   /*background-color: #f6f6f6;*/
   pointer-events: none;
 }

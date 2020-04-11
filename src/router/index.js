@@ -3,7 +3,6 @@ import VueRouter from 'vue-router';
 import Home from '../views/Home.vue';
 import Game from '../views/Game.vue';
 import About from '../views/About.vue';
-import Character from '../views/Character.vue';
 
 Vue.use(VueRouter);
 
@@ -22,11 +21,6 @@ const routes = [
     path: '/a-propos',
     name: 'About',
     component: About,
-  },
-  {
-    path: '/character',
-    name: 'Character',
-    component: Character,
   },
 ];
 

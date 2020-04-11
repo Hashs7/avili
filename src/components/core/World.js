@@ -42,8 +42,8 @@ export default class {
    */
   loadProps() {
     LoadManager.loadGLTF('./assets/models/characters/soldier.glb', (gltf) => {
-      this.character = new Character(gltf, this.camera, this.gameManager.sceneManager.mainScene);
-      this.gameManager.sceneManager.mainSceneAddObject(this.character.group);
+      this.character = new Character(gltf, this.camera, this.gameManager.sceneManager);
+      this.camera = this.character.camera;
     });
   }
 
