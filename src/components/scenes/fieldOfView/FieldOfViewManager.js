@@ -7,14 +7,16 @@ export default class FieldOfViewManager {
     this.scene = scene;
     this.sphere = new THREE.Object3D();
     this.fieldOfView = new THREE.Object3D();
-    this.character = null;
+    this.fieldOfViewName = "FieldOfView";
+    this.fieldOfViews = [];
 
     for (let i = 0; i < 3; i++) {
       this.addNPC(randomInRange(-1000, 1000), randomInRange(-1000, 1000));
     }
 
-    document.addEventListener('characterLoaded', e => {
-      this.character = e.detail.character;
+    document.addEventListener('playerMoved', e => {
+      const characterPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
+      this.detectFieldOfView(characterPosition);
     });
   }
 
@@ -38,16 +40,35 @@ export default class FieldOfViewManager {
       transparent: true,
     });
     this.fieldOfView = new THREE.Mesh(geometry, material);
+    this.fieldOfView.name = this.fieldOfViewName;
     this.fieldOfView.position.set(object.position.x, object.position.y + 1, object.position.z);
+    this.fieldOfViews.push(this.fieldOfView);
     this.scene.add(this.fieldOfView);
   }
 
-  detectFieldOfView(){
-    new Raycaster(
-      this.character.position,
+  detectFieldOfView(position){
+    const ray = new Raycaster(
+      position,
       new THREE.Vector3(0, -1, 0),
       0,
       300,
-    )
+    );
+    const objs = ray.intersectObjects(this.scene.children, false);
+
+    objs.forEach(obj => {
+      if (obj.object.name === this.fieldOfViewName) {
+        obj.object.material.color.setHex(0x00aa00);
+      }
+    });
+
+    if (objs.length === 0){
+      this.resetFieldOfViewsColor();
+    }
+  }
+
+  resetFieldOfViewsColor() {
+    this.fieldOfViews.forEach(fieldOfView => {
+      fieldOfView.material.color.setHex(0xaa0000);
+    });
   }
 }

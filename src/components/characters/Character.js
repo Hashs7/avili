@@ -135,6 +135,10 @@ export class Character {
   }
 
   setWalking() {
+    const playerMovedEvent = new CustomEvent('playerMoved', {
+      detail: this.character,
+    });
+    document.dispatchEvent(playerMovedEvent);
     if (this.isWalking) return;
     this.prepareCrossFade(this.idleAction, this.walkAction);
     this.isWalking = true;

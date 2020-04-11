@@ -8,7 +8,7 @@ export default class extends Scene {
 
     console.log("Field of view scene added !");
 
-    new FieldOfViewManager(this.scene);
+    this.manager = new FieldOfViewManager(this.scene);
 
     return {
       instance: this,
