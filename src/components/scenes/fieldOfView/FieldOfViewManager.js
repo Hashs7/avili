@@ -20,6 +20,13 @@ export default class FieldOfViewManager {
     });
   }
 
+  update(){
+    if(this.fieldOfViews.length === 0) return;
+    this.fieldOfViews.forEach(fieldOfView => {
+      fieldOfView.rotateY(Math.PI / 100);
+    });
+  }
+
   addNPC(x, z) {
     let geometry = new THREE.SphereGeometry(30, 20, 20);
     let material = new THREE.MeshPhongMaterial({
@@ -33,7 +40,17 @@ export default class FieldOfViewManager {
   }
 
   addFieldOfView(object) {
-    let geometry = new THREE.CylinderGeometry(300, 300, 1, 20, 20);
+    //let geometry = new THREE.CylinderGeometry(300, 300, 1, 20, 20);
+    let geometry = new THREE.CylinderGeometry(
+      500,
+      500,
+      1,
+      20,
+      1,
+      false,
+      0,
+      1
+    );
     let material = new THREE.MeshPhongMaterial({
       color: 0xaa0000,
       opacity: 0.5,
