@@ -1,5 +1,7 @@
 import * as THREE from "three/src/Three";
 import { Body, Box, ConeTwistConstraint, PointToPointConstraint, Sphere, Vec3 } from "cannon-es/dist/index";
+import LoadManager from "../../core/LoadManager";
+import * as BufferGeometryUtils from "three/src/core/InstancedBufferAttribute";
 
 const margin = 15;
 const force = 25;
@@ -14,7 +16,6 @@ export default class WordFactory {
     this.world = world;
     this.camera = camera;
     this.clickMarker = false;
-    this.loader = new THREE.FontLoader();
     this.words = [];
     this.offset = this.words.length * margin * 0.5;
 
@@ -28,7 +29,7 @@ export default class WordFactory {
     document.addEventListener("mousedown", (e) => this.onMouseDown(e));
     document.addEventListener("mouseup", () => this.onMouseUp());
     window.addEventListener('mousemove', (e) => this.onMouseMove(e));
-    this.loader.load('./assets/fonts/Anton/Anton-Regular.json', f => this.setup(f));
+    LoadManager.loadFont('./assets/fonts/Anton/Anton-Regular.json', f => this.setup(f));
   }
 
   setup(f) {
@@ -57,7 +58,10 @@ export default class WordFactory {
     this.jointBody.collisionFilterMask = 0;
     this.world.addBody(this.jointBody);
 
-    this.addWord('jeanmariebigard');
+    setTimeout(() => {
+      this.addWord('jeanmariebigard');
+
+    }, 3000)
   }
 
   setConstraints() {
@@ -83,6 +87,10 @@ export default class WordFactory {
     });
   }
 
+  /**
+   *
+   * @param event
+   */
   onMouseMove(event) {
     // We set the normalized coordinate of the mouse
     this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
@@ -133,8 +141,8 @@ export default class WordFactory {
 
   addWord(text) {
     const totalMass = 30;
-    const words = new THREE.Group();
-    words.letterOff = 0;
+    const currentWord = new THREE.Group();
+    currentWord.letterOff = 0;
     this.offset = this.words.length * margin * 0.5;
 
     // ... and parse each letter to generate a mesh
@@ -149,7 +157,7 @@ export default class WordFactory {
       // mesh.scale.set(50, 50, 50)
       mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
       // We'll use this accumulator to get the offset of each letter. Notice that this is not perfect because each character of each font has specific kerning.
-      words.letterOff += mesh.size.x + 10;
+      currentWord.letterOff += mesh.size.x + 10;
 
       // Create the shape of our letter
       // Note that we need to scale down our geometry because of Box's Cannon.js class setup
@@ -158,7 +166,7 @@ export default class WordFactory {
         // We divide the totalmass by the length of the string to have a common weight for each words.
         mass: 0,
         // mass: totalMass / text.length,
-        position: new Vec3(words.letterOff, 0, -200),
+        position: new Vec3(currentWord.letterOff, 0, -200),
       });
 
 
@@ -167,15 +175,18 @@ export default class WordFactory {
       const box = new Box(new Vec3().copy(mesh.size).scale(0.5));
       mesh.body.addShape(box, new Vec3(center.x, center.y, center.z));
       this.world.addBody(mesh.body);
-      words.add(mesh);
+      currentWord.add(mesh);
     });
 
-    words.children.forEach(letter => {
-      letter.body.position.x -= letter.size.x + words.letterOff * 0.5;
+    currentWord.children.forEach(letter => {
+      letter.body.position.x -= letter.size.x + currentWord.letterOff * 0.5;
     });
 
-    this.words.push(words);
-    this.scene.add(words);
+
+    this.words.push(currentWord);
+    this.scene.add(currentWord);
+
+
     // this.setConstraints()
   }
 
@@ -254,13 +265,11 @@ export default class WordFactory {
     this.lastx = this.mouse.x;
     this.lasty = this.mouse.y;
     this.last = now;
-    if(hit)
-      return hit.point;
+    if (hit) return hit.point;
     return false;
   }
 
   findNearestIntersectingObject(camera, groups) {
-
     // Find the closest intersecting object
     // Now, cast the ray all render objects in the scene to see if they collide. Take the closest one.
     this.raycaster.setFromCamera( this.mouse, this.camera );
