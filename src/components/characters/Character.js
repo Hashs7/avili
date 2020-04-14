@@ -3,7 +3,7 @@ import gsap from 'gsap';
 import InputManager from "../core/InputManager";
 
 export class Character {
-  speed = 9;
+  speed = 20;
   wakable = true;
 
   constructor(gltf, camera, sceneManager) {
@@ -17,9 +17,10 @@ export class Character {
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 8000);
     this.camera.position.set(130, 350, 250);
     this.raycaster = new THREE.Raycaster();
-    console.log(gltf.scene.children[0]);
+    //console.log(gltf.scene.children[0]);
 
     this.character = gltf.scene.children[0];
+    this.character.name = "Player";
     this.character.position.set(0,10,0);
     this.character.scale.set(1,1,1);
 
@@ -28,7 +29,7 @@ export class Character {
     this.group.add(this.camera);
     this.group.position.set(0,0,0);
 
-    console.log(gltf.scene);
+    //console.log(gltf.scene);
     this.mixer = new THREE.AnimationMixer(this.character);
     this.mouse = {
       x: 0,
@@ -61,7 +62,7 @@ export class Character {
   }
 
   mouseClickHandler() {
-    console.log(this.character);
+    //console.log(this.character);
   }
 
   handleKeyboardEvent(event, code, pressed) {
@@ -134,6 +135,10 @@ export class Character {
   }
 
   setWalking() {
+    const playerMovedEvent = new CustomEvent('playerMoved', {
+      detail: this.character,
+    });
+    document.dispatchEvent(playerMovedEvent);
     if (this.isWalking) return;
     this.prepareCrossFade(this.idleAction, this.walkAction);
     this.isWalking = true;
