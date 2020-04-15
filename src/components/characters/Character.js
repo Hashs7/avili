@@ -3,7 +3,7 @@ import gsap from 'gsap';
 import InputManager from "../core/InputManager";
 
 export class Character {
-  speed = 20;
+  speed = 9;
   wakable = true;
 
   constructor(gltf, camera, sceneManager) {
@@ -14,8 +14,8 @@ export class Character {
     gltf.scene.scale.set(0.2, 0.2, 0.2);
     gltf.scene.position.set(0, 0, 0);
 
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 8000);
-    this.camera.position.set(130, 350, 250);
+    this.camera = camera;
+
     this.raycaster = new THREE.Raycaster();
     //console.log(gltf.scene.children[0]);
 
@@ -26,7 +26,6 @@ export class Character {
 
     this.group = new THREE.Group();
     this.group.add(this.character);
-    this.group.add(this.camera);
     this.group.position.set(0,0,0);
 
     //console.log(gltf.scene);
@@ -41,12 +40,17 @@ export class Character {
 
     this.setAnimations(gltf.animations);
     this.activateAllActions();
-    this.updateLookAt();
     sceneManager.mainSceneAddObject(this.group);
   }
 
   destroy() {
     this.inputManager.setInputReceiver(null);
+  }
+
+  groupCamera() {
+    this.camera.position.set(130, 350, 250);
+    this.group.add(this.camera);
+    this.updateLookAt();
   }
 
   mouseMoveHandler(event) {

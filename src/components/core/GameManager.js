@@ -4,11 +4,10 @@ import FieldOfViewScene from "../scenes/fieldOfView/FieldOfViewScene";
 import WordScene from "../scenes/word/WordScene";
 
 export class GameManager {
-  constructor(world, camera) {
-    this.sceneManager = new SceneManager(world);
-    this.sceneManager.addScene(new SpawnScene());
-    this.sceneManager.addScene(new FieldOfViewScene());
-    this.sceneManager.addScene(new WordScene(world, camera));
+  constructor(world, worldPhysic, camera) {
+    this.sceneManager = new SceneManager(worldPhysic);
+    this.sceneManager.addScene(new SpawnScene(world));
+    // this.sceneManager.addScene(new FieldOfViewScene());
+    // this.sceneManager.addScene(new WordScene(world, camera));
   }
-
 }

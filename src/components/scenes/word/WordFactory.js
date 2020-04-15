@@ -1,7 +1,6 @@
 import * as THREE from "three/src/Three";
 import { Body, Box, ConeTwistConstraint, PointToPointConstraint, Sphere, Vec3 } from "cannon-es/dist/index";
 import LoadManager from "../../core/LoadManager";
-import * as BufferGeometryUtils from "three/src/core/InstancedBufferAttribute";
 
 const margin = 15;
 const force = 25;
@@ -46,22 +45,13 @@ export default class WordFactory {
       bevelSegments: 10
     };
 
-
-    /*ground.addEventListener('collide', (e) => {
-     console.log('collide ', e);
-     })*/
-
     const shape = new Sphere(0.1);
     this.jointBody = new Body({ mass: 0 });
     this.jointBody.addShape(shape);
     this.jointBody.collisionFilterGroup = 0;
     this.jointBody.collisionFilterMask = 0;
     this.world.addBody(this.jointBody);
-
-    setTimeout(() => {
-      this.addWord('jeanmariebigard');
-
-    }, 3000)
+    this.addWord('jeanmariebigard');
   }
 
   setConstraints() {
@@ -154,18 +144,16 @@ export default class WordFactory {
       geometry.computeBoundingSphere();
 
       const mesh = new THREE.Mesh(geometry, material);
-      // mesh.scale.set(50, 50, 50)
+      mesh.name = letter;
       mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
       // We'll use this accumulator to get the offset of each letter. Notice that this is not perfect because each character of each font has specific kerning.
       currentWord.letterOff += mesh.size.x + 10;
-
-      // Create the shape of our letter
-      // Note that we need to scale down our geometry because of Box's Cannon.js class setup
       // Attach the body directly to the mesh
       mesh.body = new Body({
         // We divide the totalmass by the length of the string to have a common weight for each words.
         mass: 0,
         // mass: totalMass / text.length,
+        // velocity: new Vec3(10, -10, 0),
         position: new Vec3(currentWord.letterOff, 0, -200),
       });
 
@@ -176,15 +164,17 @@ export default class WordFactory {
       mesh.body.addShape(box, new Vec3(center.x, center.y, center.z));
       this.world.addBody(mesh.body);
       currentWord.add(mesh);
+      console.log(letter, mesh);
     });
 
-    currentWord.children.forEach(letter => {
+    // Set word in center
+    /*currentWord.children.forEach(letter => {
       letter.body.position.x -= letter.size.x + currentWord.letterOff * 0.5;
-    });
+    });*/
 
 
-    this.words.push(currentWord);
     this.scene.add(currentWord);
+    this.words.push(currentWord);
 
 
     // this.setConstraints()

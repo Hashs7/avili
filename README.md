@@ -1,6 +1,6 @@
-# WebGL Project
+# Avili
 
-
+[![Netlify Status](https://api.netlify.com/api/v1/badges/414767d7-c518-4e73-8ac0-012bf93b0f2e/deploy-status)](https://app.netlify.com/sites/avili/deploys)
 
 ## Project setup
 ```
