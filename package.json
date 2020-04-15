@@ -8,6 +8,7 @@
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "cannon": "^0.6.2",
     "cannon-es": "^0.8.7",
     "core-js": "^3.6.4",
     "dat.gui": "^0.7.7",

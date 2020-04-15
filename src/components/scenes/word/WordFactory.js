@@ -51,7 +51,8 @@ export default class WordFactory {
     this.jointBody.collisionFilterGroup = 0;
     this.jointBody.collisionFilterMask = 0;
     this.world.addBody(this.jointBody);
-    this.addWord('jeanmariebigard');
+    console.log();
+    this.addWord('jeanmardz');
   }
 
   setConstraints() {
@@ -136,7 +137,7 @@ export default class WordFactory {
     this.offset = this.words.length * margin * 0.5;
 
     // ... and parse each letter to generate a mesh
-    Array.from(text).forEach((letter) => {
+    Array.from(text).forEach((letter, i) => {
       const material = new THREE.MeshPhongMaterial({ color: 0x97df5e });
       const geometry = new THREE.TextBufferGeometry(letter, this.fontOption);
 
@@ -150,21 +151,17 @@ export default class WordFactory {
       currentWord.letterOff += mesh.size.x + 10;
       // Attach the body directly to the mesh
       mesh.body = new Body({
-        // We divide the totalmass by the length of the string to have a common weight for each words.
         mass: 0,
-        // mass: totalMass / text.length,
-        // velocity: new Vec3(10, -10, 0),
         position: new Vec3(currentWord.letterOff, 0, -200),
       });
 
 
       // Add the shape to the body and offset it to match the center of our mesh
-      const { center } = mesh.geometry.boundingSphere;
+      const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
       const box = new Box(new Vec3().copy(mesh.size).scale(0.5));
       mesh.body.addShape(box, new Vec3(center.x, center.y, center.z));
       this.world.addBody(mesh.body);
       currentWord.add(mesh);
-      console.log(letter, mesh);
     });
 
     // Set word in center
@@ -172,10 +169,8 @@ export default class WordFactory {
       letter.body.position.x -= letter.size.x + currentWord.letterOff * 0.5;
     });*/
 
-
     this.scene.add(currentWord);
     this.words.push(currentWord);
-
 
     // this.setConstraints()
   }

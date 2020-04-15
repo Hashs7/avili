@@ -26,12 +26,12 @@ export default class extends Scene {
       THREE.BackSide,
       0x2194ce
     );
-    
-    this.world.cameraOperator.setTravelling(true);
+
+    // this.world.cameraOperator.setTravelling(true);
 
     setTimeout(() => {
       this.world.cameraOperator.setTravelling(false);
-      this.world.character.groupCamera();
-    }, 5000)
+      // this.world.character.groupCamera();
+    }, 3000)
   }
 }

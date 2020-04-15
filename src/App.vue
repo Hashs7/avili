@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Loader />
-    <Follower />
+<!--    <Follower />-->
     <router-view />
     <canvas class="webgl-render" ref="canvas" />
     <div v-if="notSupported" class="not-supported">

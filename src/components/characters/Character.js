@@ -1,6 +1,7 @@
-import * as THREE from 'three/src/Three'
+import * as THREE from 'three'
 import gsap from 'gsap';
 import InputManager from "../core/InputManager";
+import { Body, Box, Cylinder, Vec3 } from "cannon-es";
 
 export class Character {
   speed = 9;
@@ -11,8 +12,6 @@ export class Character {
     this.inputManager.setInputReceiver(this);
     this.sceneManager = sceneManager;
 
-    gltf.scene.scale.set(0.2, 0.2, 0.2);
-    gltf.scene.position.set(0, 0, 0);
 
     this.camera = camera;
 
@@ -21,8 +20,8 @@ export class Character {
 
     this.character = gltf.scene.children[0];
     this.character.name = "Player";
-    this.character.position.set(0,10,0);
-    this.character.scale.set(1,1,1);
+    this.character.position.set(0, 0, 0);
+    this.character.scale.set(1, 1, 1);
 
     this.group = new THREE.Group();
     this.group.add(this.character);
@@ -40,7 +39,41 @@ export class Character {
 
     this.setAnimations(gltf.animations);
     this.activateAllActions();
+    this.addBody();
+    console.log(this.character);
+
     sceneManager.mainSceneAddObject(this.group);
+  }
+
+  addBody() {
+    console.log(this.character);
+    const mesh = this.character.children.find(el => el.name === 'vanguard_Mesh');
+    mesh.geometry.computeBoundingBox();
+    mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
+    const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
+    console.log(center, mesh.size);
+
+    const box = new Box(new Vec3().copy(mesh.size).scale(0.5));
+    console.log(box);
+
+    const cylinderShape = new Cylinder(20, 20,  175, 8);
+    // const cylinderShape = new Cylinder(mesh.size.x, mesh.size.z, mesh.size.y, 8);
+    this.character.body = new Body({
+      mass: 10,
+      shape: cylinderShape,
+      position: new Vec3().copy(this.character.position),
+      // collisionFilterGroup: GROUP3, // Put the cylinder in group 3
+      // collisionFilterMask:  GROUP1 // It can only collide with group 1 (the sphere)
+    });
+
+
+    // this.world.addBody(mesh.body);
+
+    const geometry = new THREE.CylinderGeometry( 40, 40, 350, 8 );
+    // const geometry = new THREE.CylinderGeometry( mesh.size.x, mesh.size.z, mesh.size.y, 8 );
+    const material = new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: true } );
+    const hitbox = new THREE.Mesh( geometry, material );
+    this.group.add(hitbox);
   }
 
   destroy() {
