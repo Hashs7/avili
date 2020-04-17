@@ -6,11 +6,10 @@ const margin = 15;
 const force = 25;
 
 export default class WordFactory {
-  lastx;
-  lasty;
-  last;
-
   constructor(scene, world, camera) {
+    this.lastx = null;
+    this.lasty = null;
+    this.last = null;
     this.scene = scene;
     this.world = world;
     this.camera = camera;
@@ -51,7 +50,6 @@ export default class WordFactory {
     this.jointBody.collisionFilterGroup = 0;
     this.jointBody.collisionFilterMask = 0;
     this.world.addBody(this.jointBody);
-    console.log();
     this.addWord('jeanmardz');
   }
 
@@ -151,8 +149,12 @@ export default class WordFactory {
       currentWord.letterOff += mesh.size.x + 10;
       // Attach the body directly to the mesh
       mesh.body = new Body({
-        mass: 0,
+        // mass: 0,
+        mass: totalMass,
         position: new Vec3(currentWord.letterOff, 0, -200),
+        fixedRotation: true,
+        linearDamping: 0.01,
+        friction: 0.01,
       });
 
 
@@ -292,7 +294,8 @@ export default class WordFactory {
   // This functions moves the transparent joint body to a new postion in space
   moveJointToPoint(x,y,z) {
     // Move the joint body to a new position
-    this.jointBody.position.set(x,y,z);
+    // this.jointBody.position.set(x,y,z);
+    this.jointBody.position.y = y;
     this.mouseConstraint.update();
   }
 

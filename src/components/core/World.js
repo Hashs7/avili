@@ -4,7 +4,7 @@ import CameraOperator from "./CameraOperator";
 import { GameManager } from "./GameManager";
 import { Character } from "../characters/Character";
 import LoadManager from './LoadManager';
-import { World } from "cannon-es";
+import { NaiveBroadphase, World } from "cannon-es";
 
 export default class {
   constructor(canvas) {
@@ -26,6 +26,7 @@ export default class {
 
     this.world = new World();
     this.world.gravity.set(0, -10, 0);
+    this.world.broadphase = new NaiveBroadphase();
 
     this.gameManager = new GameManager(this, this.world, this.camera);
     // Stats showing fps
