@@ -13,12 +13,15 @@ const ACTIONS = {
 const quartDegree = toRadian(90);
 
 export class Character {
+
   constructor(gltf, world, camera, sceneManager) {
     this.inputManager = new InputManager();
     this.inputManager.setInputReceiver(this);
     this.sceneManager = sceneManager;
     this.action = ACTIONS.IDLE;
 
+    //gltf.scene.scale.set(1, 1, 1);
+    //gltf.scene.position.set(0, 0, 0);
     this.speed = 4;
     this.wakable = true;
 
@@ -26,12 +29,15 @@ export class Character {
     this.camera = camera;
 
     this.raycaster = new THREE.Raycaster();
+
+    //this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.001, 8000);
+    //this.camera.position.set(130 / 100, 350 / 100, 250 / 100);
     //console.log(gltf.scene.children[0]);
 
     this.character = gltf.scene.children[0];
     this.character.name = "Player";
-    this.character.position.set(0, 0, 0);
-    this.character.scale.set(1, 1, 1);
+    this.character.position.set(0,1,0);
+    //this.character.scale.set(1,1,1);
 
     this.group = new THREE.Group();
     this.group.add(this.character);
@@ -47,8 +53,8 @@ export class Character {
     window.addEventListener( 'mousemove', (e) => this.mouseMoveHandler(e), false );
     window.addEventListener( 'click', (e) => this.mouseClickHandler(e), false );
 
-    this.setAnimations(gltf.animations);
-    this.activateAllActions();
+    //this.setAnimations(gltf.animations);
+    //this.activateAllActions();
     this.addBody();
     AudioManager.groupListener(this.group);
     setTimeout(() => {
@@ -59,7 +65,8 @@ export class Character {
   }
 
   addBody() {
-    const mesh = this.character.children.find(el => el.name === 'vanguard_Mesh');
+    //const mesh = this.character.children.find(el => el.name === 'vanguard_Mesh');
+    const mesh = this.character;
     mesh.geometry.computeBoundingBox();
     mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
     const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
@@ -113,8 +120,8 @@ export class Character {
     const obj = this.raycaster.intersectObjects( this.sceneManager.mainScene.children );
     if (obj.length) {
       obj.forEach(el => {
-        if (el.object.name !== "Floor") return;
-        this.character.rotation.z = Math.atan2(el.point.x - this.group.position.x, el.point.z - this.group.position.z) + Math.PI
+        if (el.object.name !== "map") return;
+        this.character.rotation.y = Math.atan2(el.point.z - this.group.position.z, el.point.x - this.group.position.x) + Math.PI
       });
     }
   }
@@ -181,6 +188,9 @@ export class Character {
       detail: this.character,
     });
     document.dispatchEvent(playerMovedEvent);
+    if (this.isWalking) return;
+    //this.prepareCrossFade(this.idleAction, this.walkAction);
+    this.isWalking = true;
   }
 
   setWalkable(value) {

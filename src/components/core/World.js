@@ -45,9 +45,9 @@ export default class {
    * Load all environement props
    */
   loadProps() {
-    LoadManager.loadGLTF('./assets/models/characters/soldier.glb', (gltf) => {
+    LoadManager.loadGLTF('./assets/models/characters/character.glb', (gltf) => {
       this.character = new Character(gltf, this.world, this.camera, this.gameManager.sceneManager);
-      this.character.groupCamera()
+      this.character.groupCamera();
     });
   }
 
