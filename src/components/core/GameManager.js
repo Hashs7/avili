@@ -8,6 +8,6 @@ export class GameManager {
     this.sceneManager = new SceneManager(worldPhysic);
     // this.sceneManager.addScene(new SpawnScene(world));
     // this.sceneManager.addScene(new FieldOfViewScene());
-    this.sceneManager.addScene(new WordScene(worldPhysic, camera));
+    // this.sceneManager.addScene(new WordScene(worldPhysic, camera));
   }
 }

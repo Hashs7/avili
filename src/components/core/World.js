@@ -5,6 +5,7 @@ import { GameManager } from "./GameManager";
 import { Character } from "../characters/Character";
 import LoadManager from './LoadManager';
 import { NaiveBroadphase, World } from "cannon-es";
+import AudioManager from "./AudioManager";
 
 export default class {
   constructor(canvas) {
@@ -20,12 +21,14 @@ export default class {
     this.logicDelta = 0;
     this.sinceLastFrame = 0;
 
+    this.audioManager = AudioManager;
+
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 8000);
     this.cameraOperator = new CameraOperator(this, this.camera);
     // this.cameraOperator = new CameraOperator(this, this.camera);
 
     this.world = new World();
-    this.world.gravity.set(0, -50, 0);
+    this.world.gravity.set(0, -1000, 0);
     this.world.broadphase = new NaiveBroadphase();
 
     this.gameManager = new GameManager(this, this.world, this.camera);

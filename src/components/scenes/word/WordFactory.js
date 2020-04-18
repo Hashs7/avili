@@ -145,13 +145,13 @@ export default class WordFactory {
       mesh.body = new Body({
         // mass: 0,
         mass: totalMass,
-        position: new Vec3(currentWord.letterOff, 50, -200),
-        velocity: new Vec3(0, 0, 0),
+        position: new Vec3(currentWord.letterOff, 500, -200),
+        // velocity: new Vec3(0, 500, 0),
         fixedRotation: true,
         linearDamping: 0.01,
         collisionFilterGroup: 1,
       });
-      mesh.body.force = new Vec3(0, 100, 0);
+      mesh.body.force = new Vec3(0, -100, 0);
 
       // Add the shape to the body and offset it to match the center of our mesh
       const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
@@ -180,16 +180,16 @@ export default class WordFactory {
     setTimeout(() => {
       this.words.push(currentWord);
       this.scene.add(currentWord);
-    }, 3000)
+    }, 1000)
   }
 
   update() {
     if (!this.words.length) return;
-    this.words.forEach((word) => {
-      word.children.forEach((letter, i) => {
-        letter.position.copy(letter.body.position);
-        letter.quaternion.copy(letter.body.quaternion);
-      })
+    this.words.forEach(({ children }) => {
+      for (let i = 0; i < children.length; i++) {
+        children[i].position.copy( children[i].body.position);
+        children[i].quaternion.copy(children[i].body.quaternion);
+      }
     });
   }
 

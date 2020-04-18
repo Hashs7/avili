@@ -2,7 +2,8 @@ import * as THREE from 'three'
 import gsap from 'gsap';
 import InputManager from "../core/InputManager";
 import { Body, Box, Cylinder, Vec3 } from "cannon-es";
-import { toRadian } from "../../utils";
+import { makeTextSprite, toRadian } from "../../utils";
+import AudioManager from "../core/AudioManager";
 
 const ACTIONS = {
   WALK: 'Walk',
@@ -49,13 +50,15 @@ export class Character {
     this.setAnimations(gltf.animations);
     this.activateAllActions();
     this.addBody();
-    console.log(this.character);
+    AudioManager.groupListener(this.group);
+    setTimeout(() => {
+      AudioManager.playSound('audio_npc_bougezvous.mp3');
+    }, 1000)
 
     sceneManager.mainSceneAddObject(this.group);
   }
 
   addBody() {
-    console.log(this.character);
     const mesh = this.character.children.find(el => el.name === 'vanguard_Mesh');
     mesh.geometry.computeBoundingBox();
     mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
@@ -72,14 +75,12 @@ export class Character {
     this.character.body = new Body({
       mass: 10,
       shape: boxShape,
-      position: new Vec3(this.character.position.x, 30, this.character.position.y),
+      position: new Vec3(this.character.position.x, 200, this.character.position.y),
       // position: new Vec3().copy(this.character.position),
       collisionFilterGroup: 1,
       // collisionFilterGroup: GROUP3, // Put the cylinder in group 3
       // collisionFilterMask:  GROUP1 // It can only collide with group 1 (the sphere)
     });
-    console.log(this.character.body.position, 'posss');
-
 
     this.world.addBody(this.character.body);
 
@@ -89,6 +90,11 @@ export class Character {
     this.hitbox = new THREE.Mesh( geometry, material );
     this.hitbox.position.set(0, (mesh.size.x/2), 0);
     this.group.add(this.hitbox);
+
+    const characterName = makeTextSprite( " Michel ",
+      { fontsize: 20, fontface: "Arial" });
+    characterName.position.set(mesh.size.y + 20, mesh.size.x + 50, mesh.size.y);
+    this.group.add( characterName );
   }
 
   destroy() {

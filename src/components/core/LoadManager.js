@@ -6,6 +6,7 @@ class LoadManager {
     this.manager = new THREE.LoadingManager();
     this.gltfLoader = new GLTFLoader(this.manager);
     this.fontLoader = new THREE.FontLoader(this.manager);
+    this.audioLoader = new THREE.AudioLoader(this.manager);
 
     this.manager.onStart = (url, itemsLoaded, itemsTotal) => this.startHandler(url, itemsLoaded, itemsTotal);
     this.manager.onLoad = () => this.loadedHandler();
@@ -29,6 +30,15 @@ class LoadManager {
    */
   loadFont(path, onLoadingFinished) {
     this.fontLoader.load(path, (f) => onLoadingFinished(f));
+  }
+
+  /**
+   * Load audio file
+   * @param path
+   * @param onLoadingFinished
+   */
+  loadAudio(path, onLoadingFinished) {
+    this.audioLoader.load(path, (f) => onLoadingFinished(f));
   }
 
   /**
