@@ -9,9 +9,7 @@ export class GameManager {
     this.sceneManager = new SceneManager(world);
     //this.sceneManager.loadScene('scene1');
     this.sceneManager.addScene(new SpawnScene());
-    //this.sceneManager.addScene(new FieldOfViewScene());
-    //this.sceneManager.addScene(new ProjectileScene());
-    //this.sceneManager.addScene(new WordScene(world, camera));
+    // this.sceneManager.addScene(new FieldOfViewScene());
+    this.sceneManager.addScene(new WordScene(worldPhysic, camera));
   }
-
 }

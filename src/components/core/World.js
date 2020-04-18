@@ -4,7 +4,7 @@ import CameraOperator from "./CameraOperator";
 import { GameManager } from "./GameManager";
 import { Character } from "../characters/Character";
 import LoadManager from './LoadManager';
-import { World } from "cannon-es";
+import { NaiveBroadphase, World } from "cannon-es";
 
 export default class {
   constructor(canvas) {
@@ -22,19 +22,21 @@ export default class {
 
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 8000);
     this.cameraOperator = new CameraOperator(this, this.camera);
+    // this.cameraOperator = new CameraOperator(this, this.camera);
 
     this.world = new World();
-    this.world.gravity.set(0, -10, 0);
+    this.world.gravity.set(0, -50, 0);
+    this.world.broadphase = new NaiveBroadphase();
 
-    this.gameManager = new GameManager(this.world, this.camera);
-
+    this.gameManager = new GameManager(this, this.world, this.camera);
     // Stats showing fps
     this.stats = new Stats();
     this.stats.showPanel(0);
     document.body.appendChild( this.stats.dom );
+
     this.resize();
+    this.render();
     this.loadProps();
-    this.render()
   }
 
   /**
@@ -42,8 +44,8 @@ export default class {
    */
   loadProps() {
     LoadManager.loadGLTF('./assets/models/characters/soldier.glb', (gltf) => {
-      this.character = new Character(gltf, this.camera, this.gameManager.sceneManager);
-      this.camera = this.character.camera;
+      this.character = new Character(gltf, this.world, this.camera, this.gameManager.sceneManager);
+      this.character.groupCamera()
     });
   }
 
@@ -57,8 +59,9 @@ export default class {
       this.character.update()
     }
     this.gameManager.sceneManager.update();
+    this.cameraOperator.renderFollowCamera();
     this.updatePhysics(timeStep);
-    this.cameraOperator.update();
+    // this.cameraOperator.update();
   }
 
   /**

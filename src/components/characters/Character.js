@@ -1,32 +1,39 @@
-import * as THREE from 'three/src/Three'
+import * as THREE from 'three'
 import gsap from 'gsap';
 import InputManager from "../core/InputManager";
+import { Body, Box, Cylinder, Vec3 } from "cannon-es";
+import { toRadian } from "../../utils";
+
+const ACTIONS = {
+  WALK: 'Walk',
+  IDLE: 'Idle',
+}
+
+const quartDegree = toRadian(90);
 
 export class Character {
-  speed = 20;
-  wakable = true;
-
-  constructor(gltf, camera, sceneManager) {
+  constructor(gltf, world, camera, sceneManager) {
     this.inputManager = new InputManager();
     this.inputManager.setInputReceiver(this);
     this.sceneManager = sceneManager;
+    this.action = ACTIONS.IDLE;
 
-    gltf.scene.scale.set(0.2, 0.2, 0.2);
-    gltf.scene.position.set(0, 0, 0);
+    this.speed = 4;
+    this.wakable = true;
 
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 8000);
-    this.camera.position.set(130, 350, 250);
+    this.world = world;
+    this.camera = camera;
+
     this.raycaster = new THREE.Raycaster();
     //console.log(gltf.scene.children[0]);
 
     this.character = gltf.scene.children[0];
     this.character.name = "Player";
-    this.character.position.set(0,10,0);
-    this.character.scale.set(1,1,1);
+    this.character.position.set(0, 0, 0);
+    this.character.scale.set(1, 1, 1);
 
     this.group = new THREE.Group();
     this.group.add(this.character);
-    this.group.add(this.camera);
     this.group.position.set(0,0,0);
 
     //console.log(gltf.scene);
@@ -41,12 +48,57 @@ export class Character {
 
     this.setAnimations(gltf.animations);
     this.activateAllActions();
-    this.updateLookAt();
+    this.addBody();
+    console.log(this.character);
+
     sceneManager.mainSceneAddObject(this.group);
+  }
+
+  addBody() {
+    console.log(this.character);
+    const mesh = this.character.children.find(el => el.name === 'vanguard_Mesh');
+    mesh.geometry.computeBoundingBox();
+    mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
+    const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
+    console.log(center, mesh.size, 'size');
+    console.log(center, mesh.size, 'size');
+
+    const box = new Box(new Vec3().copy(mesh.size).scale(0.5));
+    console.log(box);
+
+    // const cylinderShape = new Cylinder(mesh.size.y/2, mesh.size.y/2,  mesh.size.x/2, 8);
+    const boxShape = new Box(new Vec3(mesh.size.y/2, mesh.size.y/2, mesh.size.x/2));
+
+    this.character.body = new Body({
+      mass: 10,
+      shape: boxShape,
+      position: new Vec3(this.character.position.x, 30, this.character.position.y),
+      // position: new Vec3().copy(this.character.position),
+      collisionFilterGroup: 1,
+      // collisionFilterGroup: GROUP3, // Put the cylinder in group 3
+      // collisionFilterMask:  GROUP1 // It can only collide with group 1 (the sphere)
+    });
+    console.log(this.character.body.position, 'posss');
+
+
+    this.world.addBody(this.character.body);
+
+    const geometry = new THREE.CylinderGeometry( mesh.size.y, mesh.size.y, mesh.size.x, 8 );
+    // const geometry = new THREE.BoxGeometry( mesh.size.y, mesh.size.z, mesh.size.y, 4);
+    const material = new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: true } );
+    this.hitbox = new THREE.Mesh( geometry, material );
+    this.hitbox.position.set(0, (mesh.size.x/2), 0);
+    this.group.add(this.hitbox);
   }
 
   destroy() {
     this.inputManager.setInputReceiver(null);
+  }
+
+  groupCamera() {
+    this.camera.position.set(130, 350, 250);
+    this.group.add(this.camera);
+    this.updateLookAt();
   }
 
   mouseMoveHandler(event) {
@@ -65,64 +117,45 @@ export class Character {
     //console.log(this.character);
   }
 
-  handleKeyboardEvent(event, code, pressed) {
+  handleKeyboardEvent(event, code, pressed, moving) {
     if (!this.wakable) return;
-    if (!pressed) {
-      this.isWalking = false;
+    this.isWalking = moving;
+    if (!moving && this.action !== ACTIONS.IDLE) {
+      this.action = ACTIONS.IDLE;
       this.prepareCrossFade(this.walkAction, this.idleAction);
-      return
+      return;
     }
-    const direction = {
-      x: Math.sin(this.character.rotation.z) * this.speed,
-      z: Math.cos(this.character.rotation.z) * this.speed,
-    };
-    switch (code) {
-      case 38:
-        // Up key
-        gsap.to(this.group.position, {
-          x: `-=${direction.x}`,
-          z: `-=${direction.z}`,
-          duration: .1,
-        });
-        this.setWalking();
-        break;
-
-      case 40:
-        // down key
-        gsap.to(this.group.position, {
-          x: `+=${direction.x}`,
-          z: `+=${direction.z}`,
-          duration: .1,
-        });
-        // this.group.position.z -= 10;
-        this.setWalking();
-        break;
-
-      case 37:
-        // Left key
-        gsap.to(this.group.position, {
-          x: `-=${direction.x}`,
-          z: `+=${direction.z}`,
-          duration: .1,
-        });
-        // this.group.position.x +=10;
-        this.setWalking();
-        break;
-
-      case 39:
-        // Right key
-        gsap.to(this.group.position, {
-          x: `+=${direction.x}`,
-          z: `-=${direction.z}`,
-          duration: .1,
-        });
-        // this.group.position.x -= 10;
-        this.setWalking();
-        break;
-      default:
-        break;
+    if (moving && this.action !== ACTIONS.WALK) {
+      this.action = ACTIONS.WALK;
+      this.prepareCrossFade(this.idleAction, this.walkAction);
+      return;
     }
+
     this.updateLookAt();
+  }
+
+
+  playerControls() {
+    if (this.inputManager.controls.up) {
+      this.move(quartDegree * 2)
+    }
+    if (this.inputManager.controls.down) {
+      this.move(0)
+    }
+    if (this.inputManager.controls.left) {
+      this.move(-quartDegree)
+    }
+    if (this.inputManager.controls.right) {
+      this.move(quartDegree)
+    }
+  }
+
+  move(decay) {
+    // this.character.body.position.x += Math.sin(this.character.rotation.z + decay) * this.speed;
+    // this.character.body.position.z += Math.cos(this.character.rotation.z + decay) * this.speed;
+    this.group.position.x += Math.sin(this.character.rotation.z + decay) * this.speed;
+    this.group.position.z += Math.cos(this.character.rotation.z + decay) * this.speed;
+    this.setWalking();
   }
 
   updateLookAt() {
@@ -130,7 +163,10 @@ export class Character {
   }
 
   update() {
+    this.character.position.copy(this.character.body.position);
+    // this.hitbox.position.copy(this.character.body.position);
     this.raycaster.setFromCamera( this.mouse, this.camera );
+    this.playerControls();
     this.mixer.update( 0.01 );
   }
 
@@ -139,9 +175,6 @@ export class Character {
       detail: this.character,
     });
     document.dispatchEvent(playerMovedEvent);
-    if (this.isWalking) return;
-    this.prepareCrossFade(this.idleAction, this.walkAction);
-    this.isWalking = true;
   }
 
   setWalkable(value) {
