@@ -23,7 +23,7 @@ export default class {
 
     this.audioManager = AudioManager;
 
-    this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 8000);
+    this.camera = new THREE.PerspectiveCamera(25, window.innerWidth / window.innerHeight, 1, 8000);
     this.cameraOperator = new CameraOperator(this, this.camera);
 
     this.world = new World();

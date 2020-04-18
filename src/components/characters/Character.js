@@ -8,40 +8,33 @@ import AudioManager from "../core/AudioManager";
 const ACTIONS = {
   WALK: 'Walk',
   IDLE: 'Idle',
-}
+};
 
 const quartDegree = toRadian(90);
 
 export class Character {
-
   constructor(gltf, world, camera, sceneManager) {
+    this.action = ACTIONS.IDLE;
+    this.speed = 0.05;
+    this.wakable = true;
+    this.world = world;
     this.inputManager = new InputManager();
     this.inputManager.setInputReceiver(this);
-    this.sceneManager = sceneManager;
-    this.action = ACTIONS.IDLE;
-
-    //gltf.scene.scale.set(1, 1, 1);
-    //gltf.scene.position.set(0, 0, 0);
-    this.speed = 4;
-    this.wakable = true;
-
-    this.world = world;
-    this.camera = camera;
 
     this.raycaster = new THREE.Raycaster();
 
-    //this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.001, 8000);
-    //this.camera.position.set(130 / 100, 350 / 100, 250 / 100);
-    //console.log(gltf.scene.children[0]);
-
-    this.character = gltf.scene.children[0];
-    this.character.name = "Player";
+    this.character = gltf.scene.children.find(el => el.name === 'character');
     this.character.position.set(0,1,0);
+
+    this.camera = camera;
+    // console.log(this.camera);
+
     //this.character.scale.set(1,1,1);
 
     this.group = new THREE.Group();
     this.group.add(this.character);
     this.group.position.set(0,0,0);
+    AudioManager.groupListener(this.group);
 
     //console.log(gltf.scene);
     this.mixer = new THREE.AnimationMixer(this.character);
@@ -51,16 +44,11 @@ export class Character {
     };
 
     window.addEventListener( 'mousemove', (e) => this.mouseMoveHandler(e), false );
-    window.addEventListener( 'click', (e) => this.mouseClickHandler(e), false );
 
     //this.setAnimations(gltf.animations);
     //this.activateAllActions();
     this.addBody();
-    AudioManager.groupListener(this.group);
-    setTimeout(() => {
-      AudioManager.playSound('audio_npc_bougezvous.mp3');
-    }, 1000)
-
+    this.sceneManager = sceneManager;
     sceneManager.mainSceneAddObject(this.group);
   }
 
@@ -70,11 +58,8 @@ export class Character {
     mesh.geometry.computeBoundingBox();
     mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
     const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
-    console.log(center, mesh.size, 'size');
-    console.log(center, mesh.size, 'size');
 
     const box = new Box(new Vec3().copy(mesh.size).scale(0.5));
-    console.log(box);
 
     // const cylinderShape = new Cylinder(mesh.size.y/2, mesh.size.y/2,  mesh.size.x/2, 8);
     const boxShape = new Box(new Vec3(mesh.size.y/2, mesh.size.y/2, mesh.size.x/2));
@@ -91,12 +76,12 @@ export class Character {
 
     this.world.addBody(this.character.body);
 
-    const geometry = new THREE.CylinderGeometry( mesh.size.y, mesh.size.y, mesh.size.x, 8 );
+    /*const geometry = new THREE.CylinderGeometry( mesh.size.y, mesh.size.y, mesh.size.x, 8 );
     // const geometry = new THREE.BoxGeometry( mesh.size.y, mesh.size.z, mesh.size.y, 4);
     const material = new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: true } );
     this.hitbox = new THREE.Mesh( geometry, material );
     this.hitbox.position.set(0, (mesh.size.x/2), 0);
-    this.group.add(this.hitbox);
+    this.group.add(this.hitbox);*/
 
     const characterName = makeTextSprite( " Michel ",
       { fontsize: 20, fontface: "Arial" });
@@ -109,7 +94,8 @@ export class Character {
   }
 
   groupCamera() {
-    this.camera.position.set(130, 350, 250);
+    this.camera.position.set(-9, 6.5, 5.8);
+    this.camera.lookAt(this.character.position);
     this.group.add(this.camera);
     this.updateLookAt();
   }
@@ -121,13 +107,9 @@ export class Character {
     if (obj.length) {
       obj.forEach(el => {
         if (el.object.name !== "map") return;
-        this.character.rotation.y = Math.atan2(el.point.z - this.group.position.z, el.point.x - this.group.position.x) + Math.PI
+        this.character.rotation.y = Math.atan2(el.point.x - this.group.position.x, el.point.z - this.group.position.z);
       });
     }
-  }
-
-  mouseClickHandler() {
-    //console.log(this.character);
   }
 
   handleKeyboardEvent(event, code, pressed, moving) {
@@ -135,12 +117,12 @@ export class Character {
     this.isWalking = moving;
     if (!moving && this.action !== ACTIONS.IDLE) {
       this.action = ACTIONS.IDLE;
-      this.prepareCrossFade(this.walkAction, this.idleAction);
+      // this.prepareCrossFade(this.walkAction, this.idleAction);
       return;
     }
     if (moving && this.action !== ACTIONS.WALK) {
       this.action = ACTIONS.WALK;
-      this.prepareCrossFade(this.idleAction, this.walkAction);
+      // this.prepareCrossFade(this.idleAction, this.walkAction);
       return;
     }
 
@@ -150,33 +132,33 @@ export class Character {
 
   playerControls() {
     if (this.inputManager.controls.up) {
-      this.move(quartDegree * 2)
-    }
-    if (this.inputManager.controls.down) {
       this.move(0)
     }
+    if (this.inputManager.controls.down) {
+      this.move(quartDegree * 2)
+    }
     if (this.inputManager.controls.left) {
-      this.move(-quartDegree)
+      this.move(quartDegree)
     }
     if (this.inputManager.controls.right) {
-      this.move(quartDegree)
+      this.move(-quartDegree)
     }
   }
 
   move(decay) {
     // this.character.body.position.x += Math.sin(this.character.rotation.z + decay) * this.speed;
     // this.character.body.position.z += Math.cos(this.character.rotation.z + decay) * this.speed;
-    this.group.position.x += Math.sin(this.character.rotation.z + decay) * this.speed;
-    this.group.position.z += Math.cos(this.character.rotation.z + decay) * this.speed;
+    this.group.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
+    this.group.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
     this.setWalking();
   }
 
   updateLookAt() {
-    this.camera.lookAt(this.group.position.x - 135, this.group.position.y - 65,  this.group.position.z - 150);
+    // this.camera.lookAt(this.group.position.x - 135, this.group.position.y - 65,  this.group.position.z - 150);
   }
 
   update() {
-    this.character.position.copy(this.character.body.position);
+    // this.character.position.copy(this.character.body.position);
     // this.hitbox.position.copy(this.character.body.position);
     this.raycaster.setFromCamera( this.mouse, this.camera );
     this.playerControls();

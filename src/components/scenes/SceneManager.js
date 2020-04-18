@@ -4,8 +4,8 @@ import Skybox from "../core/Skybox";
 import { Body, Box, Vec3 } from "cannon-es";
 
 export default class {
-  constructor(world) {
-    this.world = world;
+  constructor(worldPhysic) {
+    this.world = worldPhysic;
     this.scenesPath = './assets/models/scenes/';
     this.loadedScenes = [];
     this.mainScene = new THREE.Scene();
