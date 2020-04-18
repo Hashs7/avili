@@ -25,7 +25,6 @@ export default class {
 
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 8000);
     this.cameraOperator = new CameraOperator(this, this.camera);
-    // this.cameraOperator = new CameraOperator(this, this.camera);
 
     this.world = new World();
     this.world.gravity.set(0, -1000, 0);
