@@ -5,8 +5,8 @@ import ProjectileScene from "../scenes/projectile/ProjectileScene";
 import WordScene from "../scenes/word/WordScene";
 
 export class GameManager {
-  constructor(world, camera) {
-    this.sceneManager = new SceneManager(world);
+  constructor(world, worldPhysic,  camera) {
+    this.sceneManager = new SceneManager(worldPhysic);
     //this.sceneManager.loadScene('scene1');
     this.sceneManager.addScene(new SpawnScene());
     // this.sceneManager.addScene(new FieldOfViewScene());
