@@ -1,18 +1,18 @@
 import * as THREE from "three/src/Three";
-import {randomInRange} from "../../../utils";
 import {Raycaster} from "three/src/Three";
 
 export default class FieldOfViewManager {
-  constructor(scene) {
+  constructor(scene, npcPositions) {
     this.scene = scene;
     this.sphere = new THREE.Object3D();
     this.fieldOfView = new THREE.Object3D();
     this.fieldOfViewName = "FieldOfView";
     this.fieldOfViews = [];
 
-    for (let i = 0; i < 3; i++) {
-      this.addNPC(randomInRange(-1000, 1000), randomInRange(-1000, 1000));
-    }
+    npcPositions.forEach(({ x, z }) => this.addNPC(x, z));
+    // for (let i = 0; i < 3; i++) {
+    //   this.addNPC(randomInRange(-1000, 1000), randomInRange(-1000, 1000));
+    // }
 
     document.addEventListener('playerMoved', e => {
       const characterPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
@@ -28,7 +28,7 @@ export default class FieldOfViewManager {
   }
 
   addNPC(x, z) {
-    let geometry = new THREE.SphereGeometry(30, 20, 20);
+    let geometry = new THREE.SphereGeometry(1, 20, 20);
     let material = new THREE.MeshPhongMaterial({
       color: 0x0000aa,
       shininess: 20,
@@ -42,8 +42,8 @@ export default class FieldOfViewManager {
   addFieldOfView(object) {
     //let geometry = new THREE.CylinderGeometry(300, 300, 1, 20, 20);
     let geometry = new THREE.CylinderGeometry(
-      500,
-      500,
+      3,
+      3,
       1,
       20,
       1,

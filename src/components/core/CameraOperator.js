@@ -88,7 +88,7 @@ export default class {
     const time = Date.now();
     const looptime = 20 * 1000;
     const t = ( time % looptime ) / looptime;
-
+    debugger
     const pos = this.tube.parameters.path.getPointAt( t );
     pos.multiplyScalar( this.scale );
 

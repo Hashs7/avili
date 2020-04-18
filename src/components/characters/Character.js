@@ -1,7 +1,6 @@
 import * as THREE from 'three'
-import gsap from 'gsap';
 import InputManager from "../core/InputManager";
-import { Body, Box, Cylinder, Vec3 } from "cannon-es";
+import { Body, Box,  Vec3 } from "cannon-es";
 import { makeTextSprite, toRadian } from "../../utils";
 import AudioManager from "../core/AudioManager";
 
@@ -15,7 +14,7 @@ const quartDegree = toRadian(90);
 export class Character {
   constructor(gltf, world, camera, sceneManager) {
     this.action = ACTIONS.IDLE;
-    this.speed = 0.05;
+    this.speed = 0.5;
     this.wakable = true;
     this.world = world;
     this.inputManager = new InputManager();

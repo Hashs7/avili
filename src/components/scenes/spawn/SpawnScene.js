@@ -3,11 +3,12 @@ import { Curves } from "three/examples/jsm/curves/CurveExtras";
 import * as THREE from "three";
 
 export default class extends Scene {
-  constructor(world) {
+  constructor(world, spline) {
     super();
     this.scene.name = 'SpawnScene';
     this.world = world;
-    this.initTravelling();
+    this.spline = spline;
+    // this.initTravelling();
 
     return {
       instance: this,
@@ -16,18 +17,9 @@ export default class extends Scene {
   }
 
   initTravelling() {
-    this.world.cameraOperator.addTube(
-      new Curves.GrannyKnot(),
-      100,
-      true,
-      6,
-      null,
-      10,
-      THREE.BackSide,
-      0x2194ce
-    );
-
-    // this.world.cameraOperator.setTravelling(true);
+    console.log(this.spline);
+    this.world.cameraOperator.addGeometry(this.spline);
+    this.world.cameraOperator.setTravelling(true);
 
     setTimeout(() => {
       this.world.cameraOperator.setTravelling(false);

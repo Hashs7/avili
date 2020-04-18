@@ -6,9 +6,9 @@ import WordScene from "../scenes/word/WordScene";
 
 export class GameManager {
   constructor(world, worldPhysic,  camera) {
-    this.sceneManager = new SceneManager(worldPhysic);
+    this.sceneManager = new SceneManager(world, worldPhysic);
+    // this.sceneManager.setSpawn()
     //this.sceneManager.loadScene('scene1');
-    this.sceneManager.addScene(new SpawnScene(world));
     // this.sceneManager.addScene(new FieldOfViewScene());
     // this.sceneManager.addScene(new WordScene(worldPhysic, camera));
   }

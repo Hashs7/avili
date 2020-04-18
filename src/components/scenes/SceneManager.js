@@ -2,12 +2,16 @@ import LoadManager from '../core/LoadManager';
 import * as THREE from "three";
 import Skybox from "../core/Skybox";
 import { Body, Box, Vec3 } from "cannon-es";
+import SpawnScene from "./spawn/SpawnScene";
+import FieldOfViewScene from "./fieldOfView/FieldOfViewScene";
 
 export default class {
-  constructor(worldPhysic) {
-    this.world = worldPhysic;
+  constructor(world, worldPhysic) {
+    this.world = world;
+    this.worldPhysic = worldPhysic;
     this.scenesPath = './assets/models/scenes/';
     this.loadedScenes = [];
+    this.matesPos = [];
     this.mainScene = new THREE.Scene();
     this.initMainScene();
   }
@@ -18,6 +22,7 @@ export default class {
     //this.addFloor();
     this.addMap();
     this.mainScene.add(light);
+
   }
 
   /**
@@ -38,32 +43,43 @@ export default class {
         shape: new Box(new Vec3(5000, 1, 5000)),
         position: new Vec3(0, 0, 0)
       });
-      this.world.addBody(ground);
+      this.worldPhysic.addBody(ground);
 
       this.mainSceneAddObject(plane);
     });
   }
 
   addMap() {
-    LoadManager.loadGLTF('./assets/models/map/map.gltf', (gltf) => {
+    LoadManager.loadGLTF('./assets/models/map/map.glb', (gltf) => {
       let map = new THREE.Mesh();
-      let camera = new THREE.Object3D();
-
-
-      gltf.scene.children.forEach(el => {
-        if(el.name === "map") map = el;
-        if(el.name === "Camera") camera = el;
+      gltf.scene.traverse((child) => {
+        if (child.name.split('mate').length > 1) {
+          this.matesPos.push(child.position)
+        }
+        if (child.name === 'map') {
+          map = child;
+        }
+        if (child.name === 'NurbsPath') {
+          this.spline = child;
+        }
       });
-
-
-      this.camera = camera;
 
       gltf.scene.children.filter(el => el.name !== 'map');
       map.material = new THREE.MeshPhongMaterial({color: 0xaa0000});
 
       this.mainSceneAddObject(gltf.scene);
       this.mainSceneAddObject(map);
+      this.setSpawn();
+      this.setFov();
     });
+  }
+
+  setSpawn() {
+    this.addScene(new SpawnScene(this.world, this.spline));
+  }
+
+  setFov() {
+    this.addScene(new FieldOfViewScene(this.matesPos));
   }
 
   setScene(scene) {
