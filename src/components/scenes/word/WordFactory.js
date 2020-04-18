@@ -50,7 +50,7 @@ export default class WordFactory {
     this.jointBody.collisionFilterGroup = 0;
     this.jointBody.collisionFilterMask = 0;
     this.world.addBody(this.jointBody);
-    this.addWord('jeanmardz');
+    this.addWord('Cuisine');
   }
 
   setConstraints() {
@@ -89,8 +89,8 @@ export default class WordFactory {
     const pos = this.projectOntoPlane(this.gplane, this.camera);
 
     if(!pos) return;
-    this.setClickMarker(pos.x,pos.y,pos.z, this.scene);
-    this.moveJointToPoint(pos.x,pos.y,pos.z);
+    this.setClickMarker(pos.x, pos.y, pos.z, this.scene);
+    this.moveJointToPoint(pos.x, pos.y, pos.z);
   }
 
   onClick() {
@@ -99,10 +99,7 @@ export default class WordFactory {
 
     // calculate objects intersecting the picking ray
     // It will return an array with intersecting objects
-    const intersects = this.raycaster.intersectObjects(
-      this.scene.children,
-      true
-    );
+    const intersects = this.raycaster.intersectObjects(this.scene.children,true);
 
     if (intersects.length > 0) {
       const obj = intersects[0];
@@ -118,9 +115,7 @@ export default class WordFactory {
       this.words.forEach((word) => {
         word.children.forEach(letter => {
           const { body } = letter;
-
           if (letter !== object) return;
-
           // We apply the vector 'impulse' on the base of our body
           body.applyLocalImpulse(impulse, new Vec3());
         });
@@ -129,11 +124,10 @@ export default class WordFactory {
   }
 
   addWord(text) {
-    const totalMass = 30;
+    const totalMass = 3000;
     const currentWord = new THREE.Group();
     currentWord.letterOff = 0;
     this.offset = this.words.length * margin * 0.5;
-
     // ... and parse each letter to generate a mesh
     Array.from(text).forEach((letter, i) => {
       const material = new THREE.MeshPhongMaterial({ color: 0x97df5e });
@@ -151,12 +145,13 @@ export default class WordFactory {
       mesh.body = new Body({
         // mass: 0,
         mass: totalMass,
-        position: new Vec3(currentWord.letterOff, 0, -200),
+        position: new Vec3(currentWord.letterOff, 50, -200),
+        velocity: new Vec3(0, 0, 0),
         fixedRotation: true,
         linearDamping: 0.01,
-        friction: 0.01,
+        collisionFilterGroup: 1,
       });
-
+      mesh.body.force = new Vec3(0, 100, 0);
 
       // Add the shape to the body and offset it to match the center of our mesh
       const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
@@ -164,23 +159,34 @@ export default class WordFactory {
       mesh.body.addShape(box, new Vec3(center.x, center.y, center.z));
       this.world.addBody(mesh.body);
       currentWord.add(mesh);
+      if (i === text.length - 1) {
+        this.finishSetWord(currentWord);
+      }
     });
 
     // Set word in center
-    /*currentWord.children.forEach(letter => {
-      letter.body.position.x -= letter.size.x + currentWord.letterOff * 0.5;
-    });*/
 
-    this.scene.add(currentWord);
-    this.words.push(currentWord);
+    /*this.words.push(currentWord);
+    this.scene.add(currentWord);*/
 
     // this.setConstraints()
+  }
+
+  finishSetWord(currentWord) {
+    currentWord.children.forEach(letter => {
+      letter.body.position.x -= letter.size.x + currentWord.letterOff * 0.5;
+    });
+
+    setTimeout(() => {
+      this.words.push(currentWord);
+      this.scene.add(currentWord);
+    }, 3000)
   }
 
   update() {
     if (!this.words.length) return;
     this.words.forEach((word) => {
-      word.children.forEach(letter => {
+      word.children.forEach((letter, i) => {
         letter.position.copy(letter.body.position);
         letter.quaternion.copy(letter.body.quaternion);
       })
@@ -223,14 +229,12 @@ export default class WordFactory {
     this.constraintDown = false;
     // remove the marker
     this.removeClickMarker();
-
     // Send the remove mouse joint to server
     this.removeJointConstraint();
   }
 
   // This function creates a virtual movement plane for the mouseJoint to move in
   setScreenPerpCenter(point, camera) {
-    // If it does not exist, create a new one
     if(!this.gplane) {
       const planeGeo = new THREE.PlaneGeometry(1000,1000);
       const material = new THREE.MeshLambertMaterial( { color: 0xffffff, transparent: true, opacity: 0 } );
@@ -240,9 +244,8 @@ export default class WordFactory {
 
     // Center at mouse position
     this.gplane.position.copy(point);
-
     // Make it face toward the camera
-    this.gplane.quaternion.copy(camera.quaternion);
+    // this.gplane.quaternion.copy(camera.quaternion);
   }
 
   projectOntoPlane(thePlane, camera) {
