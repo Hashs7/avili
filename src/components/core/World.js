@@ -25,7 +25,6 @@ export default class {
 
     this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 1, 8000);
     this.cameraOperator = new CameraOperator(this, this.camera);
-    // this.cameraOperator = new CameraOperator(this, this.camera);
 
     this.world = new World();
     this.world.gravity.set(0, -1000, 0);
@@ -46,9 +45,9 @@ export default class {
    * Load all environement props
    */
   loadProps() {
-    LoadManager.loadGLTF('./assets/models/characters/soldier.glb', (gltf) => {
+    LoadManager.loadGLTF('./assets/models/characters/character.glb', (gltf) => {
       this.character = new Character(gltf, this.world, this.camera, this.gameManager.sceneManager);
-      this.character.groupCamera()
+      this.character.groupCamera();
     });
   }
 

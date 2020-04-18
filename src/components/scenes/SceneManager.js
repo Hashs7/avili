@@ -14,8 +14,9 @@ export default class {
 
   initMainScene() {
     new Skybox(this.mainScene, 'afterrain');
-    const light = new THREE.HemisphereLight(0xffffff, 0x444444)
-    this.addFloor();
+    const light = new THREE.HemisphereLight(0xffffff, 0x444444);
+    //this.addFloor();
+    this.addMap();
     this.mainScene.add(light);
   }
 
@@ -40,6 +41,28 @@ export default class {
       this.world.addBody(ground);
 
       this.mainSceneAddObject(plane);
+    });
+  }
+
+  addMap() {
+    LoadManager.loadGLTF('./assets/models/map/map.gltf', (gltf) => {
+      let map = new THREE.Mesh();
+      let camera = new THREE.Object3D();
+
+
+      gltf.scene.children.forEach(el => {
+        if(el.name === "map") map = el;
+        if(el.name === "Camera") camera = el;
+      });
+
+
+      this.camera = camera;
+
+      gltf.scene.children.filter(el => el.name !== 'map');
+      map.material = new THREE.MeshPhongMaterial({color: 0xaa0000});
+
+      this.mainSceneAddObject(gltf.scene);
+      this.mainSceneAddObject(map);
     });
   }
 
