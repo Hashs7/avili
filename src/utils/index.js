@@ -8,20 +8,11 @@ export const toRadian = (degrees) => degrees * Math.PI / 180;
 export const makeTextSprite = ( message, parameters ) => {
   if ( parameters === undefined ) parameters = {};
 
-  const fontface = parameters.hasOwnProperty("fontface") ?
-    parameters["fontface"] : "Arial";
-
-  const fontsize = parameters.hasOwnProperty("fontsize") ?
-    parameters["fontsize"] : 18;
-
-  const borderThickness = parameters.hasOwnProperty("borderThickness") ?
-    parameters["borderThickness"] : 0;
-
-  const borderColor = parameters.hasOwnProperty("borderColor") ?
-    parameters["borderColor"] : { r:0, g:0, b:0, a:0 };
-
-  const backgroundColor = parameters.hasOwnProperty("backgroundColor") ?
-    parameters["backgroundColor"] : { r:255, g:255, b:255, a:1.0 };
+  const fontface = parameters.fontface ? parameters.fontface : "Arial";
+  const fontsize = parameters.fontsize ? parameters.fontsize : '18';
+  const borderThickness = parameters.borderThickness ? parameters.borderThickness : 0;
+  const borderColor = parameters.borderColor ? parameters.borderColor : { r:0, g:0, b:0, a:0 };
+  const backgroundColor = parameters.backgroundColor ? parameters.backgroundColor : { r:255, g:255, b:255, a:1.0 };
 
   // const spriteAlignment = THREE.SpriteAlignment.topLeft;
 
