@@ -11,14 +11,14 @@ export default class ProjectileManager {
       landingAreas.slice(4)
     ];
 
-    for (let i = 0; i < towers.length; i ++) {
+    towers.forEach((tower, i) => {
       this.createTower(towers[i].position);
       arr[i].forEach(el => {
         el.position.y = 0;
         this.createLandingPoint(el.position);
         this.createProjectileFrom(towers[i].position, el.position);
       });
-    }
+    });
   }
 
   createTower(coord){
