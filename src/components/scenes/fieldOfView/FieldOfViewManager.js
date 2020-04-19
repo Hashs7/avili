@@ -1,5 +1,6 @@
 import * as THREE from "three/src/Three";
 import {Raycaster} from "three/src/Three";
+import AudioManager from "../../core/AudioManager";
 
 export default class FieldOfViewManager {
   constructor(scene, npcPositions) {
@@ -53,12 +54,12 @@ export default class FieldOfViewManager {
     );
     let material = new THREE.MeshPhongMaterial({
       color: 0xaa0000,
-      opacity: 0.5,
+      opacity: 1,
       transparent: true,
     });
     this.fieldOfView = new THREE.Mesh(geometry, material);
     this.fieldOfView.name = this.fieldOfViewName;
-    this.fieldOfView.position.set(object.position.x, object.position.y + 1, object.position.z);
+    this.fieldOfView.position.set(object.position.x, object.position.y - 0.45, object.position.z);
     this.fieldOfViews.push(this.fieldOfView);
     this.scene.add(this.fieldOfView);
   }
@@ -75,6 +76,7 @@ export default class FieldOfViewManager {
     objs.forEach(obj => {
       if (obj.object.name === this.fieldOfViewName) {
         obj.object.material.color.setHex(0x00aa00);
+        AudioManager.playSound("audio_mot_cuisine.mp3");
       }
     });
 
