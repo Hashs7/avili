@@ -11,8 +11,6 @@ export default class FieldOfViewManager {
     this.fieldOfViewName = "FieldOfView";
     this.fieldOfViews = [];
 
-    this.character = this.world.getCharacter();
-
     npcPositions.forEach(({ x, z }) => this.addNPC(x, z));
 
     document.addEventListener('playerMoved', e => {
@@ -77,7 +75,8 @@ export default class FieldOfViewManager {
     objs.forEach(obj => {
       if (obj.object.name === this.fieldOfViewName) {
         obj.object.material.color.setHex(0x00aa00);
-        this.character.group.position.copy(this.world.lastCheckpointCoord);
+        const character = this.world.getCharacter();
+        character.group.position.copy(this.world.lastCheckpointCoord);
         AudioManager.playSound("audio_mot_cuisine.mp3");
       }
     });

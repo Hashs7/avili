@@ -10,8 +10,6 @@ export default class ProjectileManager {
     this.world = world;
     this.landingAreaName = "LandingArea";
 
-    this.character = this.world.getCharacter();
-
     const arr = [
       landingAreas.slice(0, 4),
       landingAreas.slice(4)
@@ -93,7 +91,8 @@ export default class ProjectileManager {
 
     objs.forEach(obj => {
       if (obj.object.name === this.landingAreaName) {
-        this.character.group.position.copy(this.world.lastCheckpointCoord);
+        const character = this.world.getCharacter();
+        character.group.position.copy(this.world.lastCheckpointCoord);
       }
     });
   }

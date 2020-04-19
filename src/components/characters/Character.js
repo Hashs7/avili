@@ -23,7 +23,7 @@ export class Character {
 
     this.raycaster = new THREE.Raycaster();
 
-    this.character = gltf.scene.children.find(el => el.name === 'character');
+    this.character = gltf.scene.children.find(el => el.name === 'EMILIE');
     this.character.position.set(0,1,0);
 
     this.camera = camera;
