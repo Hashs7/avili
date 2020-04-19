@@ -7,6 +7,7 @@ import FieldOfViewScene from "./fieldOfView/FieldOfViewScene";
 import Skybox from "../core/Skybox";
 import LoadManager from '../core/LoadManager';
 import AudioManager from "../core/AudioManager";
+import ProjectileScene from "./projectile/ProjectileScene";
 
 export default class {
   constructor(world, worldPhysic) {
@@ -19,6 +20,8 @@ export default class {
     this.initMainScene();
 
     this.sections = [];
+    this.towers = [];
+    this.landingAreas = []
   }
 
   initMainScene() {
@@ -73,9 +76,14 @@ export default class {
         if (child.name === 'NurbsPath') {
           this.spline = child;
         }
-
         if (sectionName.includes(child.name)) {
           this.sections.push(child);
+        }
+        if(child.name.startsWith('tower')) {
+          this.towers.push(child);
+        }
+        if(child.name.startsWith('z')) {
+          this.landingAreas.push(child);
         }
       });
 
@@ -88,6 +96,7 @@ export default class {
       this.mainSceneAddObject(map);
       this.setSpawn();
       this.setFov();
+      this.setProjectile();
     });
   }
 
@@ -124,6 +133,11 @@ export default class {
   setFov() {
     this.addScene(new FieldOfViewScene(this.matesPos));
   }
+
+  setProjectile() {
+    this.addScene(new ProjectileScene(this.towers, this.landingAreas))
+  }
+
 
   setWalls(object) {
     /*const shape = threeToCannon(object);
