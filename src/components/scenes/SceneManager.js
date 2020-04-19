@@ -1,12 +1,10 @@
 import * as THREE from "three";
-import {Raycaster} from "three";
 // import { threeToCannon } from 'three-to-cannon';
 import { Body, Box, Vec3 } from "cannon-es";
 import SpawnScene from "./spawn/SpawnScene";
 import FieldOfViewScene from "./fieldOfView/FieldOfViewScene";
 import Skybox from "../core/Skybox";
 import LoadManager from '../core/LoadManager';
-import AudioManager from "../core/AudioManager";
 import ProjectileScene from "./projectile/ProjectileScene";
 
 export default class {
@@ -87,8 +85,6 @@ export default class {
         }
       });
 
-      this.detectSectionPassed();
-
       gltf.scene.children.filter(el => el.name !== 'map');
       map.material = new THREE.MeshPhongMaterial({color: 0xaaaaaa});
 
@@ -100,38 +96,12 @@ export default class {
     });
   }
 
-  detectSectionPassed(){
-    const ray = new Raycaster(
-      new THREE.Vector3(0,0,0),
-      new THREE.Vector3(0,0,0),
-      0,
-      0.5,
-    );
-    ray.firstHitOnly = true;
-    const sectionsAudio = {
-      sectionTuto: 'audio_npc_bougezvous.mp3',
-      sectionInfiltration: 'audio_info_infiltration.mp3',
-      sectionHarcelement: 'audio_intro_insulte.mp3',
-    };
-    document.addEventListener('playerMoved', e => {
-      const characterPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
-      const direction = new THREE.Vector3( 0, 0, -1 ).applyQuaternion( e.detail.quaternion );
-      ray.set(characterPosition, direction);
-      const objs = ray.intersectObjects(this.sections, false);
-      if(objs.length === 0) return;
-      const audio = sectionsAudio[objs[0].object.name];
-      if (!audio) return;
-      objs[0].object.name += 'Passed';
-      AudioManager.playSound(audio);
-    });
-  }
-
   setSpawn() {
-    this.addScene(new SpawnScene(this.world, this.spline));
+    this.addScene(new SpawnScene(this.world, this.spline, this.sections));
   }
 
   setFov() {
-    this.addScene(new FieldOfViewScene(this.matesPos));
+    this.addScene(new FieldOfViewScene(this.matesPos, this.world));
   }
 
   setProjectile() {

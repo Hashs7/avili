@@ -3,17 +3,17 @@ import {Raycaster} from "three/src/Three";
 import AudioManager from "../../core/AudioManager";
 
 export default class FieldOfViewManager {
-  constructor(scene, npcPositions) {
+  constructor(scene, npcPositions, world) {
     this.scene = scene;
+    this.world = world;
     this.sphere = new THREE.Object3D();
     this.fieldOfView = new THREE.Object3D();
     this.fieldOfViewName = "FieldOfView";
     this.fieldOfViews = [];
 
+    this.character = this.world.getCharacter();
+
     npcPositions.forEach(({ x, z }) => this.addNPC(x, z));
-    // for (let i = 0; i < 3; i++) {
-    //   this.addNPC(randomInRange(-1000, 1000), randomInRange(-1000, 1000));
-    // }
 
     document.addEventListener('playerMoved', e => {
       const characterPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
@@ -76,6 +76,7 @@ export default class FieldOfViewManager {
     objs.forEach(obj => {
       if (obj.object.name === this.fieldOfViewName) {
         obj.object.material.color.setHex(0x00aa00);
+        this.character.group.position.copy(this.world.lastCheckpointCoord);
         AudioManager.playSound("audio_mot_cuisine.mp3");
       }
     });

@@ -1,12 +1,15 @@
 import Scene from '../Scene';
 import { Curves } from "three/examples/jsm/curves/CurveExtras";
 import * as THREE from "three";
+import {Raycaster} from "three";
+import AudioManager from "../../core/AudioManager";
 
 export default class extends Scene {
-  constructor(world, spline) {
+  constructor(world, spline, sections) {
     super();
     this.scene.name = 'SpawnScene';
     this.world = world;
+    this.sections = sections;
     this.spline = new THREE.SplineCurve([
       new THREE.Vector3(289.76843686945404, 452.51481137238443, 56.10018915737797),
       new THREE.Vector3(16.577771319586702, 240.23374531404815, -280.3833052451697),
@@ -18,6 +21,7 @@ export default class extends Scene {
 
 
     this.initTravelling();
+    this.detectSectionPassed();
 
     return {
       instance: this,
@@ -47,5 +51,35 @@ export default class extends Scene {
       this.world.cameraOperator.setTravelling(false);
       this.world.character.groupCamera();
     }, 3000)
+  }
+
+  detectSectionPassed(){
+    const ray = new Raycaster(
+      new THREE.Vector3(0,0,0),
+      new THREE.Vector3(0,0,0),
+      0,
+      0.5,
+    );
+    ray.firstHitOnly = true;
+    const sectionsAudio = {
+      sectionTuto: 'audio_npc_bougezvous.mp3',
+      sectionInfiltration: 'audio_info_infiltration.mp3',
+      sectionHarcelement: 'audio_intro_insulte.mp3',
+    };
+    document.addEventListener('playerMoved', e => {
+      const characterPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
+      const direction = new THREE.Vector3( 0, 0, -1 ).applyQuaternion( e.detail.quaternion );
+      ray.set(characterPosition, direction);
+      const objs = ray.intersectObjects(this.sections, false);
+      if(objs.length === 0) return;
+      const audio = sectionsAudio[objs[0].object.name];
+      if (!audio) return;
+      objs[0].object.name += 'Passed';
+
+      characterPosition.y = 0;
+      this.world.lastCheckpointCoord = characterPosition;
+
+      AudioManager.playSound(audio);
+    });
   }
 }

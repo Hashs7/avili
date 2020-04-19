@@ -32,6 +32,11 @@ export class Character {
     //this.character.scale.set(1,1,1);
 
     this.group = new THREE.Group();
+
+    this.character.material = new THREE.MeshPhongMaterial({
+      color: 0xaa0000,
+    });
+
     this.group.add(this.character);
     this.group.position.set(0,0,0);
     AudioManager.groupListener(this.group);
