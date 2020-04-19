@@ -25,6 +25,8 @@ export class Character {
 
     this.character = gltf.scene.children.find(el => el.name === 'EMILIE');
     this.character.position.set(0,1,0);
+    console.log(this.character);
+
 
     this.camera = camera;
     // console.log(this.camera);
@@ -108,6 +110,7 @@ export class Character {
   }
 
   groupCamera() {
+    this.character.position.set(0, 1.150, 0);
     this.camera.position.set(-9, 6.5, 5.8);
     this.camera.lookAt(this.character.position);
     this.group.add(this.camera);

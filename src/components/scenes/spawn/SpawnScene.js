@@ -3,6 +3,7 @@ import { Curves } from "three/examples/jsm/curves/CurveExtras";
 import * as THREE from "three";
 import {Raycaster} from "three";
 import AudioManager from "../../core/AudioManager";
+import LoadManager from "../../core/LoadManager";
 
 export default class extends Scene {
   constructor(world, spline, sections) {
@@ -44,12 +45,19 @@ export default class extends Scene {
       THREE.BackSide,
       0x2194ce
     );
-    this.world.cameraOperator.setTravelling(true);
 
-    setTimeout(() => {
-      this.world.cameraOperator.setTravelling(false);
-      this.world.character.groupCamera();
-    }, 3000)
+    LoadManager.loadFBX('./assets/models/splines/camera_01_v3.fbx', (fbx) => {
+      console.log('spline', fbx);
+      this.world.cameraOperator.addTube(fbx.children[0]);
+      this.world.cameraOperator.setTravelling(true);
+
+      setTimeout(() => {
+        this.world.cameraOperator.setTravelling(false);
+        this.world.character.groupCamera();
+      }, 3000)
+    });
+
+
   }
 
   detectSectionPassed(){

@@ -3,7 +3,7 @@ import {Raycaster} from "three/src/Three";
 import AudioManager from "../../core/AudioManager";
 
 export default class FieldOfViewManager {
-  constructor(world, scene, npcPositions, ) {
+  constructor(world, scene, npcPositions) {
     this.scene = scene;
     this.world = world;
     this.sphere = new THREE.Object3D();

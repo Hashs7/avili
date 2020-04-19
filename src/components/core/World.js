@@ -43,10 +43,6 @@ export default class {
 
     this.resize();
     this.render();
-
-
-    // TODO
-    // method getCharacter()
   }
 
   /**
@@ -57,6 +53,8 @@ export default class {
       this.character = new Character(gltf, this.world, this.camera, this.gameManager.sceneManager);
       this.character.groupCamera();
     });
+
+
   }
 
   getCharacter(){
