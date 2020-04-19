@@ -52,45 +52,54 @@ export class Character {
 
     //this.setAnimations(gltf.animations);
     //this.activateAllActions();
-    this.addBody();
     this.sceneManager = sceneManager;
+    this.addBody(sceneManager);
     sceneManager.mainSceneAddObject(this.group);
   }
 
-  addBody() {
+  addBody(sceneManager) {
     //const mesh = this.character.children.find(el => el.name === 'vanguard_Mesh');
     const mesh = this.character;
     mesh.geometry.computeBoundingBox();
     mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
     const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
-
-    const box = new Box(new Vec3().copy(mesh.size).scale(0.5));
+    const size = {
+      x: mesh.size.z / 4.9,
+      y: mesh.size.y / 4.9,
+      z: mesh.size.z / 4.9,
+    };
 
     // const cylinderShape = new Cylinder(mesh.size.y/2, mesh.size.y/2,  mesh.size.x/2, 8);
-    const boxShape = new Box(new Vec3(mesh.size.y/2, mesh.size.y/2, mesh.size.x/2));
+    const boxShape = new Box(new Vec3(size.x/2, size.y/2, size.x/2));
 
     this.character.body = new Body({
-      mass: 10,
+      mass: 5,
       shape: boxShape,
-      position: new Vec3(this.character.position.x, 200, this.character.position.y),
+      position: new Vec3(this.character.position.x, 5, this.character.position.z),
       // position: new Vec3().copy(this.character.position),
       collisionFilterGroup: 1,
-      // collisionFilterGroup: GROUP3, // Put the cylinder in group 3
       // collisionFilterMask:  GROUP1 // It can only collide with group 1 (the sphere)
+    });
+    this.character.body.addEventListener("collide",(e) => {
+      // console.log(e);
+      // console.log("The character just collided with ", e.name);
+      // console.log("Collided with body:",e.body);
+      // console.log("Contact between bodies:",e.contact);
     });
 
     this.world.addBody(this.character.body);
+    console.log('size', mesh.size.x, mesh.size.y, mesh.size.z);
 
-    /*const geometry = new THREE.CylinderGeometry( mesh.size.y, mesh.size.y, mesh.size.x, 8 );
+    const geometry = new THREE.CylinderGeometry( size.x, size.x, size.y, 8 );
     // const geometry = new THREE.BoxGeometry( mesh.size.y, mesh.size.z, mesh.size.y, 4);
     const material = new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: true } );
     this.hitbox = new THREE.Mesh( geometry, material );
-    this.hitbox.position.set(0, (mesh.size.x/2), 0);
-    this.group.add(this.hitbox);*/
+    this.hitbox.position.set(0, size.y / 2, 0);
+    // this.group.add(this.hitbox);
+    sceneManager.mainSceneAddObject(this.hitbox);
 
-    const characterName = makeTextSprite( " Michel ",
-      { fontsize: 20, fontface: "Arial" });
-    characterName.position.set(mesh.size.y + 20, mesh.size.x + 50, mesh.size.y);
+    const characterName = makeTextSprite( " Michel ", { fontsize: 20, fontface: "Arial" });
+    characterName.position.set(size.x, size.y, size.z);
     this.group.add( characterName );
   }
 
@@ -156,8 +165,8 @@ export class Character {
   }
 
   move(decay) {
-    // this.character.body.position.x += Math.sin(this.character.rotation.z + decay) * this.speed;
-    // this.character.body.position.z += Math.cos(this.character.rotation.z + decay) * this.speed;
+    this.character.body.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
+    this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
     this.group.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
     this.group.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
     this.setWalking();
@@ -168,8 +177,10 @@ export class Character {
   }
 
   update() {
+    // console.log('vv', this.character.position);
+    // console.log('uu', this.character.body.position);
     // this.character.position.copy(this.character.body.position);
-    // this.hitbox.position.copy(this.character.body.position);
+    this.hitbox.position.copy(this.character.body.position);
     this.raycaster.setFromCamera( this.mouse, this.camera );
     this.playerControls();
     this.mixer.update( 0.01 );

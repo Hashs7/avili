@@ -1,6 +1,9 @@
 import * as THREE from "three/src/Three";
 import { Body, Box, ConeTwistConstraint, PointToPointConstraint, Sphere, Vec3 } from "cannon-es/dist/index";
 import LoadManager from "../../core/LoadManager";
+import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils";
+import { toRadian } from "../../../utils";
+import { Quaternion } from "cannon-es";
 
 const margin = 15;
 const force = 25;
@@ -34,8 +37,8 @@ export default class WordFactory {
     // These options give us a more candy-ish render on the font
     this.fontOption = {
       font: f,
-      size: 150,
-      height: 20,
+      size: 18,
+      height: 2,
       curveSegments: 24,
       bevelEnabled: true,
       bevelThickness: 0.9,
@@ -93,109 +96,65 @@ export default class WordFactory {
     this.moveJointToPoint(pos.x, pos.y, pos.z);
   }
 
-  onClick() {
-    // update the picking ray with the camera and mouse position
-    this.raycaster.setFromCamera(this.mouse, this.camera);
-
-    // calculate objects intersecting the picking ray
-    // It will return an array with intersecting objects
-    const intersects = this.raycaster.intersectObjects(this.scene.children,true);
-
-    if (intersects.length > 0) {
-      const obj = intersects[0];
-      const { object, face } = obj;
-
-      if (!object.isMesh) return;
-
-      const impulse = new THREE.Vector3()
-        .copy(face.normal)
-        .negate()
-        .multiplyScalar(force);
-
-      this.words.forEach((word) => {
-        word.children.forEach(letter => {
-          const { body } = letter;
-          if (letter !== object) return;
-          // We apply the vector 'impulse' on the base of our body
-          body.applyLocalImpulse(impulse, new Vec3());
-        });
-      });
-    }
-  }
-
   addWord(text) {
     const totalMass = 3000;
-    const currentWord = new THREE.Group();
-    currentWord.letterOff = 0;
-    this.offset = this.words.length * margin * 0.5;
+    // const currentWord = new THREE.Group();
+    // currentWord.letterOff = 0;
+    // this.offset = this.words.length * margin * 0.5;
     // ... and parse each letter to generate a mesh
-    Array.from(text).forEach((letter, i) => {
-      const material = new THREE.MeshPhongMaterial({ color: 0x97df5e });
-      const geometry = new THREE.TextBufferGeometry(letter, this.fontOption);
 
-      geometry.computeBoundingBox();
-      geometry.computeBoundingSphere();
-
-      const mesh = new THREE.Mesh(geometry, material);
-      mesh.name = letter;
-      mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
-      // We'll use this accumulator to get the offset of each letter. Notice that this is not perfect because each character of each font has specific kerning.
-      currentWord.letterOff += mesh.size.x + 10;
-      // Attach the body directly to the mesh
-      mesh.body = new Body({
-        // mass: 0,
-        mass: totalMass,
-        position: new Vec3(currentWord.letterOff, 500, -200),
-        // velocity: new Vec3(0, 500, 0),
-        fixedRotation: true,
-        linearDamping: 0.01,
-        collisionFilterGroup: 1,
-      });
-      mesh.body.force = new Vec3(0, -100, 0);
-
-      // Add the shape to the body and offset it to match the center of our mesh
-      const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
-      const box = new Box(new Vec3().copy(mesh.size).scale(0.5));
-      mesh.body.addShape(box, new Vec3(center.x, center.y, center.z));
-      this.world.addBody(mesh.body);
-      currentWord.add(mesh);
-      if (i === text.length - 1) {
-        this.finishSetWord(currentWord);
-      }
+    const geometry = new THREE.TextGeometry(text, this.fontOption);
+    const material = new THREE.MeshPhongMaterial({ color: 0x97df5e });
+    geometry.computeBoundingBox();
+    geometry.computeBoundingSphere();
+    const mesh = new THREE.Mesh(geometry, material);
+    const scaleFactor = 0.1
+    mesh.scale.set(scaleFactor,scaleFactor,scaleFactor);
+    mesh.name = text;
+    mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3()).multiplyScalar(scaleFactor);
+    console.log(mesh.size, 'size');
+    mesh.body = new Body({
+      // mass: 0,
+      mass: 2,
+      // position: new Vec3(currentWord.letterOff, 30, 0),
+      position: new Vec3(-2, 30, 0),
+      quaternion: new Quaternion(0, toRadian(-90), 0, toRadian(90)),
+      // velocity: new Vec3(0, 500, 0),
+      fixedRotation: true,
+      linearDamping: 0.01,
+      collisionFilterGroup: 1,
     });
+    // mesh.body.force = new Vec3(0, -100, 0);
 
-    // Set word in center
-
-    /*this.words.push(currentWord);
-    this.scene.add(currentWord);*/
-
-    // this.setConstraints()
+    // Add the shape to the body and offset it to match the center of our mesh
+    const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
+    const box = new Box(new Vec3().copy(mesh.size).scale(0.5));
+    console.log('box', mesh.size);
+    mesh.body.name = 'word';
+    mesh.body.addShape(box, new Vec3(center.x, center.y, center.z));
+    this.world.addBody(mesh.body);
+    this.finishSetWord(mesh);
   }
 
-  finishSetWord(currentWord) {
-    currentWord.children.forEach(letter => {
-      letter.body.position.x -= letter.size.x + currentWord.letterOff * 0.5;
-    });
-
+  finishSetWord(word) {
     setTimeout(() => {
-      this.words.push(currentWord);
-      this.scene.add(currentWord);
-    }, 1000)
+      this.words.push(word);
+      this.scene.add(word);
+      console.log('append', word);
+    }, 3000)
   }
 
   update() {
     if (!this.words.length) return;
-    this.words.forEach(({ children }) => {
-      for (let i = 0; i < children.length; i++) {
-        children[i].position.copy( children[i].body.position);
-        children[i].quaternion.copy(children[i].body.quaternion);
-      }
-    });
+    for (let i = 0; i < this.words.length; i++) {
+      this.words[i].position.copy( this.words[i].body.position);
+      this.words[i].quaternion.copy(this.words[i].body.quaternion);
+    }
   }
 
   setClickMarker(x,y,z) {
     if(!this.clickMarker){
-      const shape = new THREE.SphereGeometry(5, 8, 8);
+      const shape = new THREE.SphereGeometry(0.2, 8, 8);
       const markerMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
       this.clickMarker = new THREE.Mesh(shape, markerMaterial);
       this.scene.add(this.clickMarker);
@@ -211,16 +170,17 @@ export default class WordFactory {
 
   onMouseDown() {
     // Find mesh from a ray
-    const objs = this.words.map(group => group.children);
-    const entity = this.findNearestIntersectingObject(this.camera, objs.flat());
+    const entity = this.findNearestIntersectingObject(this.camera, this.words);
     const pos = entity.point;
-    if(pos && entity.object.geometry instanceof THREE.TextBufferGeometry){
+    if (pos && entity.object.geometry instanceof THREE.TextGeometry){
+      console.log('drag');
       this.constraintDown = true;
       // Set marker on contact point
       this.setClickMarker(pos.x,pos.y,pos.z, this.scene);
 
       // Set the movement plane
       this.setScreenPerpCenter(pos, this.camera);
+      console.log(entity.object);
       this.addMouseConstraint(pos.x,pos.y,pos.z, entity.object.body);
     }
   }
@@ -228,6 +188,7 @@ export default class WordFactory {
   onMouseUp() {
     this.constraintDown = false;
     // remove the marker
+
     this.removeClickMarker();
     // Send the remove mouse joint to server
     this.removeJointConstraint();
@@ -236,8 +197,8 @@ export default class WordFactory {
   // This function creates a virtual movement plane for the mouseJoint to move in
   setScreenPerpCenter(point, camera) {
     if(!this.gplane) {
-      const planeGeo = new THREE.PlaneGeometry(1000,1000);
-      const material = new THREE.MeshLambertMaterial( { color: 0xffffff, transparent: true, opacity: 0 } );
+      const planeGeo = new THREE.PlaneGeometry(100,100);
+      const material = new THREE.MeshBasicMaterial( { transparent: true, opacity: 0 } );
       this.gplane = new THREE.Mesh(planeGeo, material);
       this.scene.add(this.gplane);
     }

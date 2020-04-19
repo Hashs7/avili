@@ -30,7 +30,6 @@ export default class extends Scene {
   }
 
   initTravelling() {
-    console.log(this.spline);
     const geometry = new THREE.TubeGeometry(this.spline);
     const material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
     const splineObject = new THREE.Line( geometry, material );

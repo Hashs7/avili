@@ -27,7 +27,7 @@ export default class {
     this.cameraOperator = new CameraOperator(this, this.camera);
 
     this.world = new World();
-    this.world.gravity.set(0, -1000, 0);
+    this.world.gravity.set(0, -50, 0);
     this.world.broadphase = new NaiveBroadphase();
 
     this.character = null;
