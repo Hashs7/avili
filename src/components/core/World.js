@@ -30,15 +30,23 @@ export default class {
     this.world.gravity.set(0, -1000, 0);
     this.world.broadphase = new NaiveBroadphase();
 
+    this.character = null;
+    this.lastCheckpointCoord = new THREE.Vector3();
+    this.loadProps();
+
     this.gameManager = new GameManager(this, this.world, this.camera);
     // Stats showing fps
     this.stats = new Stats();
     this.stats.showPanel(0);
     document.body.appendChild( this.stats.dom );
 
+
     this.resize();
     this.render();
-    this.loadProps();
+
+
+    // TODO
+    // method getCharacter()
   }
 
   /**
@@ -49,6 +57,10 @@ export default class {
       this.character = new Character(gltf, this.world, this.camera, this.gameManager.sceneManager);
       this.character.groupCamera();
     });
+  }
+
+  getCharacter(){
+    return this.character;
   }
 
 
