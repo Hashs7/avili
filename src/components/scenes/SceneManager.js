@@ -1,10 +1,11 @@
-import LoadManager from '../core/LoadManager';
 import * as THREE from "three";
-import Skybox from "../core/Skybox";
+import {Raycaster} from "three";
+// import { threeToCannon } from 'three-to-cannon';
 import { Body, Box, Vec3 } from "cannon-es";
 import SpawnScene from "./spawn/SpawnScene";
 import FieldOfViewScene from "./fieldOfView/FieldOfViewScene";
-import {Raycaster} from "three";
+import Skybox from "../core/Skybox";
+import LoadManager from '../core/LoadManager';
 import AudioManager from "../core/AudioManager";
 
 export default class {
@@ -24,9 +25,9 @@ export default class {
     new Skybox(this.mainScene, 'afterrain');
     const light = new THREE.HemisphereLight(0xffffff, 0x444444);
     //this.addFloor();
+    this.addFloor();
     this.addMap();
     this.mainScene.add(light);
-
   }
 
   /**
@@ -38,17 +39,17 @@ export default class {
       texture.wrapT = THREE.RepeatWrapping;
       texture.repeat.x = 10;
       texture.repeat.y = 10;
-      const geometry = new THREE.BoxGeometry(5000, 1, 5000);
-      const material = new THREE.MeshBasicMaterial({ map: texture });
+      const geometry = new THREE.BoxGeometry(300, 0.1, 300);
+      const material = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 });
       const plane = new THREE.Mesh(geometry, material);
       plane.name = "Floor";
+      plane.position.set(80, -0.1 , 50)
       const ground = new Body({
         mass: 0,
-        shape: new Box(new Vec3(5000, 1, 5000)),
-        position: new Vec3(0, 0, 0)
+        shape: new Box(new Vec3(300, 1, 300)),
+        position: new Vec3(0, -1, 0),
       });
       this.worldPhysic.addBody(ground);
-
       this.mainSceneAddObject(plane);
     });
   }
@@ -61,6 +62,10 @@ export default class {
       gltf.scene.traverse((child) => {
         if (child.name.split('mate').length > 1) {
           this.matesPos.push(child.position)
+        }
+        if (child.name === 'walls') {
+          console.log('wall', child);
+          this.setWalls(child);
         }
         if (child.name === 'map') {
           map = child;
@@ -87,33 +92,28 @@ export default class {
   }
 
   detectSectionPassed(){
+    const ray = new Raycaster(
+      new THREE.Vector3(0,0,0),
+      new THREE.Vector3(0,0,0),
+      0,
+      0.5,
+    );
+    ray.firstHitOnly = true;
+    const sectionsAudio = {
+      sectionTuto: 'audio_npc_bougezvous.mp3',
+      sectionInfiltration: 'audio_info_infiltration.mp3',
+      sectionHarcelement: 'audio_intro_insulte.mp3',
+    };
     document.addEventListener('playerMoved', e => {
-      const characterMesh = e.detail;
       const characterPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
-
-      var direction = new THREE.Vector3( 0, 0, -1 ).applyQuaternion( characterMesh.quaternion );
-
-      const ray = new Raycaster(
-        characterPosition,
-        direction,
-        0,
-        0.5,
-      );
+      const direction = new THREE.Vector3( 0, 0, -1 ).applyQuaternion( e.detail.quaternion );
+      ray.set(characterPosition, direction);
       const objs = ray.intersectObjects(this.sections, false);
-
       if(objs.length === 0) return;
-
-      switch (objs[0].object.name) {
-        case "sectionTuto" :
-          AudioManager.playSound("audio_npc_bougezvous.mp3");
-          break;
-        case "sectionInfiltration" :
-          AudioManager.playSound("audio_info_infiltration.mp3");
-          break;
-        case "sectionHarcelement" :
-          AudioManager.playSound("audio_intro_insulte.mp3");
-          break;
-      }
+      const audio = sectionsAudio[objs[0].object.name];
+      if (!audio) return;
+      objs[0].object.name += 'Passed';
+      AudioManager.playSound(audio);
     });
   }
 
@@ -125,8 +125,14 @@ export default class {
     this.addScene(new FieldOfViewScene(this.matesPos));
   }
 
-  setScene(scene) {
-    this.currentScene = scene;
+  setWalls(object) {
+    /*const shape = threeToCannon(object);
+    const walls = new Body({
+      mass: 0,
+      shape,
+      position: object.position,
+    });
+    this.worldPhysic.addBody(walls);*/
   }
 
   mainSceneAddObject(mesh) {
@@ -138,16 +144,9 @@ export default class {
     this.mainScene.add(scene.scene);
   }
 
-  loadScene(filename) {
-    LoadManager.loadGLTF(`${this.scenesPath}${filename}.glb`, ({ scene }) => {
-        scene.name = filename;
-        this.loadedScenes.push(scene);
-        this.addScene(scene);
-      }
-    )
-  }
-
   update() {
-    this.loadedScenes.forEach(scene => scene.instance.update());
+    for (let i = 0; i < this.loadedScenes.length; i++) {
+      this.loadedScenes[i].instance.update();
+    }
   }
 }

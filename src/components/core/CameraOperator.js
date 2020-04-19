@@ -1,11 +1,9 @@
 import * as THREE from "three";
-import { Curves } from "three/examples/jsm/curves/CurveExtras";
 import { SceneUtils } from "three/examples/jsm/utils/SceneUtils";
 
 export default class {
   constructor(world, camera) {
     this.world = world;
-    // this.splineCamera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 1, 8000 );
     this.camera = camera;
     this.travelling = false;
     this.targetRotation = 0;
@@ -13,8 +11,9 @@ export default class {
     this.binormal = new THREE.Vector3();
     this.normal = new THREE.Vector3();
     this.parent = new THREE.Object3D();
-    // console.log(this.scene);
+
     this.tube = null;
+    this.mesh = null;
     this.tubeMesh = null;
     this.lookAhead = true;
     this.scale = 1;
@@ -47,18 +46,17 @@ export default class {
 
     if (this.tubeMesh) parent.remove(this.tubeMesh);
 
-    this.tube = new THREE.TubeGeometry(spline, segments, 2, radiusSegments, this.closed);
+    this.tube = new THREE.TubeGeometry(spline, segments, 2, radiusSegments, false);
     color = color || 0x2194ce;
     geoSide = geoSide || THREE.DoubleSide;
 
-    this.addGeometry(this.tube, mesh, color, geoSide);
+    this.addGeometry(mesh, this.tube, color, geoSide);
 
     this.scale = scaleVar || 1;
     this.tubeMesh.scale.set( this.scale, this.scale, this.scale );
   }
 
-
-  addGeometry(geometry, mesh, color, geoSide) {
+  addGeometry(mesh, geometry, color, geoSide) {
     // 3d shape
     if(this.mesh === null) {
       this.tubeMesh = SceneUtils.createMultiMaterialObject( geometry, [
@@ -80,6 +78,13 @@ export default class {
   }
 
 
+  addSpline(mesh, geometry) {
+    console.log(mesh);
+    this.tube = geometry;
+    this.parent.add( mesh );
+  }
+
+
   /**
    * Animate the camera along the spline
    */
@@ -88,7 +93,6 @@ export default class {
     const time = Date.now();
     const looptime = 20 * 1000;
     const t = ( time % looptime ) / looptime;
-    debugger
     const pos = this.tube.parameters.path.getPointAt( t );
     pos.multiplyScalar( this.scale );
 
@@ -100,7 +104,6 @@ export default class {
 
     this.binormal.subVectors( this.tube.binormals[ pickNext ], this.tube.binormals[ pick ] );
     this.binormal.multiplyScalar( pickt - pick ).add( this.tube.binormals[ pick ] );
-
 
     const dir = this.tube.parameters.path.getTangentAt( t );
 

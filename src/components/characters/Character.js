@@ -14,7 +14,8 @@ const quartDegree = toRadian(90);
 export class Character {
   constructor(gltf, world, camera, sceneManager) {
     this.action = ACTIONS.IDLE;
-    this.speed = 0.5;
+    this.speed = 0.05;
+    this.speed = 0.1;
     this.wakable = true;
     this.world = world;
     this.inputManager = new InputManager();
@@ -105,8 +106,13 @@ export class Character {
     const obj = this.raycaster.intersectObjects( this.sceneManager.mainScene.children );
     if (obj.length) {
       obj.forEach(el => {
-        if (el.object.name !== "map") return;
-        this.character.rotation.y = Math.atan2(el.point.x - this.group.position.x, el.point.z - this.group.position.z);
+        if (el.object.name !== 'Floor') return;
+        const position = {
+          x: el.point.x - this.group.position.x,
+          z: el.point.z - this.group.position.z
+        };
+        if (Math.sqrt(position.x * position.x + position.z * position.z) < 0.1) return;
+        this.character.rotation.y = Math.atan2(position.x, position.z);
       });
     }
   }
