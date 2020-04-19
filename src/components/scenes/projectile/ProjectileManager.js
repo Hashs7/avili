@@ -1,10 +1,16 @@
 import * as THREE from 'three';
 import gsap from 'gsap';
 import {Vector3} from "three";
+import {Raycaster} from "three";
+import AudioManager from "../../core/AudioManager";
 
 export default class ProjectileManager {
-  constructor(scene, towers, landingAreas) {
+  constructor(scene, towers, landingAreas, world) {
     this.scene = scene;
+    this.world = world;
+    this.landingAreaName = "LandingArea";
+
+    this.character = this.world.getCharacter();
 
     const arr = [
       landingAreas.slice(0, 4),
@@ -14,16 +20,25 @@ export default class ProjectileManager {
     towers.forEach((tower, i) => {
       this.createTower(towers[i].position);
       arr[i].forEach(el => {
-        el.position.y = 0;
+        el.position.y = -0.2;
         this.createLandingPoint(el.position);
         this.createProjectileFrom(towers[i].position, el.position);
       });
+    });
+
+    document.addEventListener('playerMoved', e => {
+      const characterPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
+      this.detectLandingArea(characterPosition);
     });
   }
 
   createTower(coord){
     const geometry = new THREE.SphereGeometry( 1, 12, 12 );
-    const material = new THREE.MeshPhongMaterial( {color: 0xaa0000} );
+    const material = new THREE.MeshBasicMaterial( {
+      color: 0xaa0000,
+      transparent: true,
+      opacity: 0
+    });
     const sphere = new THREE.Mesh( geometry, material );
     sphere.position.x = coord.x;
     sphere.position.y = coord.y;
@@ -55,15 +70,32 @@ export default class ProjectileManager {
   }
 
   createLandingPoint(coord){
-    const geometry = new THREE.CylinderGeometry( 1, 1, 1, 10 );
+    const geometry = new THREE.CylinderGeometry( 1, 1, 0.5, 10 );
     const material = new THREE.MeshPhongMaterial( {color: 0x0000aa} );
     const landingPoint = new THREE.Mesh(geometry, material);
+    landingPoint.name = this.landingAreaName;
 
     landingPoint.position.x = coord.x;
     landingPoint.position.y = coord.y;
     landingPoint.position.z = coord.z;
 
     this.scene.add(landingPoint);
+  }
+
+  detectLandingArea(position){
+    const ray = new Raycaster(
+      position,
+      new THREE.Vector3(0, -1, 0),
+      0,
+      300,
+    );
+    const objs = ray.intersectObjects(this.scene.children, false);
+
+    objs.forEach(obj => {
+      if (obj.object.name === this.landingAreaName) {
+        this.character.group.position.copy(this.world.lastCheckpointCoord);
+      }
+    });
   }
 
   /*startTimeline(){

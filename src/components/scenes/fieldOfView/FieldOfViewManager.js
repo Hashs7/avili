@@ -30,9 +30,10 @@ export default class FieldOfViewManager {
 
   addNPC(x, z) {
     let geometry = new THREE.SphereGeometry(1, 20, 20);
-    let material = new THREE.MeshPhongMaterial({
+    let material = new THREE.MeshBasicMaterial({
       color: 0x0000aa,
-      shininess: 20,
+      transparent: true,
+      opacity: 0,
     });
     this.sphere = new THREE.Mesh(geometry, material);
     this.sphere.position.set(x, 0, z);
