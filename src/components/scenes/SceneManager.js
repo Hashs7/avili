@@ -58,7 +58,6 @@ export default class {
 
       gltf.scene.traverse((child) => {
         if (child.name.startsWith('section')) {
-          console.log(child, 'section');
           child.material.transparent = true;
           child.material.opacity = 0.2;
         }
@@ -67,7 +66,6 @@ export default class {
           this.matesPos.push(child.position)
         }
         if (child.name === 'walls') {
-          console.log('wall', child);
           this.setWalls(child);
         }
         if (child.name === 'map') {
@@ -123,7 +121,7 @@ export default class {
 
     if (!isFinite(box.min.lengthSq())) return null;
 
-    shape = new CANNON.Box(new CANNON.Vec3(
+    shape = new Box(new Vec3(
       (box.max.x - box.min.x) / 2,
       (box.max.y - box.min.y) / 2,
       (box.max.z - box.min.z) / 2

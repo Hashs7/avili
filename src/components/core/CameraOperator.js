@@ -79,7 +79,6 @@ export default class {
 
 
   addSpline(mesh, geometry) {
-    console.log(mesh);
     this.tube = geometry;
     this.parent.add( mesh );
   }

@@ -112,7 +112,6 @@ export default class WordFactory {
     mesh.scale.set(scaleFactor,scaleFactor,scaleFactor);
     mesh.name = text;
     mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3()).multiplyScalar(scaleFactor);
-    console.log(mesh.size, 'size');
     mesh.body = new Body({
       // mass: 0,
       mass: 2,
@@ -129,7 +128,6 @@ export default class WordFactory {
     // Add the shape to the body and offset it to match the center of our mesh
     const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
     const box = new Box(new Vec3().copy(mesh.size).scale(0.5));
-    console.log('box', mesh.size);
     mesh.body.name = 'word';
     mesh.body.addShape(box, new Vec3(center.x, center.y, center.z));
     this.world.addBody(mesh.body);
@@ -140,7 +138,6 @@ export default class WordFactory {
     setTimeout(() => {
       this.words.push(word);
       this.scene.add(word);
-      console.log('append', word);
     }, 3000)
   }
 
@@ -173,14 +170,12 @@ export default class WordFactory {
     const entity = this.findNearestIntersectingObject(this.camera, this.words);
     const pos = entity.point;
     if (pos && entity.object.geometry instanceof THREE.TextGeometry){
-      console.log('drag');
       this.constraintDown = true;
       // Set marker on contact point
       this.setClickMarker(pos.x,pos.y,pos.z, this.scene);
 
       // Set the movement plane
       this.setScreenPerpCenter(pos, this.camera);
-      console.log(entity.object);
       this.addMouseConstraint(pos.x,pos.y,pos.z, entity.object.body);
     }
   }

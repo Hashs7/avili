@@ -25,7 +25,6 @@ export class Character {
 
     this.character = gltf.scene.children.find(el => el.name === 'EMILIE');
     this.character.position.set(0,1,0);
-    console.log(this.character);
 
 
     this.camera = camera;
