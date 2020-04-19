@@ -4,6 +4,8 @@ import Skybox from "../core/Skybox";
 import { Body, Box, Vec3 } from "cannon-es";
 import SpawnScene from "./spawn/SpawnScene";
 import FieldOfViewScene from "./fieldOfView/FieldOfViewScene";
+import {Raycaster} from "three";
+import AudioManager from "../core/AudioManager";
 
 export default class {
   constructor(world, worldPhysic) {
@@ -14,6 +16,8 @@ export default class {
     this.matesPos = [];
     this.mainScene = new THREE.Scene();
     this.initMainScene();
+
+    this.sections = [];
   }
 
   initMainScene() {
@@ -52,6 +56,8 @@ export default class {
   addMap() {
     LoadManager.loadGLTF('./assets/models/map/map.glb', (gltf) => {
       let map = new THREE.Mesh();
+      let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
+
       gltf.scene.traverse((child) => {
         if (child.name.split('mate').length > 1) {
           this.matesPos.push(child.position)
@@ -62,15 +68,52 @@ export default class {
         if (child.name === 'NurbsPath') {
           this.spline = child;
         }
+
+        if (sectionName.includes(child.name)) {
+          this.sections.push(child);
+        }
       });
 
+      this.detectSectionPassed();
+
       gltf.scene.children.filter(el => el.name !== 'map');
-      map.material = new THREE.MeshPhongMaterial({color: 0xaa0000});
+      map.material = new THREE.MeshPhongMaterial({color: 0xaaaaaa});
 
       this.mainSceneAddObject(gltf.scene);
       this.mainSceneAddObject(map);
       this.setSpawn();
       this.setFov();
+    });
+  }
+
+  detectSectionPassed(){
+    document.addEventListener('playerMoved', e => {
+      const characterMesh = e.detail;
+      const characterPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
+
+      var direction = new THREE.Vector3( 0, 0, -1 ).applyQuaternion( characterMesh.quaternion );
+
+      const ray = new Raycaster(
+        characterPosition,
+        direction,
+        0,
+        0.5,
+      );
+      const objs = ray.intersectObjects(this.sections, false);
+
+      if(objs.length === 0) return;
+
+      switch (objs[0].object.name) {
+        case "sectionTuto" :
+          AudioManager.playSound("audio_npc_bougezvous.mp3");
+          break;
+        case "sectionInfiltration" :
+          AudioManager.playSound("audio_info_infiltration.mp3");
+          break;
+        case "sectionHarcelement" :
+          AudioManager.playSound("audio_intro_insulte.mp3");
+          break;
+      }
     });
   }
 
