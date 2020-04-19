@@ -100,7 +100,7 @@ export default class {
   }
 
   setSpawn() {
-    this.addScene(new SpawnScene(this.world, this.spline));
+    this.addScene(new SpawnScene(this.world, this.spline, this.sections));
   }
 
   setFov() {
@@ -108,7 +108,7 @@ export default class {
   }
 
   setProjectile() {
-    this.addScene(new ProjectileScene(this.towers, this.landingAreas))
+    this.addScene(new ProjectileScene(this.towers, this.landingAreas, this.world))
   }
 
   createBoundingBoxShape (object) {
