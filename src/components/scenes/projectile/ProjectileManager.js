@@ -3,28 +3,26 @@ import gsap from 'gsap';
 import {Vector3} from "three";
 
 export default class ProjectileManager {
-  constructor(scene) {
+  constructor(scene, towers, landingAreas) {
     this.scene = scene;
-    const towerCoord = new Vector3(0, 200, 0);
-    const points = [
-      new Vector3(300, 0, 200),
-      new Vector3(100, 0, 500),
-      new Vector3(-300, 0, 200)
+
+    const arr = [
+      landingAreas.slice(0, 4),
+      landingAreas.slice(4)
     ];
-    this.landingPoints = [];
-    this.projectiles = [];
 
-
-    this.createTower(towerCoord);
-    points.forEach(point => {
-      this.createProjectileFrom(towerCoord, point);
-      this.createLandingPoint(point);
-    });
-    this.startTimeline();
+    for (let i = 0; i < towers.length; i ++) {
+      this.createTower(towers[i].position);
+      arr[i].forEach(el => {
+        el.position.y = 0;
+        this.createLandingPoint(el.position);
+        this.createProjectileFrom(towers[i].position, el.position);
+      });
+    }
   }
 
   createTower(coord){
-    const geometry = new THREE.SphereGeometry( 50, 32, 32 );
+    const geometry = new THREE.SphereGeometry( 1, 12, 12 );
     const material = new THREE.MeshPhongMaterial( {color: 0xaa0000} );
     const sphere = new THREE.Mesh( geometry, material );
     sphere.position.x = coord.x;
@@ -44,7 +42,7 @@ export default class ProjectileManager {
       0, 0, 0, 1
     ));
 
-    const geometry = new THREE.CylinderGeometry( 5, 5, direction.length(), 10 );
+    const geometry = new THREE.CylinderGeometry( 0.01, 0.01, direction.length(), 10 );
     const material = new THREE.MeshPhongMaterial( {color: 0x00aa00} );
     const cylinder = new THREE.Mesh( geometry, material );
 
@@ -53,7 +51,6 @@ export default class ProjectileManager {
     cylinder.position.y = (endCoord.y + originCoord.y) / 2;
     cylinder.position.z = (endCoord.z + originCoord.z) / 2;
 
-    this.projectiles.push(cylinder);
     this.scene.add( cylinder );
   }
 
@@ -63,19 +60,18 @@ export default class ProjectileManager {
     const landingPoint = new THREE.Mesh(geometry, material);
 
     landingPoint.position.x = coord.x;
-    landingPoint.position.y = coord.y + 1;
+    landingPoint.position.y = coord.y;
     landingPoint.position.z = coord.z;
 
-    this.landingPoints.push(landingPoint);
     this.scene.add(landingPoint);
   }
 
-  startTimeline(){
+  /*startTimeline(){
     const tl = gsap.timeline({repeat: 1, repeatDelay: 1});
     tl.to(this.landingPoints[0].scale, {
       x: 100,
       z: 100,
       duration: 1,
     })
-  }
+  }*/
 }
