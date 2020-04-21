@@ -10,20 +10,28 @@ export default class FieldOfViewManager {
     this.fieldOfView = new THREE.Object3D();
     this.fieldOfViewName = "FieldOfView";
     this.fieldOfViews = [];
+    this.lastPosition = new THREE.Vector3();
+
+    // for testing
+    this.index = 0;
+
 
     npcPositions.forEach(({ x, z }) => this.addNPC(x, z));
 
     document.addEventListener('playerMoved', e => {
       const characterPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
+      this.lastPosition = characterPosition;
       this.detectFieldOfView(characterPosition);
     });
   }
 
   update(){
     if(this.fieldOfViews.length === 0) return;
-    this.fieldOfViews.forEach(fieldOfView => {
-      fieldOfView.rotateY(Math.PI / 100);
+    const movingFov = this.fieldOfViews.filter(fieldOfView => fieldOfView.anime)
+    movingFov.forEach(fieldOfView => {
+      fieldOfView.obj.rotateY(Math.PI / 100);
     });
+    this.detectFieldOfView(this.lastPosition);
   }
 
   addNPC(x, z) {
@@ -59,7 +67,11 @@ export default class FieldOfViewManager {
     this.fieldOfView = new THREE.Mesh(geometry, material);
     this.fieldOfView.name = this.fieldOfViewName;
     this.fieldOfView.position.set(object.position.x, object.position.y - 0.45, object.position.z);
-    this.fieldOfViews.push(this.fieldOfView);
+
+    this.index++;
+    const anime = this.index <= 2;
+    this.fieldOfViews.push({obj : this.fieldOfView, anime});
+
     this.scene.add(this.fieldOfView);
   }
 
@@ -74,21 +86,10 @@ export default class FieldOfViewManager {
 
     objs.forEach(obj => {
       if (obj.object.name === this.fieldOfViewName) {
-        obj.object.material.color.setHex(0x00aa00);
         const character = this.world.getCharacter();
         character.group.position.copy(this.world.lastCheckpointCoord);
         AudioManager.playSound("audio_mot_cuisine.mp3");
       }
-    });
-
-    if (objs.length === 0){
-      this.resetFieldOfViewsColor();
-    }
-  }
-
-  resetFieldOfViewsColor() {
-    this.fieldOfViews.forEach(fieldOfView => {
-      fieldOfView.material.color.setHex(0xaa0000);
     });
   }
 }
