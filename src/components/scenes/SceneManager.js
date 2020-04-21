@@ -24,7 +24,6 @@ export default class {
   initMainScene() {
     new Skybox(this.mainScene, 'afterrain');
     const light = new THREE.HemisphereLight(0xffffff, 0x444444);
-    //this.addFloor();
     this.addFloor();
     this.addMap();
     this.mainScene.add(light);
