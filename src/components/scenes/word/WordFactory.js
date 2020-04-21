@@ -200,7 +200,7 @@ export default class WordFactory {
     // Center at mouse position
     this.gplane.position.copy(point);
     // Make it face toward the camera
-    this.gplane.quaternion.copy(camera.quaternion);
+    this.gplane.quaternion.copy(new THREE.Quaternion(0, toRadian(-45), 0, toRadian(45)));
   }
 
   projectOntoPlane(thePlane, camera) {

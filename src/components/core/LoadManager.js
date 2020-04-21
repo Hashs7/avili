@@ -1,6 +1,7 @@
 import * as THREE from "three/src/Three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
+import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 
 class LoadManager {
   constructor() {
@@ -8,6 +9,7 @@ class LoadManager {
     this.gltfLoader = new GLTFLoader(this.manager);
     this.fontLoader = new THREE.FontLoader(this.manager);
     this.fbxLoader = new FBXLoader();
+    this.stlLoader = new STLLoader();
     this.audioLoader = new THREE.AudioLoader(this.manager);
 
     this.manager.onStart = (url, itemsLoaded, itemsTotal) => this.startHandler(url, itemsLoaded, itemsTotal);
@@ -26,12 +28,21 @@ class LoadManager {
   }
 
   /**
-   * Load custom json file font
+   * Load FBX file
    * @param path
    * @param onLoadingFinished
    */
   loadFBX(path, onLoadingFinished) {
     this.fbxLoader.load(path, (f) => onLoadingFinished(f));
+  }
+
+  /**
+   * Load STL binary file
+   * @param path
+   * @param onLoadingFinished
+   */
+  loadSTL(path, onLoadingFinished) {
+    this.stlLoader.load(path, (f) => onLoadingFinished(f));
   }
 
   /**

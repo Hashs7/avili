@@ -5,6 +5,7 @@ import FieldOfViewScene from "./fieldOfView/FieldOfViewScene";
 import Skybox from "../core/Skybox";
 import LoadManager from '../core/LoadManager';
 import ProjectileScene from "./projectile/ProjectileScene";
+import { generateBody } from "../../utils/cannon";
 
 export default class {
   constructor(world, worldPhysic) {
@@ -93,7 +94,21 @@ export default class {
       this.setSpawn();
       this.setFov();
       this.setProjectile();
-    });
+    });/*
+    LoadManager.loadSTL('./assets/models/map/map-walls.stl', (stl) => {
+      const directGeo = new THREE.Geometry();
+      directGeo.fromBufferGeometry(stl);
+      console.log('map walls ', stl);
+      this.looool = directGeo;
+      this.log()
+    });*/
+  }
+  log() {
+    setTimeout(() => {
+      console.log(this.looool );
+      const body = generateBody([this.looool], { mass: 6, scale: new THREE.Vector3(1, 1, 1) });
+
+    }, 300)
   }
 
   setSpawn() {
