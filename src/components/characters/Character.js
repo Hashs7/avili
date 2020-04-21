@@ -5,9 +5,12 @@ import { makeTextSprite, toRadian } from "../../utils";
 import AudioManager from "../core/AudioManager";
 
 const ACTIONS = {
-  WALK: 'Walk',
   IDLE: 'Idle',
+  RUNNING: 'Running',
+  RIGHT_STRAF: 'RightStraf',
+  LEFT_STRAF: 'LeftStraf',
 };
+
 
 const quartDegree = toRadian(90);
 
@@ -18,25 +21,16 @@ export class Character {
     this.speed = 0.1;
     this.wakable = true;
     this.world = world;
+    this.camera = camera;
     this.inputManager = new InputManager();
     this.inputManager.setInputReceiver(this);
 
     this.raycaster = new THREE.Raycaster();
-    console.log();
+
     this.character = gltf.scene.children.find(el => el.name === 'EMILIE');
     this.character.position.set(0,1,0);
 
-
-    this.camera = camera;
-    // console.log(this.camera);
-
-    //this.character.scale.set(1,1,1);
-
     this.group = new THREE.Group();
-
-    this.character.material = new THREE.MeshPhongMaterial({
-      color: 0xaa0000,
-    });
 
     this.group.add(this.character);
     this.group.position.set(0,0,0);
@@ -51,7 +45,7 @@ export class Character {
 
     window.addEventListener( 'mousemove', (e) => this.mouseMoveHandler(e), false );
 
-    // this.setAnimations(gltf.animations);
+    this.setAnimations(gltf.animations);
     this.sceneManager = sceneManager;
     // this.addBody(sceneManager);
     sceneManager.mainSceneAddObject(this.group);
@@ -118,51 +112,74 @@ export class Character {
     this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
     const obj = this.raycaster.intersectObjects( this.sceneManager.mainScene.children );
-    if (obj.length) {
-      obj.forEach(el => {
-        if (el.object.name !== 'Floor') return;
-        const position = {
-          x: el.point.x - this.group.position.x,
-          z: el.point.z - this.group.position.z
-        };
-        if (Math.sqrt(position.x * position.x + position.z * position.z) < 0.1) return;
-        this.character.rotation.y = Math.atan2(position.x, position.z);
-      });
-    }
+    if (!obj.length) return;
+    obj.forEach(el => {
+      if (el.object.name !== 'Floor') return;
+      const position = {
+        x: el.point.x - this.group.position.x,
+        z: el.point.z - this.group.position.z
+      };
+      if (Math.sqrt(position.x * position.x + position.z * position.z) < 0.1) return;
+      this.character.rotation.y = Math.atan2(position.x, position.z);
+    });
+  }
+
+  /**
+   * Define action to trigger on keyboard event
+   * @param moving
+   * @returns {*[]}
+   */
+  crossActions(moving) {
+    return [{
+      name: 'UP',
+      condition: moving && this.action !== ACTIONS.RUNNING && this.inputManager.controls.up,
+      action: this.runAction,
+    },{
+      name: 'DOWN',
+      condition: moving && this.action !== ACTIONS.RUNNING && this.inputManager.controls.down,
+      action: this.runAction,
+    },{
+      name: 'LEFT',
+      condition: moving && this.action !== ACTIONS.LEFT_STRAF && this.inputManager.controls.left,
+      action: this.leftAction,
+    },{
+      condition: moving && this.action !== ACTIONS.RIGHT_STRAF && this.inputManager.controls.right,
+      name: 'RIGHT',
+      action: this.rightAction,
+    }]
   }
 
   handleKeyboardEvent(event, code, pressed, moving) {
     if (!this.wakable) return;
     this.isWalking = moving;
     if (!moving && this.action !== ACTIONS.IDLE) {
-      this.action = ACTIONS.IDLE;
-      // this.prepareCrossFade(this.walkAction, this.idleAction);
+      this.prepareCrossFade(this.idleAction);
       return;
     }
-    if (moving && this.action !== ACTIONS.WALK) {
-      this.action = ACTIONS.WALK;
-      // this.prepareCrossFade(this.idleAction, this.walkAction);
-    }
+
+    this.crossActions(moving).forEach((ac) => {
+      if (!ac.condition) return;
+      this.prepareCrossFade(ac.action);
+    });
   }
 
 
   playerControls() {
-    const strafe =
-      this.inputManager.controls.left && this.inputManager.controls.up ||
-      this.inputManager.controls.right && this.inputManager.controls.up ||
-      this.inputManager.controls.left && this.inputManager.controls.down ||
-      this.inputManager.controls.right && this.inputManager.controls.down;
+    const straf = this.inputManager.controls.left && this.inputManager.controls.up ||
+                  this.inputManager.controls.right && this.inputManager.controls.up ||
+                  this.inputManager.controls.left && this.inputManager.controls.down ||
+                  this.inputManager.controls.right && this.inputManager.controls.down;
     if (this.inputManager.controls.up) {
-      this.move(0, strafe)
+      this.move(0, straf)
     }
     if (this.inputManager.controls.down) {
-      this.move(quartDegree * 2, strafe)
+      this.move(quartDegree * 2, straf)
     }
     if (this.inputManager.controls.left) {
-      this.move(quartDegree, strafe)
+      this.move(quartDegree, straf)
     }
     if (this.inputManager.controls.right) {
-      this.move(-quartDegree, strafe)
+      this.move(-quartDegree, straf)
     }
   }
 
@@ -189,7 +206,7 @@ export class Character {
     });
     document.dispatchEvent(playerMovedEvent);
     if (this.isWalking) return;
-    // this.prepareCrossFade(this.idleAction, this.walkAction);
+    this.prepareCrossFade(this.runAction);
     this.isWalking = true;
   }
 
@@ -201,13 +218,17 @@ export class Character {
   /*--- Animations section ----*/
 
   setAnimations(animations) {
-    this.idleAction = this.mixer.clipAction( animations.find(act => act.name === 'Idle') );
-    this.walkAction = this.mixer.clipAction( animations.find(act => act.name === 'Running') );
-    this.actions = [this.idleAction, this.walkAction];
+    this.idleAction = this.mixer.clipAction( animations.find(act => act.name === ACTIONS.IDLE));
+    this.runAction = this.mixer.clipAction( animations.find(act => act.name === ACTIONS.RUNNING));
+    this.rightAction = this.mixer.clipAction( animations.find(act => act.name === ACTIONS.RIGHT_STRAF));
+    this.leftAction = this.mixer.clipAction( animations.find(act => act.name === ACTIONS.LEFT_STRAF));
+    this.actions = [this.idleAction, this.runAction, this.rightAction, this.leftAction];
     this.activateAllActions();
   }
 
-  prepareCrossFade( startAction, endAction, duration = 0.3 ) {
+  prepareCrossFade( endAction, duration = 0.3 ) {
+    console.log(this.actions, startAction);
+    const startAction = this.actions.find(ac => ac._clip.name === this.action);
     // Switch default / custom crossfade duration (according to the user's choice)
     // const duration = this.setCrossFadeDuration( defaultDuration );
     this.unPauseAllActions();
@@ -242,6 +263,7 @@ export class Character {
 
     // Crossfade with warping - you can also try without warping by setting the third parameter to false
     startAction.crossFadeTo( endAction, duration, true );
+    this.action = endAction._clip.name;
   }
 
   setWeight( action, weight ) {
@@ -255,7 +277,7 @@ export class Character {
       this.setWeight( ac, i === 0 ? 1 : 0);
     });
     // this.setWeight( this.idleAction, 1 );
-    // this.setWeight( this.walkAction, 0 );
+    // this.setWeight( this.runAction, 0 );
     this.actions.forEach(( action ) => action.play());
   }
 

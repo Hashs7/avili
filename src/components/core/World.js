@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import Stats from 'stats.js'
+import Konami from 'konami'
 import CameraOperator from "./CameraOperator";
 import { GameManager } from "./GameManager";
 import { Character } from "../characters/Character";
@@ -44,13 +45,14 @@ export default class {
 
     this.resize();
     this.render();
+    this.wow();
   }
 
   /**
    * Load all environement props
    */
   loadProps() {
-    LoadManager.loadGLTF('./assets/models/characters/character.glb', (gltf) => {
+    LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb', (gltf) => {
       console.log(gltf);
       this.character = new Character(gltf, this.world, this.camera, this.gameManager.sceneManager);
       this.character.groupCamera();
@@ -100,17 +102,16 @@ export default class {
     this.stats.end();
   }
 
-  /**
-   * Add Object to the world
-   * @param object
-   */
   add(object) {}
 
   /**
-   * Remove Object to the world
-   * @param object
+   * Wow such a function
    */
-  remove(object) {}
+  wow() {
+    new Konami(() => {
+      AudioManager.playSound('KO.m4a');
+    });
+  }
 
   /**
    * Auto window resize

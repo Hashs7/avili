@@ -1,7 +1,6 @@
 import * as THREE from "three/src/Three";
 import { Body, Box, ConeTwistConstraint, PointToPointConstraint, Sphere, Vec3 } from "cannon-es/dist/index";
 import LoadManager from "../../core/LoadManager";
-import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils";
 import { toRadian } from "../../../utils";
 import { Quaternion } from "cannon-es";
 
@@ -193,7 +192,7 @@ export default class WordFactory {
   setScreenPerpCenter(point, camera) {
     if(!this.gplane) {
       const planeGeo = new THREE.PlaneGeometry(100,100);
-      const material = new THREE.MeshBasicMaterial( { transparent: true, opacity: 0 } );
+      const material = new THREE.MeshBasicMaterial( { transparent: true, opacity: 0.5 } );
       this.gplane = new THREE.Mesh(planeGeo, material);
       this.scene.add(this.gplane);
     }
@@ -201,7 +200,7 @@ export default class WordFactory {
     // Center at mouse position
     this.gplane.position.copy(point);
     // Make it face toward the camera
-    // this.gplane.quaternion.copy(camera.quaternion);
+    this.gplane.quaternion.copy(camera.quaternion);
   }
 
   projectOntoPlane(thePlane, camera) {

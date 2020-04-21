@@ -17,7 +17,8 @@ class AudioManager {
       'audio_msg_infiltration_2.mp3',
       'audio_msg_infiltration_3.mp3',
       'audio_msg_infiltration_4.mp3',
-      'audio_npc_bougezvous.mp3'
+      'audio_npc_bougezvous.mp3',
+      'KO.m4a'
     ];
     this.listener = new THREE.AudioListener();
     this.audios = [];
