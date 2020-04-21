@@ -229,6 +229,7 @@ export class Character {
   }
 
   prepareCrossFade( endAction, duration = 0.3 ) {
+    //console.log(this.actions, startAction);
     const startAction = this.actions.find(ac => ac._clip.name === this.action);
     // Switch default / custom crossfade duration (according to the user's choice)
     // const duration = this.setCrossFadeDuration( defaultDuration );
