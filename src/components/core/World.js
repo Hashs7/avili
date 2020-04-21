@@ -6,6 +6,7 @@ import { Character } from "../characters/Character";
 import LoadManager from './LoadManager';
 import { NaiveBroadphase, World } from "cannon-es";
 import AudioManager from "./AudioManager";
+import State from "./State";
 
 export default class {
   constructor(canvas) {
