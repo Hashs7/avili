@@ -147,25 +147,31 @@ export class Character {
 
 
   playerControls() {
+    const strafe =
+      this.inputManager.controls.left && this.inputManager.controls.up ||
+      this.inputManager.controls.right && this.inputManager.controls.up ||
+      this.inputManager.controls.left && this.inputManager.controls.down ||
+      this.inputManager.controls.right && this.inputManager.controls.down;
     if (this.inputManager.controls.up) {
-      this.move(0)
+      this.move(0, strafe)
     }
     if (this.inputManager.controls.down) {
-      this.move(quartDegree * 2)
+      this.move(quartDegree * 2, strafe)
     }
     if (this.inputManager.controls.left) {
-      this.move(quartDegree)
+      this.move(quartDegree, strafe)
     }
     if (this.inputManager.controls.right) {
-      this.move(-quartDegree)
+      this.move(-quartDegree, strafe)
     }
   }
 
-  move(decay) {
+  move(decay, isStrafing) {
+    const speed = isStrafing ? this.speed / 2 : this.speed;
     // this.character.body.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
     // this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
-    this.group.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
-    this.group.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
+    this.group.position.x += Math.sin(this.character.rotation.y + decay) * speed;
+    this.group.position.z += Math.cos(this.character.rotation.y + decay) * speed;
     this.setWalking();
   }
 
@@ -183,7 +189,7 @@ export class Character {
     });
     document.dispatchEvent(playerMovedEvent);
     if (this.isWalking) return;
-    this.prepareCrossFade(this.idleAction, this.walkAction);
+    // this.prepareCrossFade(this.idleAction, this.walkAction);
     this.isWalking = true;
   }
 
