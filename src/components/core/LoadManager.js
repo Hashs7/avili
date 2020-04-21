@@ -7,7 +7,7 @@ class LoadManager {
     this.manager = new THREE.LoadingManager();
     this.gltfLoader = new GLTFLoader(this.manager);
     this.fontLoader = new THREE.FontLoader(this.manager);
-    this.fbxLoader = new FBXLoader(this.manager);
+    this.fbxLoader = new FBXLoader();
     this.audioLoader = new THREE.AudioLoader(this.manager);
 
     this.manager.onStart = (url, itemsLoaded, itemsTotal) => this.startHandler(url, itemsLoaded, itemsTotal);
@@ -92,7 +92,7 @@ class LoadManager {
    * Handle error on load
    * @param url
    */
-  errorHandler( url ) {
+  errorHandler(url) {
     console.error( 'There was an error loading ' + url );
   }
 }

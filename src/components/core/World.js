@@ -49,12 +49,11 @@ export default class {
    * Load all environement props
    */
   loadProps() {
-    LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v4-face.glb', (gltf) => {
+    LoadManager.loadGLTF('./assets/models/characters/character.glb', (gltf) => {
+      console.log(gltf);
       this.character = new Character(gltf, this.world, this.camera, this.gameManager.sceneManager);
       this.character.groupCamera();
     });
-
-
   }
 
   getCharacter(){

@@ -22,7 +22,7 @@ export class Character {
     this.inputManager.setInputReceiver(this);
 
     this.raycaster = new THREE.Raycaster();
-
+    console.log();
     this.character = gltf.scene.children.find(el => el.name === 'EMILIE');
     this.character.position.set(0,1,0);
 
@@ -51,10 +51,9 @@ export class Character {
 
     window.addEventListener( 'mousemove', (e) => this.mouseMoveHandler(e), false );
 
-    //this.setAnimations(gltf.animations);
-    //this.activateAllActions();
+    // this.setAnimations(gltf.animations);
     this.sceneManager = sceneManager;
-    this.addBody(sceneManager);
+    // this.addBody(sceneManager);
     sceneManager.mainSceneAddObject(this.group);
   }
 
@@ -113,7 +112,6 @@ export class Character {
     this.camera.position.set(-9, 6.5, 5.8);
     this.camera.lookAt(this.character.position);
     this.group.add(this.camera);
-    this.updateLookAt();
   }
 
   mouseMoveHandler(event) {
@@ -144,10 +142,7 @@ export class Character {
     if (moving && this.action !== ACTIONS.WALK) {
       this.action = ACTIONS.WALK;
       // this.prepareCrossFade(this.idleAction, this.walkAction);
-      return;
     }
-
-    this.updateLookAt();
   }
 
 
@@ -167,22 +162,16 @@ export class Character {
   }
 
   move(decay) {
-    this.character.body.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
-    this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
+    // this.character.body.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
+    // this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
     this.group.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
     this.group.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
     this.setWalking();
   }
 
-  updateLookAt() {
-    // this.camera.lookAt(this.group.position.x - 135, this.group.position.y - 65,  this.group.position.z - 150);
-  }
-
   update() {
-    // console.log('vv', this.character.position);
-    // console.log('uu', this.character.body.position);
     // this.character.position.copy(this.character.body.position);
-    this.hitbox.position.copy(this.character.body.position);
+    // this.hitbox.position.copy(this.character.body.position);
     this.raycaster.setFromCamera( this.mouse, this.camera );
     this.playerControls();
     this.mixer.update( 0.01 );
@@ -194,7 +183,7 @@ export class Character {
     });
     document.dispatchEvent(playerMovedEvent);
     if (this.isWalking) return;
-    //this.prepareCrossFade(this.idleAction, this.walkAction);
+    this.prepareCrossFade(this.idleAction, this.walkAction);
     this.isWalking = true;
   }
 
@@ -202,10 +191,14 @@ export class Character {
     this.wakable = value;
   }
 
+
+  /*--- Animations section ----*/
+
   setAnimations(animations) {
     this.idleAction = this.mixer.clipAction( animations.find(act => act.name === 'Idle') );
-    this.walkAction = this.mixer.clipAction( animations.find(act => act.name === 'Walk') );
+    this.walkAction = this.mixer.clipAction( animations.find(act => act.name === 'Running') );
     this.actions = [this.idleAction, this.walkAction];
+    this.activateAllActions();
   }
 
   prepareCrossFade( startAction, endAction, duration = 0.3 ) {
@@ -224,7 +217,6 @@ export class Character {
      this.synchronizeCrossFade( startAction, endAction, duration );
      }*/
   }
-
 
   synchronizeCrossFade( startAction, endAction, duration ) {
     const onLoopFinished = ( event ) => {
@@ -253,8 +245,11 @@ export class Character {
   }
 
   activateAllActions() {
-    this.setWeight( this.idleAction, 1);
-    this.setWeight( this.walkAction, 0 );
+    this.actions.forEach((ac, i) => {
+      this.setWeight( ac, i === 0 ? 1 : 0);
+    });
+    // this.setWeight( this.idleAction, 1 );
+    // this.setWeight( this.walkAction, 0 );
     this.actions.forEach(( action ) => action.play());
   }
 

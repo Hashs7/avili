@@ -35,7 +35,7 @@ export default class extends Scene {
     const material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
     const splineObject = new THREE.Line( geometry, material );
     // this.world.cameraOperator.addTube(this.spline);
-    this.world.cameraOperator.addTube(
+    /*this.world.cameraOperator.addTube(
       new Curves.GrannyKnot(),
       100,
       true,
@@ -44,20 +44,34 @@ export default class extends Scene {
       10,
       THREE.BackSide,
       0x2194ce
-    );
+    );*/
 
-    LoadManager.loadFBX('./assets/models/splines/camera_01_v3.fbx', (fbx) => {
-      console.log('spline', fbx);
-      this.world.cameraOperator.addTube(fbx.children[0]);
-      this.world.cameraOperator.setTravelling(true);
+    /*const spline = new THREE.CatmullRomCurve3( [
+      new THREE.Vector3(250, 5, 300),
+      new THREE.Vector3( 200, 5, 200 ),
+      new THREE.Vector3( 40, 5, 140 ),
+      new THREE.Vector3( 40, 5, 40 ),
+      new THREE.Vector3( 10, 9, 40 ),
+      new THREE.Vector3(-9, 6.5, 5.8)
+    ]);*/
 
-      setTimeout(() => {
-        this.world.cameraOperator.setTravelling(false);
-        this.world.character.groupCamera();
-      }, 3000)
-    });
+    /*const spline = new THREE.CatmullRomCurve3([
+      new THREE.Vector3(300, -5, 300),
+      new THREE.Vector3(200, 0, 200),
+      new THREE.Vector3(100, 0, 50),
+      new THREE.Vector3(0, 0, 0),
+      new THREE.Vector3(0, 0, 0)
+    ]);*/
 
+    // this.world.camera.lookAt(0, 0, 0);
+    // this.world.cameraOperator.addTube(spline);
+    // this.world.cameraOperator.setTravelling(true);
+    // this.world.character.groupCamera();
 
+    setTimeout(() => {
+      // this.world.cameraOperator.setTravelling(false);
+      // this.world.character.groupCamera();
+    }, 10000)
   }
 
   detectSectionPassed(){

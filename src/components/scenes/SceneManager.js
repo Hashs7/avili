@@ -109,7 +109,7 @@ export default class {
     this.addScene(new ProjectileScene(this.towers, this.landingAreas, this.world))
   }
 
-  createBoundingBoxShape (object) {
+  createBoundingBoxShape(object) {
     let shape, localPosition,
       box = new THREE.Box3();
 
