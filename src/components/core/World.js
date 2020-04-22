@@ -60,7 +60,7 @@ export default class {
     LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb', (gltf) => {
       console.log(gltf);
       this.character = new Character(gltf, this.world, this.camera, this.gameManager.sceneManager);
-      // this.character.groupCamera();
+      this.character.groupCamera();
     });
   }
 

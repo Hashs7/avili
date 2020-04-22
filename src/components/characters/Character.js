@@ -3,6 +3,7 @@ import InputManager from "../core/InputManager";
 import { Body, Box,  Vec3 } from "cannon-es";
 import { makeTextSprite, toRadian } from "../../utils";
 import AudioManager from "../core/AudioManager";
+import {Raycaster} from "three";
 
 const ACTIONS = {
   IDLE: 'Idle',
@@ -53,7 +54,6 @@ export class Character {
   }
 
   addBody(sceneManager) {
-    console.log(this.character);
     const mesh = this.character.children.find(el => el.name === 'unamed');
     // const mesh = this.character;
     mesh.geometry.computeBoundingBox();
@@ -166,6 +166,32 @@ export class Character {
     });
   }
 
+  detectWallCollision () {
+    const character = new THREE.Vector3().setFromMatrixPosition(this.character.matrixWorld);
+    const walls = this.sceneManager.walls;
+
+    const directions = [
+      {vector : new THREE.Vector3(0, 0, 1), label: "forward"},
+      {vector : new THREE.Vector3(0.5, 0, 0.5), label: "for-left"},
+      {vector : new THREE.Vector3(0.5, 0, -0.5), label: "for-right"},
+      {vector : new THREE.Vector3(0, 0, -1), label: "backward"},
+      {vector : new THREE.Vector3(0.5, 0, -0.5), label: "back-left"},
+      {vector : new THREE.Vector3(-0.5, 0, -0.5), label: "back-right"},
+      {vector : new THREE.Vector3(1, 0, 0), label: "left"},
+      {vector : new THREE.Vector3(-1, 0, 0), label: "right"},
+    ]
+
+    let collisionWall = "";
+
+    directions.forEach(dir => {
+      const ray = new Raycaster(character, dir.vector.applyQuaternion( this.character.quaternion ),0, 0.5);
+      const objs = ray.intersectObject(walls, false);
+      collisionWall = objs.length > 0 ? dir.label : collisionWall;
+    });
+
+    return collisionWall;
+  }
+
 
   playerControls() {
     const straf = this.inputManager.controls.left && this.inputManager.controls.up ||
@@ -173,15 +199,25 @@ export class Character {
                   this.inputManager.controls.left && this.inputManager.controls.down ||
                   this.inputManager.controls.right && this.inputManager.controls.down;
     if (this.inputManager.controls.up) {
+      if (this.detectWallCollision() === "forward" ||
+          this.detectWallCollision() === "for-left" ||
+          this.detectWallCollision() === "for-right"
+      ) return;
       this.move(0, straf)
     }
     if (this.inputManager.controls.down) {
+      if (this.detectWallCollision() === "backward" ||
+          this.detectWallCollision() === "back-left" ||
+          this.detectWallCollision() === "back-right"
+      ) return;
       this.move(quartDegree * 2, straf)
     }
     if (this.inputManager.controls.left) {
+      if (this.detectWallCollision() === "left") return;
       this.move(quartDegree, straf)
     }
     if (this.inputManager.controls.right) {
+      if (this.detectWallCollision() === "right") return;
       this.move(-quartDegree, straf)
     }
   }
