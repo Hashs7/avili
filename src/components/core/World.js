@@ -8,6 +8,7 @@ import LoadManager from './LoadManager';
 import { NaiveBroadphase, World } from "cannon-es";
 import AudioManager from "./AudioManager";
 import State from "./State";
+import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 export default class {
   constructor(canvas) {
@@ -26,7 +27,8 @@ export default class {
     this.audioManager = AudioManager;
 
     this.camera = new THREE.PerspectiveCamera(25, window.innerWidth / window.innerHeight, 1, 8000);
-    this.cameraOperator = new CameraOperator(this, this.camera);
+    this.camera.name = 'MainCamera';
+    console.log(this.camera.rotation, this.camera.rotation.order);
 
     this.world = new World();
     this.world.gravity.set(0, -50, 0);
@@ -37,6 +39,8 @@ export default class {
     this.loadProps();
 
     this.gameManager = new GameManager(this, this.world, this.camera);
+    this.cameraOperator = new CameraOperator(this, this.camera);
+
     // Stats showing fps
     this.stats = new Stats();
     this.stats.showPanel(0);
@@ -46,6 +50,7 @@ export default class {
     this.resize();
     this.render();
     this.wow();
+    // this.debugCamera();
   }
 
   /**
@@ -55,7 +60,7 @@ export default class {
     LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb', (gltf) => {
       console.log(gltf);
       this.character = new Character(gltf, this.world, this.camera, this.gameManager.sceneManager);
-      this.character.groupCamera();
+      // this.character.groupCamera();
     });
   }
 
@@ -102,7 +107,9 @@ export default class {
     this.stats.end();
   }
 
-  add(object) {}
+  debugCamera() {
+    this.controls = new OrbitControls( this.camera, this.renderer.domElement );
+  }
 
   /**
    * Wow such a function

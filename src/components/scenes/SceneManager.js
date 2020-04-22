@@ -1,5 +1,5 @@
 import * as THREE from "three";
-import { Body, Box, Plane, Vec3 } from "cannon-es";
+import { Body, Box, ConvexPolyhedron, Plane, Vec3 } from "cannon-es";
 import SpawnScene from "./spawn/SpawnScene";
 import FieldOfViewScene from "./fieldOfView/FieldOfViewScene";
 import Skybox from "../core/Skybox";
@@ -94,21 +94,7 @@ export default class {
       this.setSpawn();
       this.setFov();
       this.setProjectile();
-    });/*
-    LoadManager.loadSTL('./assets/models/map/map-walls.stl', (stl) => {
-      const directGeo = new THREE.Geometry();
-      directGeo.fromBufferGeometry(stl);
-      console.log('map walls ', stl);
-      this.looool = directGeo;
-      this.log()
-    });*/
-  }
-  log() {
-    setTimeout(() => {
-      console.log(this.looool );
-      const body = generateBody([this.looool], { mass: 6, scale: new THREE.Vector3(1, 1, 1) });
-
-    }, 300)
+    });
   }
 
   setSpawn() {
@@ -150,6 +136,10 @@ export default class {
   }
 
   setWalls(object) {
+    // const directGeo = new THREE.Geometry();
+    // directGeo.fromBufferGeometry(object.geometry);
+    // const body = generateBody([directGeo], { mass: 6, scale: new THREE.Vector3(1, 1, 1) });
+    // console.log(body);
     /*const shape = threeToCannon(object);
     const walls = new Body({
       mass: 0,

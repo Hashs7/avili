@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon';
+import { Body, ConvexPolyhedron, Vec3 } from "cannon-es";
 
 export const generateThreeVertices = (rawVerts) => {
   let verts = [];
@@ -30,7 +31,7 @@ export const generateCannonVertices = (rawVerts) => {
   let verts = [];
 
   for(let v = 0; v < rawVerts.length; v++){
-    verts.push(new CANNON.Vec3(rawVerts[v].x,
+    verts.push(new Vec3(rawVerts[v].x,
       rawVerts[v].y,
       rawVerts[v].z));
   }
@@ -51,14 +52,13 @@ export const generateCannonFaces = (rawFaces) => {
 };
 
 export const generateBody = (groups, properties) => {
-  const body = new CANNON.Body({
+  const body = new Body({
     mass: properties.mass
   });
 
   for (let g = 0; g < groups.length; g++) {
     const group = groups[g];
-/*
-    const verts = generateThreeVertices(group.vertices);
+    /*const verts = generateThreeVertices(group.vertices);
     const faces = generateThreeFaces(group.faces);
     const geometry = new THREE.Geometry();
     const material = new THREE.MeshBasicMaterial();
@@ -79,7 +79,7 @@ export const generateBody = (groups, properties) => {
     const updatedVerts = generateCannonVertices(group.vertices);
     const updatedFaces = generateCannonFaces(group.faces);
 
-    const polyhedron = new CANNON.ConvexPolyhedron(updatedVerts,updatedFaces);
+    const polyhedron = new ConvexPolyhedron({ vertices: updatedVerts, faces: updatedFaces });
 
     body.addShape(polyhedron);
   }

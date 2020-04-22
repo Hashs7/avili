@@ -19,8 +19,6 @@ export default class extends Scene {
       new THREE.Vector3(-1094.6486616448392, 562.7261116761865, 123.47982751001086)
     ]);
 
-
-
     this.initTravelling();
     this.detectSectionPassed();
 
@@ -46,14 +44,15 @@ export default class extends Scene {
       0x2194ce
     );*/
 
-    /*const spline = new THREE.CatmullRomCurve3( [
-      new THREE.Vector3(250, 5, 300),
-      new THREE.Vector3( 200, 5, 200 ),
-      new THREE.Vector3( 40, 5, 140 ),
-      new THREE.Vector3( 40, 5, 40 ),
-      new THREE.Vector3( 10, 9, 40 ),
+    const spline = new THREE.CatmullRomCurve3( [
+      new THREE.Vector3(150, 5, 0),
+      new THREE.Vector3( 100, 5, 10 ),
+      new THREE.Vector3( 40, 5, -20 ),
+      new THREE.Vector3( 20, 5, 10 ),
+      new THREE.Vector3( 10, 9, 5 ),
       new THREE.Vector3(-9, 6.5, 5.8)
-    ]);*/
+    ]);
+    spline.name = 'spline';
 
     /*const spline = new THREE.CatmullRomCurve3([
       new THREE.Vector3(300, -5, 300),
@@ -64,8 +63,8 @@ export default class extends Scene {
     ]);*/
 
     // this.world.camera.lookAt(0, 0, 0);
-    // this.world.cameraOperator.addTube(spline);
-    // this.world.cameraOperator.setTravelling(true);
+    this.world.cameraOperator.addTube(spline);
+    this.world.cameraOperator.setTravelling(true);
     // this.world.character.groupCamera();
 
     setTimeout(() => {

@@ -1,5 +1,7 @@
 import * as THREE from "three";
 import { SceneUtils } from "three/examples/jsm/utils/SceneUtils";
+import { Vector3 } from "three";
+import { toRadian } from "../../utils";
 
 export default class {
   constructor(world, camera) {
@@ -10,14 +12,14 @@ export default class {
 
     this.binormal = new THREE.Vector3();
     this.normal = new THREE.Vector3();
-    this.parent = new THREE.Object3D();
+    this.parent = world.gameManager.sceneManager.mainScene;
 
     this.tube = null;
     this.mesh = null;
     this.tubeMesh = null;
     this.lookAhead = true;
     this.scale = 1;
-    this.offset = 100;
+    this.offset = 0;
   }
 
   /**
@@ -46,9 +48,9 @@ export default class {
 
     if (this.tubeMesh) parent.remove(this.tubeMesh);
 
-    this.tube = new THREE.TubeGeometry(spline, segments, 2, radiusSegments, false);
+    this.tube = new THREE.TubeGeometry(spline, segments, 0.1, radiusSegments, false);
     color = color || 0x2194ce;
-    geoSide = geoSide || THREE.DoubleSide;
+    geoSide = geoSide || THREE.FrontSide;
 
     this.addGeometry(mesh, this.tube, color, geoSide);
 
@@ -117,12 +119,12 @@ export default class {
     const lookAt = this.tube.parameters.path.getPointAt( ( t + 30 / this.tube.parameters.path.getLength() ) % 1 ).multiplyScalar( this.scale );
 
     // Camera Orientation 2 - up orientation via normal
-    if (!this.lookAhead) {
+    // if (!this.lookAhead) {
       lookAt.copy( pos ).add( dir );
-    }
+    // }
     this.camera.matrix.lookAt(this.camera.position, lookAt, this.normal);
-    this.camera.rotation.setFromRotationMatrix( this.camera.matrix, this.camera.rotation.order );
+    this.camera.rotation.setFromRotationMatrix( this.camera.matrix.makeRotationAxis(new THREE.Vector3(0, 1, 0), Math.PI/2), this.camera.rotation.order );
 
-    this.parent.rotation.y += ( this.targetRotation - this.parent.rotation.y ) * 0.05;
+    // this.parent.rotation.y += ( this.targetRotation - this.parent.rotation.y ) * 0.05;
   }
 }

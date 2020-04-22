@@ -49,6 +49,7 @@ export class Character {
     this.setAnimations(gltf.animations);
     this.addBody(sceneManager);
     sceneManager.mainSceneAddObject(this.group);
+    sceneManager.mainSceneAddObject(this.camera);
   }
 
   addBody(sceneManager) {

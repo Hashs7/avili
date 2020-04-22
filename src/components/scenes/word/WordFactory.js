@@ -107,7 +107,7 @@ export default class WordFactory {
     geometry.computeBoundingBox();
     geometry.computeBoundingSphere();
     const mesh = new THREE.Mesh(geometry, material);
-    const scaleFactor = 0.1
+    const scaleFactor = 0.1;
     mesh.scale.set(scaleFactor,scaleFactor,scaleFactor);
     mesh.name = text;
     mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3()).multiplyScalar(scaleFactor);
