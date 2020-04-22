@@ -19,7 +19,7 @@ export default class extends Scene {
       new THREE.Vector3(-1094.6486616448392, 562.7261116761865, 123.47982751001086)
     ]);
 
-    this.initTravelling();
+    //this.initTravelling();
     this.detectSectionPassed();
 
     return {

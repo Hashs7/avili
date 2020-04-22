@@ -20,6 +20,7 @@ export default class {
     this.sections = [];
     this.towers = [];
     this.landingAreas = []
+    this.walls = new THREE.Mesh();
   }
 
   initMainScene() {
@@ -66,7 +67,8 @@ export default class {
           this.matesPos.push(child.position)
         }
         if (child.name === 'walls') {
-          this.setWalls(child);
+          this.walls = child;
+          //this.setWalls(child);
         }
         if (child.name === 'map') {
           map = child;
