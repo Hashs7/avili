@@ -28,6 +28,7 @@ export default class {
    */
   setTravelling(isTravelling) {
     this.travelling = isTravelling;
+    this.start = Date.now();
   }
 
   /**
@@ -91,10 +92,11 @@ export default class {
    */
   renderFollowCamera() {
     if (!this.travelling) return;
-    const time = Date.now();
-    const looptime = 20 * 1000;
+    const time = Date.now() - this.start;
+    const looptime = 10 * 1000;
     const t = ( time % looptime ) / looptime;
     const pos = this.tube.parameters.path.getPointAt( t );
+
     pos.multiplyScalar( this.scale );
 
     // interpolation
@@ -120,11 +122,14 @@ export default class {
 
     // Camera Orientation 2 - up orientation via normal
     // if (!this.lookAhead) {
-      lookAt.copy( pos ).add( dir );
+    lookAt.copy( pos ).add( dir );
     // }
     this.camera.matrix.lookAt(this.camera.position, lookAt, this.normal);
     this.camera.rotation.setFromRotationMatrix( this.camera.matrix.makeRotationAxis(new THREE.Vector3(0, 1, 0), Math.PI/2), this.camera.rotation.order );
-
-    // this.parent.rotation.y += ( this.targetRotation - this.parent.rotation.y ) * 0.05;
+    this.camera.rotateY(toRadian(180))
+    console.log(t.toFixed(3));
+    if (Number(t.toFixed(3)) > 0.995) {
+      this.travelling = false;
+    }
   }
 }

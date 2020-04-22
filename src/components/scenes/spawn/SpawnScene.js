@@ -46,23 +46,13 @@ export default class extends Scene {
 
     const spline = new THREE.CatmullRomCurve3( [
       new THREE.Vector3(150, 5, 0),
-      new THREE.Vector3( 100, 5, 10 ),
-      new THREE.Vector3( 40, 5, -20 ),
-      new THREE.Vector3( 20, 5, 10 ),
+      new THREE.Vector3( 80, 5, 10 ),
+      new THREE.Vector3( 20, 5, -20 ),
       new THREE.Vector3( 10, 9, 5 ),
       new THREE.Vector3(-9, 6.5, 5.8)
     ]);
     spline.name = 'spline';
 
-    /*const spline = new THREE.CatmullRomCurve3([
-      new THREE.Vector3(300, -5, 300),
-      new THREE.Vector3(200, 0, 200),
-      new THREE.Vector3(100, 0, 50),
-      new THREE.Vector3(0, 0, 0),
-      new THREE.Vector3(0, 0, 0)
-    ]);*/
-
-    // this.world.camera.lookAt(0, 0, 0);
     this.world.cameraOperator.addTube(spline);
     this.world.cameraOperator.setTravelling(true);
     // this.world.character.groupCamera();
