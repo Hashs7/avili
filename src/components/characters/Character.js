@@ -3,7 +3,6 @@ import InputManager from "../core/InputManager";
 import { Body, Box,  Vec3 } from "cannon-es";
 import { makeTextSprite, toRadian } from "../../utils";
 import AudioManager from "../core/AudioManager";
-import {Raycaster} from "three";
 
 const ACTIONS = {
   IDLE: 'Idle',
@@ -184,7 +183,7 @@ export class Character {
     let collisionWall = "";
 
     directions.forEach(dir => {
-      const ray = new Raycaster(character, dir.vector.applyQuaternion( this.character.quaternion ),0, 0.5);
+      const ray = new THREE.Raycaster(character, dir.vector.applyQuaternion( this.character.quaternion ),0, 0.5);
       const objs = ray.intersectObject(walls, false);
       collisionWall = objs.length > 0 ? dir.label : collisionWall;
     });
