@@ -6,6 +6,8 @@ import Skybox from "../core/Skybox";
 import LoadManager from '../core/LoadManager';
 import ProjectileScene from "./projectile/ProjectileScene";
 import { generateBody } from "../../utils/cannon";
+import { Pathfinding } from "three-pathfinding";
+import gsap from 'gsap';
 
 export default class {
   constructor(world, worldPhysic) {
@@ -29,6 +31,31 @@ export default class {
     this.addFloor();
     this.addMap();
     this.mainScene.add(light);
+  }
+
+  setNPC(map) {
+    const geometry = new THREE.BoxGeometry(1, 1, 1);
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ffff });
+    const navmesh = new THREE.Mesh(geometry, material);
+    this.mainSceneAddObject(navmesh)
+    const pathfinding = new Pathfinding();
+    const ZONE = 'level1';
+    console.log(map);
+    pathfinding.setZoneData(ZONE, Pathfinding.createZone(map.geometry));
+
+// Find path from A to B.
+    const a = new THREE.Vector3(150, 0, 0);
+    const b = new THREE.Vector3(0, 0, 0);
+    navmesh.position.copy(a);
+
+    const groupID = pathfinding.getGroup(ZONE, a);
+    const path = pathfinding.findPath(a, b, ZONE, groupID);
+    console.log(path);
+    path.forEach(({x, z}, i) => {
+      gsap.to(navmesh.position, {
+        x, z, duration: 1, delay: i
+      });
+    })
   }
 
   /**
@@ -72,6 +99,7 @@ export default class {
         }
         if (child.name === 'map') {
           map = child;
+          this.setNPC(child)
         }
         if (child.name === 'NurbsPath') {
           this.spline = child;

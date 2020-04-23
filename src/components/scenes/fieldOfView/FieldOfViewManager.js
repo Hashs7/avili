@@ -19,9 +19,9 @@ export default class FieldOfViewManager {
     npcPositions.forEach(({ x, z }) => this.addNPC(x, z));
 
     document.addEventListener('playerMoved', e => {
-      const characterPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
-      this.lastPosition = characterPosition;
-      this.detectFieldOfView(characterPosition);
+      const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
+      this.lastPosition = playerPosition;
+      this.detectFieldOfView(playerPosition);
     });
   }
 
@@ -86,8 +86,8 @@ export default class FieldOfViewManager {
 
     objs.forEach(obj => {
       if (obj.object.name === this.fieldOfViewName) {
-        const character = this.world.getCharacter();
-        character.group.position.copy(this.world.lastCheckpointCoord);
+        const player = this.world.getplayer();
+        player.group.position.copy(this.world.lastCheckpointCoord);
         AudioManager.playSound("audio_mot_cuisine.mp3");
       }
     });

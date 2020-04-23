@@ -3,11 +3,10 @@ import Stats from 'stats.js'
 import Konami from 'konami'
 import CameraOperator from "./CameraOperator";
 import { GameManager } from "./GameManager";
-import { Character } from "../characters/Character";
+import Player from "../characters/Player";
 import LoadManager from './LoadManager';
 import { NaiveBroadphase, World } from "cannon-es";
 import AudioManager from "./AudioManager";
-import State from "./State";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 
 export default class {
@@ -34,7 +33,7 @@ export default class {
     this.world.gravity.set(0, -50, 0);
     this.world.broadphase = new NaiveBroadphase();
 
-    this.character = null;
+    this.player = null;
     this.lastCheckpointCoord = new THREE.Vector3();
     this.loadProps();
 
@@ -50,7 +49,7 @@ export default class {
     this.resize();
     this.render();
     this.wow();
-    // this.debugCamera();
+    this.debugCamera();
   }
 
   /**
@@ -58,14 +57,13 @@ export default class {
    */
   loadProps() {
     LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb', (gltf) => {
-      console.log(gltf);
-      this.character = new Character(gltf, this.world, this.camera, this.gameManager.sceneManager);
-      this.character.groupCamera();
+      this.player = new Player(gltf, this.world, this.camera, this.gameManager.sceneManager, 'EMILIE');
+      this.player.groupCamera();
     });
   }
 
-  getCharacter(){
-    return this.character;
+  getplayer(){
+    return this.player;
   }
 
 
@@ -74,8 +72,8 @@ export default class {
    * @param timeStep
    */
   update(timeStep) {
-    if(this.character) {
-      this.character.update()
+    if(this.player) {
+      this.player.update()
     }
     this.gameManager.sceneManager.update();
     this.cameraOperator.renderFollowCamera();

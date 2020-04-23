@@ -25,8 +25,8 @@ export default class ProjectileManager {
     });
 
     document.addEventListener('playerMoved', e => {
-      const characterPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
-      this.detectLandingArea(characterPosition);
+      const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
+      this.detectLandingArea(playerPosition);
     });
   }
 
@@ -91,8 +91,8 @@ export default class ProjectileManager {
 
     objs.forEach(obj => {
       if (obj.object.name === this.landingAreaName) {
-        const character = this.world.getCharacter();
-        character.group.position.copy(this.world.lastCheckpointCoord);
+        const player = this.world.getplayer();
+        player.group.position.copy(this.world.lastCheckpointCoord);
       }
     });
   }

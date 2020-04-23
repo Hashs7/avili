@@ -55,11 +55,11 @@ export default class extends Scene {
 
     this.world.cameraOperator.addTube(spline);
     this.world.cameraOperator.setTravelling(true);
-    // this.world.character.groupCamera();
+    // this.world.player.groupCamera();
 
     setTimeout(() => {
       // this.world.cameraOperator.setTravelling(false);
-      // this.world.character.groupCamera();
+      // this.world.player.groupCamera();
     }, 10000)
   }
 
@@ -77,17 +77,17 @@ export default class extends Scene {
       sectionHarcelement: 'audio_intro_insulte.mp3',
     };
     document.addEventListener('playerMoved', e => {
-      const characterPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
+      const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
       const direction = new THREE.Vector3( 0, 0, -1 ).applyQuaternion( e.detail.quaternion );
-      ray.set(characterPosition, direction);
+      ray.set(playerPosition, direction);
       const objs = ray.intersectObjects(this.sections, false);
       if(objs.length === 0) return;
       const audio = sectionsAudio[objs[0].object.name];
       if (!audio) return;
       objs[0].object.name += 'Passed';
 
-      characterPosition.y = 0;
-      this.world.lastCheckpointCoord = characterPosition;
+      playerPosition.y = 0;
+      this.world.lastCheckpointCoord = playerPosition;
 
       AudioManager.playSound(audio);
     });
