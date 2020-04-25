@@ -56,11 +56,10 @@ export default class {
   /**
    * Load all environement props
    */
-  loadProps() {
-    LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb', (gltf) => {
-      this.player = new Player(gltf, this.world, this.camera, this.gameManager.sceneManager, 'EMILIE');
-      this.player.groupCamera();
-    });
+  async loadProps() {
+    const gltf = await LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb');
+    this.player = new Player(gltf, this.world, this.camera, this.gameManager.sceneManager, 'EMILIE');
+    this.player.groupCamera();
   }
 
   getplayer(){

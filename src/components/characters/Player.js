@@ -11,7 +11,7 @@ export default class extends Character {
   constructor(gltf, world, camera, sceneManager, name) {
     super(gltf, world, sceneManager, name);
     this.camera = camera;
-    this.speed = 0.1;
+    this.speed = 0.03;
     this.wakable = true;
     this.inputManager = new InputManager();
     this.inputManager.setInputReceiver(this);
@@ -57,7 +57,6 @@ export default class extends Character {
       // collisionFilterMask:  GROUP1 // It can only collide with group 1 (the sphere)
     });
     this.character.body.addEventListener("collide",(e) => {
-      // console.log(e);
       // console.log("The character just collided with ", e.name);
       // console.log("Collided with body:",e.body);
       // console.log("Contact between bodies:",e.contact);
@@ -73,7 +72,7 @@ export default class extends Character {
     this.hitbox.position.set(0, size.y / 2, 0);
     this.hitbox.name = 'hitbox'
     // this.group.add(this.hitbox);
-    sceneManager.mainSceneAddObject(this.hitbox);
+    // sceneManager.mainSceneAddObject(this.hitbox);
 
     const playerName = makeTextSprite( " Michel ", { fontsize: 20, fontface: "Arial" });
     playerName.position.set(size.x, size.y, size.z);

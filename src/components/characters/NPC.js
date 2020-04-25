@@ -6,54 +6,71 @@ import { Pathfinding } from "three-pathfinding";
 export default class extends Character {
   constructor(gltf, world, sceneManager, name, startPosition, mapGeometry) {
     super(gltf, world, sceneManager, name);
-    this.speed = 0.05;
+    this.speed = 0.2;
     this.isWalking = false;
     this.target = [];
+    this.group.name = 'NPC';
 
-    this.group.position.set(startPosition.x | 0, startPosition.y | 0, startPosition.z | 0)
+    this.group.position.copy(startPosition);
     this.setPathFinding(mapGeometry);
     this.prepareCrossFade(this.runAction);
   }
 
+  /**
+   * init pathfinding
+   * @param map
+   */
   setPathFinding(map) {
     this.pathfinding = new Pathfinding();
     this.ZONE = 'level1';
     this.pathfinding.setZoneData(this.ZONE, Pathfinding.createZone(map));
   }
 
+  /**
+   * Move npc to Vector3
+   * @param target
+   */
   moveTo(target) {
     const groupID = this.pathfinding.getGroup(this.ZONE, this.group.position);
     this.target = this.pathfinding.findPath(this.group.position, target, this.ZONE, groupID);
     this.setWalking(true);
-    this.setOrientation();
+    this.setOrientation(this.target[0]);
   }
 
-  move(decay) {
-    this.group.add.x += Math.sin(this.character.rotation.y + decay) * this.speed;
-    this.group.position.z += Math.cos(this.character.rotation.y + decay) * this.speed ;
-    this.setWalking(true);
-  }
-
+  /**
+   * Update each frame
+   * @param dt
+   */
   update(dt) {
-    this.mixer.update( 0.01 );
+    this.mixer.update( dt * 10 );
+    // this.mixer.update( 0.01 );
     if (!this.target.length) return;
     const velocity = this.target[0].clone().sub( this.group.position );
     if (velocity.lengthSq() > 0.05 * 0.05) {
       velocity.normalize();
-      this.group.position.add( velocity.multiplyScalar( dt * 15 ) );
+      this.group.position.add( velocity.multiplyScalar( dt * 30 ) );
     } else {
       this.target.shift();
-      if(this.target.length) {
-        this.setOrientation()
-      }
       this.setWalking(!!this.target.length);
+
+      if(!this.target.length) return;
+      this.setOrientation(this.target[0])
     }
   }
 
-  setOrientation() {
-    this.character.rotation.y = Math.atan2(this.target[0].x, this.target[0].z);
+  /**
+   * Turn npc orientation with Vector3
+   * @param x
+   * @param z
+   */
+  setOrientation({ x, z }) {
+    this.character.rotation.y = Math.atan2(x, z);
   }
 
+  /**
+   *
+   * @param walk
+   */
   setWalking(walk) {
     if (this.isWalking === walk) return;
     console.log('crossfade', this.runAction);
@@ -63,9 +80,10 @@ export default class extends Character {
   }
 
   /**
-   * Add player pseudo
+   * Add npc pseudo
+   * @param name
    */
-  addPseudo() {
+  addPseudo(name) {
     const mesh = this.player.children.find(el => el.name === 'unamed');
     mesh.geometry.computeBoundingBox();
     mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
@@ -74,7 +92,6 @@ export default class extends Character {
       y: mesh.size.y,
       z: mesh.size.z,
     };
-    const name = 'Jean-mi'
     const playerName = makeTextSprite( ` ${name} `, { fontsize: 20, fontface: "Arial" });
     playerName.position.set(size.x, size.y, size.z);
     this.group.add( playerName );

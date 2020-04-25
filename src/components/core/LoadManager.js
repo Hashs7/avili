@@ -2,12 +2,14 @@ import * as THREE from "three/src/Three";
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import { FBXLoader } from "three/examples/jsm/loaders/FBXLoader";
 import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
+import { TextureLoader } from "three/src/Three";
 
 class LoadManager {
   constructor() {
     THREE.Cache.enabled = true;
     this.manager = new THREE.LoadingManager();
     this.gltfLoader = new GLTFLoader(this.manager);
+    this.textureLoader = new TextureLoader(this.manager);
     this.fontLoader = new THREE.FontLoader(this.manager);
     this.fbxLoader = new FBXLoader();
     this.stlLoader = new STLLoader();
@@ -25,7 +27,7 @@ class LoadManager {
    * @param onLoadingFinished
    */
   loadGLTF(path, onLoadingFinished) {
-    this.gltfLoader.load(path, (gltf) => onLoadingFinished(gltf));
+    return new Promise( resolve => this.gltfLoader.load(path, (f) => resolve(f)));
   }
 
   /**
@@ -34,7 +36,16 @@ class LoadManager {
    * @param onLoadingFinished
    */
   loadFBX(path, onLoadingFinished) {
-    this.fbxLoader.load(path, (f) => onLoadingFinished(f));
+    return new Promise( resolve => this.fbxLoader.load(path, (f) => resolve(f)));
+  }
+
+  /**
+   * Load FBX file
+   * @param path
+   * @param onLoadingFinished
+   */
+  loadTexture(path, onLoadingFinished) {
+    return new Promise( resolve => this.textureLoader.load(path, (f) => resolve(f)));
   }
 
   /**

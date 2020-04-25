@@ -36,27 +36,21 @@ export default class {
   }
 
   setNPC(map) {
-    const geometry = new THREE.BoxGeometry(1, 1, 1);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ffff });
-    const navmesh = new THREE.Mesh(geometry, material);
-    this.mainSceneAddObject(navmesh)
-
-
-
-    LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb', (gltf) => {
-      const npc = new NPC(gltf, this.world, this, 'EMILIE', {x: 5, y: 0, z: 5}, map.geometry);
-      this.npc.push(npc)
-      npc.moveTo(new THREE.Vector3(10, 0, 0))
-    });
-    LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb', (gltf) => {
-      const npc = new NPC(gltf, this.world, this, 'EMILIE', {x: 2, y: 0, z: -2}, map.geometry);
-      this.npc.push(npc)
-      npc.moveTo(new THREE.Vector3(5, 0, 0))
-    });
-    LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb', (gltf) => {
-      const npc = new NPC(gltf, this.world, this, 'EMILIE', {x: 0, y: 0, z: -3}, map.geometry);
-      this.npc.push(npc)
-      npc.moveTo(new THREE.Vector3(5, 0, 5))
+    const npcs = [{
+      position: new THREE.Vector3(-2, 0, 2),
+      target: new THREE.Vector3(-3, 0, 0),
+    },{
+      position: new THREE.Vector3(2, 0, -2),
+      target: new THREE.Vector3(0, 0, 3),
+    },{
+      position: new THREE.Vector3(5, 0, -3),
+      target: new THREE.Vector3(5, 0, 5),
+    }];
+    npcs.forEach(async (n) => {
+      const gltf = await LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb');
+      const npc = new NPC(gltf, this.world, this, 'EMILIE', n.position, map.geometry);
+      this.npc.push(npc);
+      npc.moveTo(n.target)
     });
   }
 
@@ -81,52 +75,54 @@ export default class {
     this.mainSceneAddObject(plane);
   }
 
-  addMap() {
-    LoadManager.loadGLTF('./assets/models/map/map.glb', (gltf) => {
-      let map = new THREE.Mesh();
-      let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
+  async addMap() {
+    const gltf = await LoadManager.loadGLTF('./assets/models/map/map.glb');
+    let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
 
-      gltf.scene.traverse((child) => {
-        if (child.name.startsWith('section')) {
-          child.material.transparent = true;
-          child.material.opacity = 0.2;
-        }
+    gltf.scene.traverse((child) => {
+      if (child.name.startsWith('section')) {
+        child.material.transparent = true;
+        child.material.opacity = 0.2;
+      }
 
-        if (child.name.split('mate').length > 1) {
-          this.matesPos.push(child.position)
-        }
-        if (child.name === 'walls') {
-          this.walls = child;
-          //this.setWalls(child);
-        }
-        if (child.name === 'map') {
-          map = child;
-          this.setNPC(child)
-        }
-        if (child.name === 'NurbsPath') {
-          this.spline = child;
-        }
+      if (child.name.split('mate').length > 1) {
+        this.matesPos.push(child.position)
+      }
+      if (child.name === 'walls') {
+        this.walls = child;
+        //this.setWalls(child);
+      }
+      if (child.name === 'map') {
+        this.setMap(child);
+        this.setNPC(child);
+      }
+      if (child.name === 'NurbsPath') {
+        this.spline = child;
+      }
 
-        if (sectionName.includes(child.name)) {
-          this.sections.push(child);
-        }
-        if(child.name.startsWith('tower')) {
-          this.towers.push(child);
-        }
-        if(child.name.startsWith('z')) {
-          this.landingAreas.push(child);
-        }
-      });
-
-      gltf.scene.children.filter(el => el.name !== 'map');
-      map.material = new THREE.MeshPhongMaterial({color: 0xaaaaaa});
-
-      this.mainSceneAddObject(gltf.scene);
-      this.mainSceneAddObject(map);
-      this.setSpawn();
-      this.setFov();
-      this.setProjectile();
+      if (sectionName.includes(child.name)) {
+        this.sections.push(child);
+      }
+      if(child.name.startsWith('tower')) {
+        this.towers.push(child);
+      }
+      if(child.name.startsWith('z')) {
+        this.landingAreas.push(child);
+      }
     });
+
+    gltf.scene.children.filter(el => el.name !== 'map');
+
+    this.mainSceneAddObject(gltf.scene);
+    this.setSpawn();
+    this.setFov();
+    this.setProjectile();
+  }
+
+  async setMap(map) {
+    const texture = await LoadManager.loadTexture('./assets/textures/FloorsCheckerboard_S_Diffuse.jpg');
+    map.material = new THREE.MeshBasicMaterial({ map: texture });
+    this.mainSceneAddObject(map);
   }
 
   setSpawn() {
