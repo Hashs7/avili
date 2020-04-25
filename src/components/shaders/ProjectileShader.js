@@ -1,5 +1,3 @@
-import * as THREE from 'three';
-
 export let ProjectileShader = {
   vertexShader:`
   varying vec3 vUv;

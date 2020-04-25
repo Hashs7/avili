@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import { SceneUtils } from "three/examples/jsm/utils/SceneUtils";
-import { Vector3 } from "three";
 import { toRadian } from "../../utils";
 
 export default class {

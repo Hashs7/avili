@@ -22,29 +22,26 @@ class LoadManager {
   }
 
   /**
-   * Load GLB file modele
+   * Load GLB file
    * @param path
-   * @param onLoadingFinished
    */
-  loadGLTF(path, onLoadingFinished) {
+  loadGLTF(path) {
     return new Promise( resolve => this.gltfLoader.load(path, (f) => resolve(f)));
   }
 
   /**
    * Load FBX file
    * @param path
-   * @param onLoadingFinished
    */
-  loadFBX(path, onLoadingFinished) {
+  loadFBX(path) {
     return new Promise( resolve => this.fbxLoader.load(path, (f) => resolve(f)));
   }
 
   /**
    * Load FBX file
    * @param path
-   * @param onLoadingFinished
    */
-  loadTexture(path, onLoadingFinished) {
+  loadTexture(path) {
     return new Promise( resolve => this.textureLoader.load(path, (f) => resolve(f)));
   }
 

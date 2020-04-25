@@ -119,6 +119,7 @@ export default class {
   async setMap(map) {
     const texture = await LoadManager.loadTexture('./assets/textures/FloorsCheckerboard_S_Diffuse.jpg');
     map.material = new THREE.MeshBasicMaterial({ map: texture });
+    map.material = new THREE.MeshBasicMaterial({ color: 0xaaaaaa });
     this.mainSceneAddObject(map);
   }
 
@@ -160,19 +161,19 @@ export default class {
     return shape;
   }
 
-  setWalls(object) {
+  /*setWalls(object) {
     // const directGeo = new THREE.Geometry();
     // directGeo.fromBufferGeometry(object.geometry);
     // const body = generateBody([directGeo], { mass: 6, scale: new THREE.Vector3(1, 1, 1) });
     // console.log(body);
-    /*const shape = threeToCannon(object);
+    /!*const shape = threeToCannon(object);
     const walls = new Body({
       mass: 0,
       shape,
       position: object.position,
     });
-    this.worldPhysic.addBody(walls);*/
-  }
+    this.worldPhysic.addBody(walls);*!/
+  }*/
 
   mainSceneAddObject(mesh) {
     this.mainScene.add(mesh);

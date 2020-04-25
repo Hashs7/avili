@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { makeTextSprite, toRadian } from "../../utils";
+import { makeTextSprite } from "../../utils";
 import Character from "./Character";
 import { Pathfinding } from "three-pathfinding";
 
@@ -41,7 +41,7 @@ export default class extends Character {
    * Update each frame
    * @param dt
    */
-  update(dt) {
+  update() {
     // TODO fix dt
     // this.mixer.update( dt * 10 );
     this.mixer.update( 0.01 );
