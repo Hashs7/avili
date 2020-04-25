@@ -1,14 +1,16 @@
 import * as THREE from 'three';
-import gsap from 'gsap';
-import {Vector3} from "three";
 import {Raycaster} from "three";
-import AudioManager from "../../core/AudioManager";
+import {ProjectileShader} from "../../shaders/ProjectileShader";
 
 export default class ProjectileManager {
   constructor(scene, towers, landingAreas, world) {
     this.scene = scene;
     this.world = world;
     this.landingAreaName = "LandingArea";
+    this.uniforms = {
+      uSize: {type: 'float', value:  -6.0}
+    }
+    this.direction = 0;
 
     const arr = [
       landingAreas.slice(0, 4),
@@ -45,7 +47,7 @@ export default class ProjectileManager {
   }
 
   createProjectileFrom(originCoord, endCoord){
-    const direction = new THREE.Vector3().subVectors(originCoord, endCoord);
+    this.direction = new THREE.Vector3().subVectors(originCoord, endCoord);
     const orientation = new THREE.Matrix4();
     orientation.lookAt(originCoord, endCoord, new THREE.Object3D().up);
     orientation.multiply(new THREE.Matrix4().set(
@@ -55,8 +57,13 @@ export default class ProjectileManager {
       0, 0, 0, 1
     ));
 
-    const geometry = new THREE.CylinderGeometry( 0.01, 0.01, direction.length(), 10 );
-    const material = new THREE.MeshPhongMaterial( {color: 0x00aa00} );
+    const geometry = new THREE.CylinderGeometry( 0.05, 0.05, this.direction.length(), 10 );
+    const material = new THREE.ShaderMaterial({
+      uniforms: this.uniforms,
+      vertexShader: ProjectileShader.vertexShader,
+      fragmentShader: ProjectileShader.fragmentShader,
+      transparent: true,
+    })
     const cylinder = new THREE.Mesh( geometry, material );
 
     cylinder.applyMatrix4(orientation);
@@ -95,6 +102,13 @@ export default class ProjectileManager {
         player.group.position.copy(this.world.lastCheckpointCoord);
       }
     });
+  }
+
+  update(){
+    if ( this.uniforms[ "uSize" ].value <= this.direction.length() / 2 ) {
+      this.uniforms[ "uSize" ].value += 0.02;
+    }
+    //console.log(this.uniforms[ "uSize" ].value);
   }
 
   /*startTimeline(){
