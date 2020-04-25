@@ -5,6 +5,7 @@ import { STLLoader } from "three/examples/jsm/loaders/STLLoader";
 
 class LoadManager {
   constructor() {
+    THREE.Cache.enabled = true;
     this.manager = new THREE.LoadingManager();
     this.gltfLoader = new GLTFLoader(this.manager);
     this.fontLoader = new THREE.FontLoader(this.manager);

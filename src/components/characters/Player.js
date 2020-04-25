@@ -18,9 +18,6 @@ export default class extends Character {
 
     this.raycaster = new THREE.Raycaster();
 
-
-
-    this.group.add(this.player);
     AudioManager.groupListener(this.group);
 
     //console.log(gltf.scene);
@@ -33,13 +30,12 @@ export default class extends Character {
 
     this.sceneManager = sceneManager;
     this.addBody(sceneManager);
-    sceneManager.mainSceneAddObject(this.group);
     sceneManager.mainSceneAddObject(this.camera);
   }
 
   addBody(sceneManager) {
-    const mesh = this.player.children.find(el => el.name === 'unamed');
-    // const mesh = this.player;
+    const mesh = this.character.children.find(el => el.name === 'unamed');
+    // const mesh = this.character;
     mesh.geometry.computeBoundingBox();
     mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
     // const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
@@ -52,22 +48,22 @@ export default class extends Character {
     // const cylinderShape = new Cylinder(mesh.size.y/2, mesh.size.y/2,  mesh.size.x/2, 8);
     const boxShape = new Box(new Vec3(size.x/2, size.y/2, size.x/2));
 
-    this.player.body = new Body({
+    this.character.body = new Body({
       mass: 5,
       shape: boxShape,
-      position: new Vec3(this.player.position.x, 2, this.player.position.z),
-      // position: new Vec3().copy(this.player.position),
+      position: new Vec3(this.character.position.x, 2, this.character.position.z),
+      // position: new Vec3().copy(this.character.position),
       collisionFilterGroup: 1,
       // collisionFilterMask:  GROUP1 // It can only collide with group 1 (the sphere)
     });
-    this.player.body.addEventListener("collide",(e) => {
+    this.character.body.addEventListener("collide",(e) => {
       // console.log(e);
-      // console.log("The player just collided with ", e.name);
+      // console.log("The character just collided with ", e.name);
       // console.log("Collided with body:",e.body);
       // console.log("Contact between bodies:",e.contact);
     });
 
-    this.world.addBody(this.player.body);
+    this.world.addBody(this.character.body);
     console.log('size', mesh.size.x, mesh.size.y, mesh.size.z);
 
     const geometry = new THREE.CylinderGeometry( size.x, size.x, size.y, 8 );
@@ -89,10 +85,9 @@ export default class extends Character {
   }
 
   groupCamera() {
-    this.player.position.set(0, 1.150, 0);
+    this.character.position.set(0, 1.150, 0);
     this.camera.position.set(-9, 6.5, 5.8);
-    this.camera.lookAt(this.player.position);
-    console.log(this.group);
+    this.camera.lookAt(this.character.position);
     this.group.add(this.camera);
   }
 
@@ -108,7 +103,7 @@ export default class extends Character {
         z: el.point.z - this.group.position.z
       };
       if (Math.sqrt(position.x * position.x + position.z * position.z) < 0.1) return;
-      this.player.rotation.y = Math.atan2(position.x, position.z);
+      this.character.rotation.y = Math.atan2(position.x, position.z);
     });
   }
 
@@ -152,7 +147,7 @@ export default class extends Character {
   }
 
   detectWallCollision () {
-    const player = new THREE.Vector3().setFromMatrixPosition(this.player.matrixWorld);
+    const character = new THREE.Vector3().setFromMatrixPosition(this.character.matrixWorld);
     const walls = this.sceneManager.walls;
 
     const directions = [
@@ -164,12 +159,12 @@ export default class extends Character {
       {vector : new THREE.Vector3(-0.5, 0, -0.5), label: "back-right"},
       {vector : new THREE.Vector3(1, 0, 0), label: "left"},
       {vector : new THREE.Vector3(-1, 0, 0), label: "right"},
-    ]
+    ];
 
     let collisionWall = '';
 
     directions.forEach(dir => {
-      const ray = new THREE.Raycaster(player, dir.vector.applyQuaternion( this.player.quaternion ),0, 0.5);
+      const ray = new THREE.Raycaster(character, dir.vector.applyQuaternion( this.character.quaternion ),0, 0.5);
       const objs = ray.intersectObject(walls, false);
       collisionWall = objs.length > 0 ? dir.label : collisionWall;
     });
@@ -209,24 +204,24 @@ export default class extends Character {
 
   move(decay, isStrafing) {
     const speed = isStrafing ? this.speed / 2 : this.speed;
-    // this.player.body.position.x += Math.sin(this.player.rotation.y + decay) * this.speed;
-    // this.player.body.position.z += Math.cos(this.player.rotation.y + decay) * this.speed;
-    this.group.position.x += Math.sin(this.player.rotation.y + decay) * speed;
-    this.group.position.z += Math.cos(this.player.rotation.y + decay) * speed;
+    // this.character.body.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
+    // this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
+    this.group.position.x += Math.sin(this.character.rotation.y + decay) * speed;
+    this.group.position.z += Math.cos(this.character.rotation.y + decay) * speed;
     this.setWalking();
   }
 
   update() {
-    // this.player.position.copy(this.player.body.position);
-    // this.hitbox.position.copy(this.player.body.position);
+    // this.character.position.copy(this.character.body.position);
+    // this.hitbox.position.copy(this.character.body.position);
+    this.mixer.update( 0.01 );
     this.raycaster.setFromCamera( this.mouse, this.camera );
     this.playerControls();
-    this.mixer.update( 0.01 );
   }
 
   setWalking() {
     const playerMovedEvent = new CustomEvent('playerMoved', {
-      detail: this.player,
+      detail: this.character,
     });
     document.dispatchEvent(playerMovedEvent);
     if (this.isWalking) return;

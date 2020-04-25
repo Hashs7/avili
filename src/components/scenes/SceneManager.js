@@ -8,6 +8,7 @@ import ProjectileScene from "./projectile/ProjectileScene";
 import { generateBody } from "../../utils/cannon";
 import { Pathfinding } from "three-pathfinding";
 import gsap from 'gsap';
+import NPC from "../characters/NPC";
 
 export default class {
   constructor(world, worldPhysic) {
@@ -20,6 +21,7 @@ export default class {
     this.initMainScene();
 
     this.sections = [];
+    this.npc = [];
     this.towers = [];
     this.landingAreas = []
     this.walls = new THREE.Mesh();
@@ -38,24 +40,24 @@ export default class {
     const material = new THREE.MeshBasicMaterial({ color: 0x00ffff });
     const navmesh = new THREE.Mesh(geometry, material);
     this.mainSceneAddObject(navmesh)
-    const pathfinding = new Pathfinding();
-    const ZONE = 'level1';
-    console.log(map);
-    pathfinding.setZoneData(ZONE, Pathfinding.createZone(map.geometry));
 
-// Find path from A to B.
-    const a = new THREE.Vector3(150, 0, 0);
-    const b = new THREE.Vector3(0, 0, 0);
-    navmesh.position.copy(a);
 
-    const groupID = pathfinding.getGroup(ZONE, a);
-    const path = pathfinding.findPath(a, b, ZONE, groupID);
-    console.log(path);
-    path.forEach(({x, z}, i) => {
-      gsap.to(navmesh.position, {
-        x, z, duration: 1, delay: i
-      });
-    })
+
+    LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb', (gltf) => {
+      const npc = new NPC(gltf, this.world, this, 'EMILIE', {x: 5, y: 0, z: 5}, map.geometry);
+      this.npc.push(npc)
+      npc.moveTo(new THREE.Vector3(10, 0, 0))
+    });
+    LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb', (gltf) => {
+      const npc = new NPC(gltf, this.world, this, 'EMILIE', {x: 2, y: 0, z: -2}, map.geometry);
+      this.npc.push(npc)
+      npc.moveTo(new THREE.Vector3(5, 0, 0))
+    });
+    LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb', (gltf) => {
+      const npc = new NPC(gltf, this.world, this, 'EMILIE', {x: 0, y: 0, z: -3}, map.geometry);
+      this.npc.push(npc)
+      npc.moveTo(new THREE.Vector3(5, 0, 5))
+    });
   }
 
   /**
@@ -191,6 +193,9 @@ export default class {
   update() {
     for (let i = 0; i < this.loadedScenes.length; i++) {
       this.loadedScenes[i].instance.update();
+    }
+    for (let i = 0; i < this.npc.length; i++) {
+      this.npc[i].update(this.world.clock.getDelta());
     }
   }
 }

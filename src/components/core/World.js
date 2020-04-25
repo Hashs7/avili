@@ -8,6 +8,7 @@ import LoadManager from './LoadManager';
 import { NaiveBroadphase, World } from "cannon-es";
 import AudioManager from "./AudioManager";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import NPC from "../characters/NPC";
 
 export default class {
   constructor(canvas) {

@@ -14,12 +14,12 @@ export default class {
     this.group = new THREE.Group();
     this.group.position.set(0,0,0);
     this.action = ACTIONS.IDLE;
-
-    this.player = gltf.scene.children.find(el => el.name === name);
-    this.player.position.set(0,1,0);
-    this.mixer = new THREE.AnimationMixer(this.player);
-
+    this.character = gltf.scene.children.find(el => el.name === name);
+    this.character.position.set(0,1,0);
+    this.group.add(this.character);
+    this.mixer = new THREE.AnimationMixer(this.character);
     this.setAnimations(gltf.animations);
+    sceneManager.mainSceneAddObject(this.group);
   }
 
   setAnimations(animations) {
@@ -32,7 +32,6 @@ export default class {
   }
 
   prepareCrossFade( endAction, duration = 0.3 ) {
-    //console.log(this.actions, startAction);
     const startAction = this.actions.find(ac => ac._clip.name === this.action);
     // Switch default / custom crossfade duration (according to the user's choice)
     // const duration = this.setCrossFadeDuration( defaultDuration );
@@ -61,6 +60,8 @@ export default class {
   }
 
   executeCrossFade( startAction, endAction, duration ) {
+    console.log(endAction._clip.name);
+
     // Not only the start action, but also the end action must get a weight of 1 before fading
     // (concerning the start action this is already guaranteed in this place)
     this.setWeight( endAction, 1 );
@@ -100,5 +101,9 @@ export default class {
 
   unPauseAllActions() {
     this.actions.forEach(( action ) => action.paused = false);
+  }
+
+  update() {
+    // this.mixer.update( 0.01 );
   }
 }
