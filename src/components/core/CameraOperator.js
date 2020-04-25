@@ -127,7 +127,6 @@ export default class {
     this.camera.matrix.lookAt(this.camera.position, lookAt, this.normal);
     this.camera.rotation.setFromRotationMatrix( this.camera.matrix.makeRotationAxis(new THREE.Vector3(0, 1, 0), Math.PI/2), this.camera.rotation.order );
     this.camera.rotateY(toRadian(180))
-    console.log(t.toFixed(3));
     if (Number(t.toFixed(3)) > 0.995) {
       this.travelling = false;
     }

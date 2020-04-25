@@ -28,7 +28,6 @@ export default class {
 
     this.camera = new THREE.PerspectiveCamera(25, window.innerWidth / window.innerHeight, 1, 8000);
     this.camera.name = 'MainCamera';
-    console.log(this.camera.rotation, this.camera.rotation.order);
 
     this.world = new World();
     this.world.gravity.set(0, -50, 0);

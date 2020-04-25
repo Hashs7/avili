@@ -42,13 +42,14 @@ export default class extends Character {
    * @param dt
    */
   update(dt) {
-    this.mixer.update( dt * 10 );
-    // this.mixer.update( 0.01 );
+    // TODO fix dt
+    // this.mixer.update( dt * 10 );
+    this.mixer.update( 0.01 );
     if (!this.target.length) return;
     const velocity = this.target[0].clone().sub( this.group.position );
     if (velocity.lengthSq() > 0.05 * 0.05) {
       velocity.normalize();
-      this.group.position.add( velocity.multiplyScalar( dt * 30 ) );
+      this.group.position.add( velocity.multiplyScalar( 0.03 ) );
     } else {
       this.target.shift();
       this.setWalking(!!this.target.length);
@@ -73,7 +74,6 @@ export default class extends Character {
    */
   setWalking(walk) {
     if (this.isWalking === walk) return;
-    console.log('crossfade', this.runAction);
     // this.prepareCrossFade(this.runAction);
     this.prepareCrossFade(walk ? this.runAction : this.idleAction);
     this.isWalking = walk;

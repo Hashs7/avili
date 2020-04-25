@@ -1,13 +1,10 @@
 import * as THREE from "three";
-import { Body, Box, ConvexPolyhedron, Plane, Vec3 } from "cannon-es";
+import { Body, Box, Plane, Vec3 } from "cannon-es";
 import SpawnScene from "./spawn/SpawnScene";
 import FieldOfViewScene from "./fieldOfView/FieldOfViewScene";
 import Skybox from "../core/Skybox";
 import LoadManager from '../core/LoadManager';
 import ProjectileScene from "./projectile/ProjectileScene";
-import { generateBody } from "../../utils/cannon";
-import { Pathfinding } from "three-pathfinding";
-import gsap from 'gsap';
 import NPC from "../characters/NPC";
 
 export default class {
