@@ -12,4 +12,8 @@ export default class extends Scene {
       scene: this.scene,
     }
   }
+
+  update() {
+    this.manager.update();
+  }
 }
