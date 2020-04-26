@@ -11,7 +11,7 @@ export default class extends Character {
   constructor(gltf, world, camera, sceneManager, name) {
     super(gltf, world, sceneManager, name);
     this.camera = camera;
-    this.speed = 0.03;
+    this.speed = 0.1;
     this.wakable = true;
     this.inputManager = new InputManager();
     this.inputManager.setInputReceiver(this);

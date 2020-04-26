@@ -7,11 +7,36 @@ export default class ProjectileManager {
     this.scene = scene;
     this.world = world;
     this.landingAreaName = "LandingArea";
+    this.projAreaName = "Laser";
     this.uniforms = {
-      uSize: {type: 'float', value:  -6.0}
+      uSize: {type: 'float', value:  6.0}
     }
     this.direction = 0;
+    this.landArIndex = 0;
+    this.towerIndex = 0;
 
+    //console.log(towers);
+    //console.log(landingAreas);
+
+    towers.forEach(tower => {
+      this.createTower(tower.position);
+    });
+
+    document.addEventListener('stateUpdate', e => {
+      if (e.detail !== "projectile_sequence_start") return;
+      setInterval(() => {
+        this.scene.remove(this.scene.getObjectByName( "LandingArea" ));
+        this.scene.remove(this.scene.getObjectByName( "Laser" ));
+
+        landingAreas[this.landArIndex].position.y = 0;
+        this.createLandingPoint(landingAreas[this.landArIndex].position);
+        this.createProjectileFrom(towers[this.towerIndex].position, landingAreas[this.landArIndex].position);
+
+        this.landArIndex = this.landArIndex > 2 ? 0 : this.landArIndex + 1;
+      }, 3000)
+    })
+
+    /*
     const arr = [
       landingAreas.slice(0, 4),
       landingAreas.slice(4)
@@ -25,6 +50,7 @@ export default class ProjectileManager {
         this.createProjectileFrom(towers[i].position, el.position);
       });
     });
+     */
 
     document.addEventListener('playerMoved', e => {
       const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
@@ -65,6 +91,8 @@ export default class ProjectileManager {
       transparent: true,
     })
     const cylinder = new THREE.Mesh( geometry, material );
+    cylinder.name = this.projAreaName;
+
 
     cylinder.applyMatrix4(orientation);
     cylinder.position.x = (endCoord.x + originCoord.x) / 2;
@@ -105,10 +133,11 @@ export default class ProjectileManager {
   }
 
   update(){
+    //console.log(this.clock.getElapsedTime().toFixed(1));
+    /*
     if ( this.uniforms[ "uSize" ].value <= this.direction.length() / 2 ) {
       this.uniforms[ "uSize" ].value += 0.02;
-    }
-    //console.log(this.uniforms[ "uSize" ].value);
+    }*/
   }
 
   /*startTimeline(){
