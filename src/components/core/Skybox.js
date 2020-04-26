@@ -1,12 +1,16 @@
 import * as THREE from "three";
+import LoadManager from "./LoadManager";
 
 export default class {
   constructor(scene, filename) {
     this.scene = scene;
     this.filename = filename;
     this.basePath = './assets/skybox/';
+    this.createSky()
+  }
 
-    const materialArray = this.createMaterialArray();
+  async createSky() {
+    const materialArray = await this.createMaterialArray();
     const skyboxGeo = new THREE.BoxGeometry(8000, 8000, 8000);
     this.skybox = new THREE.Mesh(skyboxGeo, materialArray);
     this.skybox.name = 'Skybox';
@@ -17,13 +21,12 @@ export default class {
    * Create cube material
    * @returns {*}
    */
-  createMaterialArray() {
+  async createMaterialArray() {
     const skyboxImagepaths = this.createPathStrings();
-    const materialArray = skyboxImagepaths.map(image => {
-      let texture = new THREE.TextureLoader().load(image);
+    return await Promise.all(skyboxImagepaths.map(async (image) => {
+      let texture = await LoadManager.loadTexture(image);
       return new THREE.MeshBasicMaterial({ map: texture, side: THREE.BackSide });
-    });
-    return materialArray;
+    }));
   }
 
   /**
@@ -32,7 +35,7 @@ export default class {
    * @returns {string[]}
    */
   createPathStrings(fileType = '.jpg') {
-    const baseFilename = this.basePath + this.filename;
+    const baseFilename = this.basePath + this.filename + '/' + this.filename;
     const sides = ['ft', 'bk', 'up', 'dn', 'rt', 'lf'];
     return sides.map(side => baseFilename + '_' + side + fileType);
   }

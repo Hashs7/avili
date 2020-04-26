@@ -93,8 +93,7 @@ class LoadManager {
   /**
    * All elements are loaded
    */
-  loadedHandler() {
-  }
+  loadedHandler() {}
 
   /**
    * Update loader progress
