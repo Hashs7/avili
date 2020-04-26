@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import gsap from 'gsap';
 import {Raycaster} from "three";
 import {ProjectileShader} from "../../shaders/ProjectileShader";
 
@@ -9,7 +10,7 @@ export default class ProjectileManager {
     this.landingAreaName = "LandingArea";
     this.projAreaName = "Laser";
     this.uniforms = {
-      uSize: {type: 'float', value:  6.0}
+      uSize: {type: 'float', value:  -6.0}
     }
     this.direction = 0;
     this.landArIndex = 0;
@@ -24,16 +25,26 @@ export default class ProjectileManager {
 
     document.addEventListener('stateUpdate', e => {
       if (e.detail !== "projectile_sequence_start") return;
-      setInterval(() => {
-        this.scene.remove(this.scene.getObjectByName( "LandingArea" ));
-        this.scene.remove(this.scene.getObjectByName( "Laser" ));
+      const tl = gsap.timeline({repeat: -1, repeatDelay: 1});
 
-        landingAreas[this.landArIndex].position.y = 0;
-        this.createLandingPoint(landingAreas[this.landArIndex].position);
-        this.createProjectileFrom(towers[this.towerIndex].position, landingAreas[this.landArIndex].position);
-
-        this.landArIndex = this.landArIndex > 2 ? 0 : this.landArIndex + 1;
-      }, 3000)
+      tl.to(document, {
+        onStart: () => {
+          this.uniforms.uSize.value = -6.0;
+          this.scene.remove(this.scene.getObjectByName("LandingArea"));
+          this.scene.remove(this.scene.getObjectByName( "Laser" ));
+          landingAreas[this.landArIndex].position.y = 0;
+          this.createLandingPoint(landingAreas[this.landArIndex].position);
+        },
+      })
+      tl.to(this.uniforms.uSize, {
+        onStart: () => {
+          this.createProjectileFrom(towers[this.towerIndex].position, landingAreas[this.landArIndex].position);
+          this.landArIndex = this.landArIndex > 2 ? 0 : this.landArIndex + 1;
+        },
+        value: 6.0,
+        delay: 2,
+        duration: 0.5,
+      })
     })
 
     /*
