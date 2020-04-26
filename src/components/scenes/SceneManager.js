@@ -32,20 +32,24 @@ export default class {
     this.mainScene.add(light);
   }
 
-  setNPC(map) {
+  setNPC(map, positions) {
+    console.log(positions);
     const npcs = [{
+      name: 'xX-Kevin-Du-33-Xx',
       position: new THREE.Vector3(-2, 0, 2),
-      target: new THREE.Vector3(-3, 0, 0),
+      target: new THREE.Vector3(positions[0].x, 0, positions[0].z),
     },{
+      name: 'Paynis',
       position: new THREE.Vector3(2, 0, -2),
-      target: new THREE.Vector3(0, 0, 3),
+      target: new THREE.Vector3(positions[1].x, 0, positions[1].z),
     },{
+      name: 'Dick-hed',
       position: new THREE.Vector3(5, 0, -3),
-      target: new THREE.Vector3(5, 0, 5),
+      target: new THREE.Vector3(positions[2].x, 0, positions[2].z),
     }];
     npcs.forEach(async (n) => {
       const gltf = await LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb');
-      const npc = new NPC(gltf, this.world, this, 'EMILIE', n.position, map.geometry);
+      const npc = new NPC(gltf, this.world, this, 'EMILIE', n.position, map.geometry, n.name);
       this.npc.push(npc);
       npc.moveTo(n.target)
     });
@@ -90,8 +94,8 @@ export default class {
         //this.setWalls(child);
       }
       if (child.name === 'map') {
+        this.map = child;
         this.setMap(child);
-        this.setNPC(child);
       }
       if (child.name === 'NurbsPath') {
         this.spline = child;
@@ -128,6 +132,7 @@ export default class {
   }
 
   setFov() {
+    this.setNPC(this.map, this.matesPos);
     this.addScene(new FieldOfViewScene(this.world, this.matesPos));
   }
 

@@ -20,7 +20,6 @@ export default class extends Character {
 
     AudioManager.groupListener(this.group);
 
-    //console.log(gltf.scene);
     this.mouse = {
       x: 0,
       y: 0,
@@ -56,7 +55,7 @@ export default class extends Character {
       collisionFilterGroup: 1,
       // collisionFilterMask:  GROUP1 // It can only collide with group 1 (the sphere)
     });
-    this.character.body.addEventListener("collide",(e) => {
+    this.character.body.addEventListener("collide", (e) => {
       // console.log("The character just collided with ", e.name);
       // console.log("Collided with body:",e.body);
       // console.log("Contact between bodies:",e.contact);
@@ -67,16 +66,12 @@ export default class extends Character {
 
     const geometry = new THREE.CylinderGeometry( size.x, size.x, size.y, 8 );
     // const geometry = new THREE.BoxGeometry( mesh.size.y, mesh.size.z, mesh.size.y, 4);
-    const material = new THREE.MeshBasicMaterial( { color: 0x00ff00, wireframe: true } );
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
     this.hitbox = new THREE.Mesh( geometry, material );
     this.hitbox.position.set(0, size.y / 2, 0);
-    this.hitbox.name = 'hitbox'
+    this.hitbox.name = 'hitbox';
     // this.group.add(this.hitbox);
     // sceneManager.mainSceneAddObject(this.hitbox);
-
-    const playerName = makeTextSprite( " Michel ", { fontsize: 20, fontface: "Arial" });
-    playerName.position.set(size.x, size.y, size.z);
-    this.group.add( playerName );
   }
 
   destroy() {

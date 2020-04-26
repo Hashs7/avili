@@ -11,8 +11,8 @@ export const makeTextSprite = ( message, parameters ) => {
   const fontface = parameters.fontface ? parameters.fontface : "Arial";
   const fontsize = parameters.fontsize ? parameters.fontsize : '18';
   const borderThickness = parameters.borderThickness ? parameters.borderThickness : 0;
-  const borderColor = parameters.borderColor ? parameters.borderColor : { r:0, g:0, b:0, a:0 };
-  const backgroundColor = parameters.backgroundColor ? parameters.backgroundColor : { r:255, g:255, b:255, a:1.0 };
+  const borderColor = parameters.borderColor ? parameters.borderColor : { r: 0, g: 0, b: 0, a: 0 };
+  const backgroundColor = parameters.backgroundColor ? parameters.backgroundColor : { r: 255, g: 255, b: 255, a: 1.0 };
 
   // const spriteAlignment = THREE.SpriteAlignment.topLeft;
 
@@ -23,6 +23,7 @@ export const makeTextSprite = ( message, parameters ) => {
   // get size data (height depends only on font size)
   const metrics = context.measureText( message );
   const textWidth = metrics.width;
+  console.log(textWidth);
 
   // background color
   context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","

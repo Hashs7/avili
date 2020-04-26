@@ -4,7 +4,7 @@ import Character from "./Character";
 import { Pathfinding } from "three-pathfinding";
 
 export default class extends Character {
-  constructor(gltf, world, sceneManager, name, startPosition, mapGeometry) {
+  constructor(gltf, world, sceneManager, name, startPosition, mapGeometry, pseudo) {
     super(gltf, world, sceneManager, name);
     this.speed = 0.2;
     this.isWalking = false;
@@ -13,7 +13,8 @@ export default class extends Character {
 
     this.group.position.copy(startPosition);
     this.setPathFinding(mapGeometry);
-    this.prepareCrossFade(this.runAction);
+    this.addPseudo(pseudo);
+    // this.prepareCrossFade(this.runAction);
   }
 
   /**
@@ -52,10 +53,12 @@ export default class extends Character {
       this.group.position.add( velocity.multiplyScalar( 0.03 ) );
     } else {
       this.target.shift();
-      this.setWalking(!!this.target.length);
 
-      if(!this.target.length) return;
-      this.setOrientation(this.target[0])
+      if(this.target.length) {
+        this.setOrientation(this.target[0]);
+        return;
+      }
+      this.setWalking(false);
     }
   }
 
@@ -65,7 +68,7 @@ export default class extends Character {
    * @param z
    */
   setOrientation({ x, z }) {
-    this.character.rotation.y = Math.atan2(x, z);
+    this.character.rotation.y = Math.atan2(x - this.group.position.x, z - this.group.position.z);
   }
 
   /**
@@ -84,7 +87,7 @@ export default class extends Character {
    * @param name
    */
   addPseudo(name) {
-    const mesh = this.player.children.find(el => el.name === 'unamed');
+    const mesh = this.character.children.find(el => el.name === 'unamed');
     mesh.geometry.computeBoundingBox();
     mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
     const size = {
