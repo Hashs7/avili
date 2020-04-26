@@ -20,7 +20,7 @@ export default class {
     this.sections = [];
     this.npc = [];
     this.towers = [];
-    this.landingAreas = []
+    this.landingAreas = [];
     this.walls = new THREE.Mesh();
   }
 
@@ -83,7 +83,7 @@ export default class {
     gltf.scene.traverse((child) => {
       if (child.name.startsWith('section')) {
         child.material.transparent = true;
-        child.material.opacity = 0.2;
+        child.material.opacity = 0;
       }
 
       if (child.name.split('mate').length > 1) {
