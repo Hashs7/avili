@@ -4,6 +4,7 @@ import * as THREE from "three";
 import {Raycaster} from "three";
 import AudioManager from "../../core/AudioManager";
 import LoadManager from "../../core/LoadManager";
+import State from "../../core/State";
 
 export default class extends Scene {
   constructor(world, spline, sections) {
@@ -88,6 +89,11 @@ export default class extends Scene {
 
       playerPosition.y = 0;
       this.world.lastCheckpointCoord = playerPosition;
+
+      if(objs[0].object.name === "sectionTutoPassed") {
+        const state = new State();
+        state.goToState("projectile_sequence_start");
+      }
 
       AudioManager.playSound(audio);
     });

@@ -96,6 +96,7 @@ export default class {
       if (child.name === 'map') {
         this.map = child;
         this.setMap(child);
+        //this.setNPC(child);
       }
       if (child.name === 'NurbsPath') {
         this.spline = child;

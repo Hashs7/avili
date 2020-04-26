@@ -20,4 +20,11 @@ export default class {
     const event = new CustomEvent('stateUpdate', {detail : this.currentState});
     document.dispatchEvent(event);
   }
+
+  goToState(name){
+    this.currentState = name;
+
+    const event = new CustomEvent('stateUpdate', {detail : this.currentState});
+    document.dispatchEvent(event);
+  }
 }
