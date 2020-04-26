@@ -89,14 +89,10 @@ export default class extends Character {
   addPseudo(name) {
     const mesh = this.character.children.find(el => el.name === 'unamed');
     mesh.geometry.computeBoundingBox();
+    mesh.material.color = new THREE.Color(0x00aa00);
     mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
-    const size = {
-      x: mesh.size.x,
-      y: mesh.size.y,
-      z: mesh.size.z,
-    };
     const playerName = makeTextSprite( ` ${name} `, { fontsize: 20, fontface: "Arial" });
-    playerName.position.set(size.x, size.y, size.z);
+    playerName.position.set(mesh.size.x, mesh.size.y, mesh.size.z);
     this.group.add( playerName );
   }
 }
