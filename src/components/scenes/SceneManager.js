@@ -133,7 +133,7 @@ export default class {
   }
 
   setFov() {
-    //this.setNPC(this.map, this.matesPos);
+    this.setNPC(this.map, this.matesPos);
     this.addScene(new FieldOfViewScene(this.world, this.matesPos));
   }
 
