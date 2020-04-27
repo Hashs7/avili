@@ -29,8 +29,15 @@ export default class {
     this.camera.name = 'MainCamera';
 
     this.world = new World();
-    this.world.gravity.set(0, -50, 0);
+    this.world.gravity.set(0, -5, 0);
     this.world.broadphase = new NaiveBroadphase();
+    // Opti cannon
+    // this.world.quatNormalizeFast = true;
+    // this.world.quatNormalizeSkip = 3;
+    // this.world.solver.iterations = 5;
+
+    // this.world.defaultContactMaterial.contactEquationStiffness = 5e6;
+    // this.world.defaultContactMaterial.contactEquationRelaxation = 10;
 
     this.player = null;
     this.lastCheckpointCoord = new THREE.Vector3();

@@ -23,7 +23,6 @@ export const makeTextSprite = ( message, parameters ) => {
   // get size data (height depends only on font size)
   const metrics = context.measureText( message );
   const textWidth = metrics.width;
-  console.log(textWidth);
 
   // background color
   context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","

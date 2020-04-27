@@ -8,13 +8,14 @@ const margin = 15;
 const force = 25;
 
 export default class WordFactory {
-  constructor(scene, world, camera) {
+  constructor(scene, world, camera, material) {
     this.lastx = null;
     this.lasty = null;
     this.last = null;
     this.scene = scene;
     this.world = world;
     this.camera = camera;
+    this.material = material;
     this.clickMarker = false;
     this.words = [];
     this.offset = this.words.length * margin * 0.5;
@@ -52,7 +53,12 @@ export default class WordFactory {
     this.jointBody.collisionFilterGroup = 0;
     this.jointBody.collisionFilterMask = 0;
     this.world.addBody(this.jointBody);
-    this.addWord('Cuisine');
+
+    setTimeout(() => {
+      this.addWord('Cuisine', new Vec3(118, 50, -4));
+    }, 2000)
+
+    // this.addWord('Cuisine', new Vec3(118, 3, -4));
   }
 
   setConstraints() {
@@ -95,7 +101,7 @@ export default class WordFactory {
     this.moveJointToPoint(pos.x, pos.y, pos.z);
   }
 
-  addWord(text) {
+  addWord(text, position) {
     const totalMass = 3000;
     // const currentWord = new THREE.Group();
     // currentWord.letterOff = 0;
@@ -112,15 +118,16 @@ export default class WordFactory {
     mesh.name = text;
     mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3()).multiplyScalar(scaleFactor);
     mesh.body = new Body({
-      // mass: 0,
-      mass: 2,
+      mass: 20,
+      // mass: 2,
       // position: new Vec3(currentWord.letterOff, 30, 0),
-      position: new Vec3(-2, 30, 0),
-      quaternion: new Quaternion(0, toRadian(-90), 0, toRadian(90)),
-      // velocity: new Vec3(0, 500, 0),
+      material: this.material,
+      position,
+      quaternion: new Quaternion().setFromAxisAngle(new Vec3(0, 1, 0), toRadian(-90)),
+      velocity: new Vec3(0, 0, 0),
       fixedRotation: true,
-      linearDamping: 0.01,
-      collisionFilterGroup: 1,
+      // linearDamping: 0.01,
+      // collisionFilterGroup: 1,
     });
     // mesh.body.force = new Vec3(0, -100, 0);
 
@@ -128,22 +135,21 @@ export default class WordFactory {
     const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
     const box = new Box(new Vec3().copy(mesh.size).scale(0.5));
     mesh.body.name = 'word';
-    mesh.body.addShape(box, new Vec3(center.x, center.y, center.z));
+    mesh.body.addShape(box);
+    // mesh.body.addShape(box, new Vec3(center.x, center.y, center.z));
     this.world.addBody(mesh.body);
     this.finishSetWord(mesh);
   }
 
   finishSetWord(word) {
-    setTimeout(() => {
-      this.words.push(word);
-      this.scene.add(word);
-    }, 3000)
+    this.words.push(word);
+    this.scene.add(word);
   }
 
   update() {
     if (!this.words.length) return;
     for (let i = 0; i < this.words.length; i++) {
-      this.words[i].position.copy( this.words[i].body.position);
+      this.words[i].position.copy(this.words[i].body.position);
       this.words[i].quaternion.copy(this.words[i].body.quaternion);
     }
   }
@@ -182,7 +188,6 @@ export default class WordFactory {
   onMouseUp() {
     this.constraintDown = false;
     // remove the marker
-
     this.removeClickMarker();
     // Send the remove mouse joint to server
     this.removeJointConstraint();
@@ -192,7 +197,7 @@ export default class WordFactory {
   setScreenPerpCenter(point, camera) {
     if(!this.gplane) {
       const planeGeo = new THREE.PlaneGeometry(100,100);
-      const material = new THREE.MeshBasicMaterial( { transparent: true, opacity: 0.5 } );
+      const material = new THREE.MeshBasicMaterial( { transparent: true, opacity: 0 } );
       this.gplane = new THREE.Mesh(planeGeo, material);
       this.scene.add(this.gplane);
     }
@@ -200,7 +205,7 @@ export default class WordFactory {
     // Center at mouse position
     this.gplane.position.copy(point);
     // Make it face toward the camera
-    this.gplane.quaternion.copy(new THREE.Quaternion(0, toRadian(-45), 0, toRadian(45)));
+    this.gplane.quaternion.copy(new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), toRadian(-90)));
   }
 
   projectOntoPlane(thePlane, camera) {

@@ -1,16 +1,19 @@
 import * as THREE from "three";
-import { Body, Box, Plane, Vec3 } from "cannon-es";
+import { Body, Box, ContactMaterial, Quaternion, Material, Plane, Vec3 } from "cannon-es";
 import SpawnScene from "./spawn/SpawnScene";
 import FieldOfViewScene from "./fieldOfView/FieldOfViewScene";
 import Skybox from "../core/Skybox";
 import LoadManager from '../core/LoadManager';
 import ProjectileScene from "./projectile/ProjectileScene";
 import NPC from "../characters/NPC";
+import WordScene from "./word/WordScene";
 
 export default class {
-  constructor(world, worldPhysic) {
+  constructor(world, worldPhysic, camera) {
     this.world = world;
     this.worldPhysic = worldPhysic;
+    this.camera = camera;
+    this.mat1 = new Material();
     this.scenesPath = './assets/models/scenes/';
     this.loadedScenes = [];
     this.matesPos = [];
@@ -33,17 +36,16 @@ export default class {
   }
 
   setNPC(map, positions) {
-    console.log(positions);
     const npcs = [{
-      name: 'xX-Kevin-Du-33-Xx',
+      name: 'Daesu',
       position: new THREE.Vector3(-2, 0, 2),
       target: new THREE.Vector3(positions[0].x, 0, positions[0].z),
     },{
-      name: 'Paynis',
+      name: 'Tardys',
       position: new THREE.Vector3(2, 0, -2),
       target: new THREE.Vector3(positions[1].x, 0, positions[1].z),
     },{
-      name: 'Dick-hed',
+      name: 'Farkana',
       position: new THREE.Vector3(5, 0, -3),
       target: new THREE.Vector3(positions[2].x, 0, positions[2].z),
     }];
@@ -64,26 +66,28 @@ export default class {
     const plane = new THREE.Mesh(geometry, material);
     plane.name = "Floor";
     plane.position.set(80, -0.1 , 50);
-
+    const groundMaterial = new Material();
+    const mat1_ground = new ContactMaterial(groundMaterial, this.mat1, { friction: 0.0, restitution: 0.0 });
     const groundBody = new Body({
       mass: 0,
       shape: new Plane(),
+      material: groundMaterial,
       collisionFilterGroup: 1,
-      position: new Vec3(0, 10.1, 0),
+      position: new Vec3(0, -1.1, 0),
+      quaternion: new Quaternion().setFromAxisAngle(new Vec3(1,0,0),-Math.PI/2)
     });
-    groundBody.quaternion.setFromAxisAngle(new Vec3(1,0,0),-Math.PI/2);
     this.worldPhysic.addBody(groundBody);
+    this.worldPhysic.addContactMaterial(mat1_ground);
     this.mainSceneAddObject(plane);
   }
 
   async addMap() {
     const gltf = await LoadManager.loadGLTF('./assets/models/map/map.glb');
     let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
-
     gltf.scene.traverse((child) => {
       if (child.name.startsWith('section')) {
         child.material.transparent = true;
-        child.material.opacity = 0;
+        child.material.opacity = 0.2;
       }
 
       if (child.name.split('mate').length > 1) {
@@ -119,6 +123,7 @@ export default class {
     this.setSpawn();
     this.setFov();
     this.setProjectile();
+    this.setWords();
   }
 
   async setMap(map) {
@@ -139,6 +144,10 @@ export default class {
 
   setProjectile() {
     this.addScene(new ProjectileScene(this.towers, this.landingAreas, this.world))
+  }
+
+  setWords() {
+    this.addScene(new WordScene(this.worldPhysic, this.camera, this.mat1))
   }
 
   createBoundingBoxShape(object) {
