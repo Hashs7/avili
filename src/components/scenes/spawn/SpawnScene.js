@@ -90,9 +90,14 @@ export default class extends Scene {
       playerPosition.y = 0;
       this.world.lastCheckpointCoord = playerPosition;
 
+      const state = new State();
+
       if(objs[0].object.name === "sectionTutoPassed") {
-        const state = new State();
         state.goToState("projectile_sequence_start");
+      }
+
+      if(objs[0].object.name === "sectionInfiltrationPassed") {
+        state.goToState("infiltration_sequence_start")
       }
 
       AudioManager.playSound(audio);

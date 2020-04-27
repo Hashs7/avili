@@ -1,9 +1,10 @@
 import * as THREE from "three/src/Three";
 import {Raycaster} from "three/src/Three";
 import AudioManager from "../../core/AudioManager";
+import Projectile from "../../core/Projectile";
 
 export default class FieldOfViewManager {
-  constructor(world, scene, npcPositions) {
+  constructor(world, scene, npcPositions, towers, landingAreas) {
     this.scene = scene;
     this.world = world;
     this.sphere = new THREE.Object3D();
@@ -12,11 +13,18 @@ export default class FieldOfViewManager {
     this.fieldOfViews = [];
     this.lastPosition = new THREE.Vector3();
 
-    // for testing
     this.index = 0;
 
 
     npcPositions.forEach(({ x, z }) => this.addNPC(x, z));
+
+    document.addEventListener('stateUpdate', e => {
+      if (e.detail !== 'infiltration_sequence_start') return;
+
+      const arr = landingAreas.slice(4);
+      const proj = new Projectile(towers[1], arr, this.scene);
+      proj.launchSequence();
+    });
 
     document.addEventListener('playerMoved', e => {
       const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
