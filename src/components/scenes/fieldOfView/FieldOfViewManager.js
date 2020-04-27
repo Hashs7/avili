@@ -12,9 +12,9 @@ export default class FieldOfViewManager {
     this.fieldOfViewName = "FieldOfView";
     this.fieldOfViews = [];
     this.lastPosition = new THREE.Vector3();
+    this.proj;
 
     this.index = 0;
-
 
     npcPositions.forEach(({ x, z }) => this.addNPC(x, z));
 
@@ -22,14 +22,16 @@ export default class FieldOfViewManager {
       if (e.detail !== 'infiltration_sequence_start') return;
 
       const arr = landingAreas.slice(4);
-      const proj = new Projectile(towers[1], arr, this.scene);
-      proj.launchSequence();
+      this.proj = new Projectile(towers[1], arr, this.scene);
+      this.proj.launchSequence();
     });
 
     document.addEventListener('playerMoved', e => {
       const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
       this.lastPosition = playerPosition;
       this.detectFieldOfView(playerPosition);
+      if(!this.proj) return
+      this.proj.detectLandingArea(playerPosition, this.world);
     });
   }
 

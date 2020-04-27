@@ -38,20 +38,6 @@ export default class Projectile {
     })
   }
 
-  createTower(coord){
-    const geometry = new THREE.SphereGeometry( 1, 12, 12 );
-    const material = new THREE.MeshBasicMaterial( {
-      color: 0xaa0000,
-      transparent: true,
-      opacity: 0
-    });
-    const sphere = new THREE.Mesh( geometry, material );
-    sphere.position.x = coord.x;
-    sphere.position.y = coord.y;
-    sphere.position.z = coord.z;
-    this.scene.add( sphere );
-  }
-
   createProjectileFrom(originCoord, endCoord){
     const direction = new THREE.Vector3().subVectors(originCoord, endCoord);
     const orientation = new THREE.Matrix4();
@@ -93,5 +79,22 @@ export default class Projectile {
     landingPoint.position.z = coord.z;
 
     this.scene.add(landingPoint);
+  }
+
+  detectLandingArea(position, world){
+    const ray = new THREE.Raycaster(
+      position,
+      new THREE.Vector3(0, -1, 0),
+      0,
+      300,
+    );
+    const objs = ray.intersectObjects(this.scene.children, false);
+
+    objs.forEach(obj => {
+      if (obj.object.name === this.landingAreaName) {
+        const player = world.getplayer();
+        player.group.position.copy(world.lastCheckpointCoord);
+      }
+    });
   }
 }
