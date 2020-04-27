@@ -2,13 +2,13 @@ import WordFactory from "./WordFactory";
 import Scene from "../Scene";
 
 export default class extends Scene {
-  constructor(world, camera) {
+  constructor(world, camera, material) {
     super();
     this.world = world;
     this.scene.name = "WordScene";
     // this.scene.fog = new THREE.Fog(0x202533, -1, 100);
     //console.log(this.scene);
-    this.factory = new WordFactory(this.scene, this.world, camera);
+    this.factory = new WordFactory(this.scene, this.world, camera, material);
     //console.log(this.scene);
 
     return {

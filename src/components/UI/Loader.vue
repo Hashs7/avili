@@ -43,12 +43,12 @@
       },
       updateUI(value) {
         gsap.to(this, {
-          percent: value,
-          duration: .05,
+          percent: Math.round(value),
+          duration: .01,
         });
         gsap.to(this.$refs.progress, {
           width: `${value}%`,
-          duration: .1,
+          duration: .01,
         });
       }
     },
@@ -92,6 +92,5 @@
     width: 0;
     height: 100%;
     background-color: #fff;
-    transition: width .2s ease-in-out;
   }
 </style>

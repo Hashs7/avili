@@ -12,7 +12,7 @@ export default class {
     this.world = world;
     this.sceneManager = sceneManager;
     this.group = new THREE.Group();
-    this.group.position.set(0,0,0);
+    this.group.position.set(0, 0, 0);
     this.action = ACTIONS.IDLE;
     this.character = gltf.scene.children.find(el => el.name === name);
     this.character.position.set(0,1,0);

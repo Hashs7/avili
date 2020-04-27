@@ -62,7 +62,6 @@ export default class extends Character {
     });
 
     this.world.addBody(this.character.body);
-    console.log('size', mesh.size.x, mesh.size.y, mesh.size.z);
 
     const geometry = new THREE.CylinderGeometry( size.x, size.x, size.y, 8 );
     // const geometry = new THREE.BoxGeometry( mesh.size.y, mesh.size.z, mesh.size.y, 4);
@@ -168,25 +167,31 @@ export default class extends Character {
 
 
   playerControls() {
-    const straf = this.inputManager.controls.left && this.inputManager.controls.up ||
+    const strafe = this.inputManager.controls.left && this.inputManager.controls.up ||
                   this.inputManager.controls.right && this.inputManager.controls.up ||
                   this.inputManager.controls.left && this.inputManager.controls.down ||
                   this.inputManager.controls.right && this.inputManager.controls.down;
     if (this.inputManager.controls.up) {
-      if (this.detectWallCollision() === "forward") return;
-      this.move(0, straf)
+      if (this.detectWallCollision() === "forward" ||
+          this.detectWallCollision() === "for-left" ||
+          this.detectWallCollision() === "for-right"
+      ) return;
+      this.move(0, strafe)
     }
     if (this.inputManager.controls.down) {
-      if (this.detectWallCollision() === "backward") return;
-      this.move(quartDegree * 2, straf)
+      if (this.detectWallCollision() === "backward" ||
+          this.detectWallCollision() === "back-left" ||
+          this.detectWallCollision() === "back-right"
+      ) return;
+      this.move(quartDegree * 2, strafe)
     }
     if (this.inputManager.controls.left) {
       if (this.detectWallCollision() === "left") return;
-      this.move(quartDegree, straf)
+      this.move(quartDegree, strafe)
     }
     if (this.inputManager.controls.right) {
       if (this.detectWallCollision() === "right") return;
-      this.move(-quartDegree, straf)
+      this.move(-quartDegree, strafe)
     }
   }
 
