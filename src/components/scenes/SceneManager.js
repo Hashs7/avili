@@ -23,6 +23,7 @@ export default class {
     this.sections = [];
     this.npc = [];
     this.towers = [];
+    this.towerEl = [];
     this.landingAreas = [];
     this.walls = new THREE.Mesh();
     this.crystals = [];
@@ -88,7 +89,7 @@ export default class {
     gltf.scene.traverse((child) => {
       if (child.name.startsWith('section')) {
         child.material.transparent = true;
-        child.material.opacity = 0.2;
+        child.material.opacity = 0.;
       }
 
       if (child.name.split('mate').length > 1) {
@@ -122,10 +123,10 @@ export default class {
 
     this.mainSceneAddObject(gltf.scene);
     this.setSpawn();
+    await this.addTowers();
     this.setFov();
     this.setProjectile();
-    this.setWords();
-    await this.addTowers();
+    //this.setWords();
   }
 
   async addTowers(){
@@ -134,16 +135,28 @@ export default class {
     t1Gltf.scene.position.y = this.towers[0].position.y - 10;
     t1Gltf.scene.position.z = this.towers[0].position.z;
 
-    this.mainSceneAddObject(t1Gltf.scene);
+    let t1 = {towerTop: null, crystal: null};
+    t1Gltf.scene.traverse(child => {
+      if(child.name === "BatimentHaut") t1.towerTop = child;
+      if(child.name === "GrosCrystal") t1.crystal = child;
+    });
 
-    console.log(t1Gltf.scene);
+    this.mainSceneAddObject(t1Gltf.scene);
+    this.towerEl.push(t1);
 
     const t2Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v1.glb');
     t2Gltf.scene.position.x = this.towers[1].position.x;
     t2Gltf.scene.position.y = this.towers[1].position.y - 10;
     t2Gltf.scene.position.z = this.towers[1].position.z;
 
+    let t2 = {towerTop: null, crystal: null}
+    t1Gltf.scene.traverse(child => {
+      if(child.name === "BatimentHaut") t2.towerTop = child;
+      if(child.name === "GrosCrystal") t2.crystal = child;
+    });
+
     this.mainSceneAddObject(t2Gltf.scene);
+    this.towerEl.push(t2);
   }
 
   async setMap(map) {
@@ -158,12 +171,12 @@ export default class {
   }
 
   setFov() {
-    this.setNPC(this.map, this.matesPos);
-    this.addScene(new FieldOfViewScene(this.world, this.matesPos, this.towers, this.landingAreas));
+    //this.setNPC(this.map, this.matesPos);
+    this.addScene(new FieldOfViewScene(this.world, this.matesPos, this.towers, this.landingAreas, this.towerEl[1]));
   }
 
   setProjectile() {
-    this.addScene(new ProjectileScene(this.towers, this.landingAreas, this.world))
+    this.addScene(new ProjectileScene(this.towers, this.landingAreas, this.world, this.towerEl[0]))
   }
 
   setWords() {
