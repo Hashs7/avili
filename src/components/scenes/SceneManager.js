@@ -22,6 +22,7 @@ export default class {
     this.towers = [];
     this.landingAreas = []
     this.walls = new THREE.Mesh();
+    this.crystals = [];
   }
 
   initMainScene() {
@@ -33,7 +34,7 @@ export default class {
   }
 
   setNPC(map, positions) {
-    console.log(positions);
+    //console.log(positions);
     const npcs = [{
       name: 'xX-Kevin-Du-33-Xx',
       position: new THREE.Vector3(-2, 0, 2),
@@ -119,6 +120,25 @@ export default class {
     this.setSpawn();
     this.setFov();
     this.setProjectile();
+    await this.addTowers();
+  }
+
+  async addTowers(){
+    const t1Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v1.glb');
+    t1Gltf.scene.position.x = this.towers[0].position.x;
+    t1Gltf.scene.position.y = this.towers[0].position.y - 10;
+    t1Gltf.scene.position.z = this.towers[0].position.z;
+
+    this.mainSceneAddObject(t1Gltf.scene);
+
+    console.log(t1Gltf.scene);
+
+    const t2Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v1.glb');
+    t2Gltf.scene.position.x = this.towers[1].position.x;
+    t2Gltf.scene.position.y = this.towers[1].position.y - 10;
+    t2Gltf.scene.position.z = this.towers[1].position.z;
+
+    this.mainSceneAddObject(t2Gltf.scene);
   }
 
   async setMap(map) {
@@ -133,7 +153,7 @@ export default class {
   }
 
   setFov() {
-    this.setNPC(this.map, this.matesPos);
+    //this.setNPC(this.map, this.matesPos);
     this.addScene(new FieldOfViewScene(this.world, this.matesPos));
   }
 

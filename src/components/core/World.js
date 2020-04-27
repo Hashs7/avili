@@ -25,7 +25,7 @@ export default class {
 
     this.audioManager = AudioManager;
 
-    this.camera = new THREE.PerspectiveCamera(25, window.innerWidth / window.innerHeight, 1, 8000);
+    this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 8000);
     this.camera.name = 'MainCamera';
 
     this.world = new World();
@@ -48,7 +48,7 @@ export default class {
     this.resize();
     this.render();
     this.wow();
-    this.debugCamera();
+    //this.debugCamera();
   }
 
   /**
