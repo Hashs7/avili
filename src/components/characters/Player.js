@@ -172,17 +172,11 @@ export default class extends Character {
                   this.inputManager.controls.left && this.inputManager.controls.down ||
                   this.inputManager.controls.right && this.inputManager.controls.down;
     if (this.inputManager.controls.up) {
-      if (this.detectWallCollision() === "forward" ||
-          this.detectWallCollision() === "for-left" ||
-          this.detectWallCollision() === "for-right"
-      ) return;
+      if (this.detectWallCollision() === "forward") return;
       this.move(0, strafe)
     }
     if (this.inputManager.controls.down) {
-      if (this.detectWallCollision() === "backward" ||
-          this.detectWallCollision() === "back-left" ||
-          this.detectWallCollision() === "back-right"
-      ) return;
+      if (this.detectWallCollision() === "backward") return;
       this.move(quartDegree * 2, strafe)
     }
     if (this.inputManager.controls.left) {
