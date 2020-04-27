@@ -13,37 +13,42 @@ export default class Projectile {
     this.uniforms = {
       uSize: {type: 'float', value:  -6.0}
     }
+    this.index = 0;
     this.els = els
   }
 
   launchSequence(){
-    let index = 0;
-    let angle = toRadian(-90);
-    const tl = gsap.timeline({repeat: -1, repeatDelay: 1, onRepeat: () => {
-      //this.els.towerTop.rotateY(angle);
-        angle += toRadian(angle);
-    }, onRepeatParams: [angle]});
-    //this.els.towerTop.rotateY(toRadian(30));
+    this.startTimeline(toRadian(-90))
+  }
 
+  startTimeline() {
+    const tl = gsap.timeline({ onComplete: () => {
+      this.startTimeline()
+    }});
+    const pointAngle = Math.atan2(this.tower.position.x - this.landingAreas[this.index].position.x, this.tower.position.z - this.landingAreas[this.index].position.z);
+    const angle = (this.els.towerTop.rotation.y % (Math.PI * 2)) - pointAngle;
+    console.log(pointAngle);
     tl.to(this.els.towerTop.rotation, {
       onStart: () => {
         this.uniforms.uSize.value = -6.0;
         this.scene.remove(this.scene.getObjectByName("LandingArea"));
         this.scene.remove(this.scene.getObjectByName("Laser"));
-        this.landingAreas[index].position.y = 0;
-        this.createLandingPoint(this.landingAreas[index].position);
+        this.landingAreas[this.index].position.y = 0;
+        this.createLandingPoint(this.landingAreas[this.index].position);
       },
-      y: angle,
+      y: `${pointAngle}`,
+      delay: 1,
+      duration: 1.5
     })
     tl.to(this.uniforms.uSize, {
       onStart: () => {
-        this.createProjectileFrom(this.tower.position, this.landingAreas[index].position);
-        index = index === this.landingAreas.length - 1 ? 0 : index + 1;
+        this.createProjectileFrom(this.tower.position, this.landingAreas[this.index].position);
+        this.index = this.index === this.landingAreas.length - 1 ? 0 : this.index + 1;
       },
       value: 6.0,
-      delay: 2,
+      delay: 0.5,
       duration: 0.5,
-    })
+    });
   }
 
   createProjectileFrom(originCoord, endCoord){
