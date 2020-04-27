@@ -4,7 +4,7 @@ import AudioManager from "../../core/AudioManager";
 import Projectile from "../../core/Projectile";
 
 export default class FieldOfViewManager {
-  constructor(world, scene, npcPositions, towers, landingAreas) {
+  constructor(world, scene, npcPositions, towers, landingAreas, towerEl) {
     this.scene = scene;
     this.world = world;
     this.sphere = new THREE.Object3D();
@@ -22,7 +22,7 @@ export default class FieldOfViewManager {
       if (e.detail !== 'infiltration_sequence_start') return;
 
       const arr = landingAreas.slice(4);
-      this.proj = new Projectile(towers[1], arr, this.scene);
+      this.proj = new Projectile(towers[1], arr, this.scene, towerEl);
       this.proj.launchSequence();
     });
 

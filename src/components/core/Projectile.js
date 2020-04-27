@@ -1,9 +1,10 @@
 import * as THREE from "three";
 import {ProjectileShader} from "../shaders/ProjectileShader";
 import gsap from "gsap";
+import { toRadian } from "../../utils";
 
 export default class Projectile {
-  constructor(tower, landingAreas, scene) {
+  constructor(tower, landingAreas, scene, els) {
     this.tower = tower;
     this.landingAreas = landingAreas;
     this.scene = scene;
@@ -12,20 +13,27 @@ export default class Projectile {
     this.uniforms = {
       uSize: {type: 'float', value:  -6.0}
     }
+    this.els = els
   }
 
   launchSequence(){
-    let index = 0
-    const tl = gsap.timeline({repeat: -1, repeatDelay: 1});
+    let index = 0;
+    let angle = toRadian(-90);
+    const tl = gsap.timeline({repeat: -1, repeatDelay: 1, onRepeat: () => {
+      //this.els.towerTop.rotateY(angle);
+        angle += toRadian(angle);
+    }, onRepeatParams: [angle]});
+    //this.els.towerTop.rotateY(toRadian(30));
 
-    tl.to(document, {
+    tl.to(this.els.towerTop.rotation, {
       onStart: () => {
         this.uniforms.uSize.value = -6.0;
         this.scene.remove(this.scene.getObjectByName("LandingArea"));
-        this.scene.remove(this.scene.getObjectByName( "Laser" ));
+        this.scene.remove(this.scene.getObjectByName("Laser"));
         this.landingAreas[index].position.y = 0;
         this.createLandingPoint(this.landingAreas[index].position);
       },
+      y: angle,
     })
     tl.to(this.uniforms.uSize, {
       onStart: () => {
