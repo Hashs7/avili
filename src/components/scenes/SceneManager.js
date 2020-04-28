@@ -31,7 +31,7 @@ export default class {
 
   initMainScene() {
     new Skybox(this.mainScene, 'afterrain');
-    const light = new THREE.HemisphereLight(0xffffff, 0x444444);
+    const light = new THREE.HemisphereLight(0xffffff, 0x444444, 2);
     this.addFloor();
     this.addMap();
     this.mainScene.add(light);
@@ -55,6 +55,7 @@ export default class {
       const gltf = await LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb');
       const npc = new NPC(gltf, this.world, this, 'EMILIE', n.position, map.geometry, n.name);
       this.npc.push(npc);
+      console.log(n.target);
       npc.moveTo(n.target)
     });
   }
@@ -91,7 +92,6 @@ export default class {
         child.material.transparent = true;
         child.material.opacity = 0.;
       }
-
       if (child.name.split('mate').length > 1) {
         this.matesPos.push(child.position)
       }
@@ -101,8 +101,6 @@ export default class {
       }
       if (child.name === 'map') {
         this.map = child;
-        this.setMap(child);
-        //this.setNPC(child);
       }
       if (child.name === 'NurbsPath') {
         this.spline = child;
@@ -122,11 +120,11 @@ export default class {
     gltf.scene.children.filter(el => el.name !== 'map');
 
     this.mainSceneAddObject(gltf.scene);
-    this.setSpawn();
     await this.addTowers();
+    this.setSpawn();
+    this.setMap();
     this.setFov();
     this.setProjectile();
-    //this.setWords();
   }
 
   async addTowers(){
@@ -160,11 +158,9 @@ export default class {
     this.towerEl.push(t2);
   }
 
-  async setMap(map) {
-    const texture = await LoadManager.loadTexture('./assets/textures/FloorsCheckerboard_S_Diffuse.jpg');
-    map.material = new THREE.MeshBasicMaterial({ map: texture });
-    map.material = new THREE.MeshBasicMaterial({ color: 0xaaaaaa });
-    this.mainSceneAddObject(map);
+  setMap() {
+    this.map.material = new THREE.MeshBasicMaterial({ color: 0xaaaaaa });
+    this.mainScene.add(this.map);
   }
 
   setSpawn() {
@@ -172,7 +168,8 @@ export default class {
   }
 
   setFov() {
-    //this.setNPC(this.map, this.matesPos);
+    this.setNPC(this.map, this.matesPos);
+
     //console.log(this.towerEl[1]);
     this.addScene(new FieldOfViewScene(this.world, this.matesPos, this.towers, this.landingAreas, this.towerEl[1]));
   }

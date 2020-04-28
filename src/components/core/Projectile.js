@@ -43,7 +43,7 @@ export default class Projectile {
         this.landingAreas[this.index].position.y = 0;
         this.createLandingPoint(this.landingAreas[this.index].position);
       },
-      y: `${angle}`,
+      y: `${pointAngle}`,
       delay: 1,
       duration: 1.5
     });

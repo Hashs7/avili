@@ -34,6 +34,7 @@ export default class extends Character {
   moveTo(target) {
     const groupID = this.pathfinding.getGroup(this.ZONE, this.group.position);
     this.target = this.pathfinding.findPath(this.group.position, target, this.ZONE, groupID);
+    if (!this.target) return;
     this.setWalking(true);
     this.setOrientation(this.target[0]);
   }
@@ -46,7 +47,7 @@ export default class extends Character {
     // TODO fix dt
     // this.mixer.update( dt * 10 );
     this.mixer.update( 0.01 );
-    if (!this.target.length) return;
+    if (!this.target || !this.target.length) return;
     const velocity = this.target[0].clone().sub( this.group.position );
     if (velocity.lengthSq() > 0.05 * 0.05) {
       velocity.normalize();

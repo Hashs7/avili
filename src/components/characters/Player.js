@@ -46,7 +46,7 @@ export default class extends Character {
     };
 
     // const cylinderShape = new Cylinder(mesh.size.y/2, mesh.size.y/2,  mesh.size.x/2, 8);
-    const boxShape = new Box(new Vec3(size.x/2, size.y/2, size.x/2));
+    /*const boxShape = new Box(new Vec3(size.x/2, size.y/2, size.x/2));
 
     this.character.body = new Body({
       mass: 5,
@@ -62,14 +62,15 @@ export default class extends Character {
       // console.log("Contact between bodies:",e.contact);
     });
 
-    this.world.addBody(this.character.body);
+    this.world.addBody(this.character.body);*/
 
     const geometry = new THREE.CylinderGeometry( size.x, size.x, size.y, 8 );
     // const geometry = new THREE.BoxGeometry( mesh.size.y, mesh.size.z, mesh.size.y, 4);
-    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true });
+    const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true, visible: false });
     this.hitbox = new THREE.Mesh( geometry, material );
     this.hitbox.position.set(0, size.y / 2, 0);
     this.hitbox.name = 'hitbox';
+
     this.group.add(this.hitbox);
     // sceneManager.mainSceneAddObject(this.hitbox);
   }
@@ -79,7 +80,7 @@ export default class extends Character {
   }
 
   groupCamera() {
-    this.character.position.set(0, 1.150, 0);
+    // this.character.position.set(0, 1, 0);
     this.camera.position.set(-9, 6.5, 5.8);
     this.camera.lookAt(this.character.position);
     this.group.add(this.camera);

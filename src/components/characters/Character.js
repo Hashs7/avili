@@ -15,7 +15,7 @@ export default class {
     this.group.position.set(0, 0, 0);
     this.action = ACTIONS.IDLE;
     this.character = gltf.scene.children.find(el => el.name === name);
-    this.character.position.set(0,1,0);
+    this.character.position.set(0, 1, 0);
     this.group.add(this.character);
     this.mixer = new THREE.AnimationMixer(this.character);
     this.setAnimations(gltf.animations);
