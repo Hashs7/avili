@@ -4,8 +4,7 @@ import gsap from "gsap";
 import { toRadian } from "../../utils";
 
 export default class Projectile {
-  constructor(tower, landingAreas, scene, els) {
-    console.log('create, Projectile', els);
+  constructor(tower, landingAreas, scene, towerElements) {
     this.tower = tower;
     this.landingAreas = landingAreas;
     this.scene = scene;
@@ -15,7 +14,7 @@ export default class Projectile {
       uSize: {type: 'float', value:  -6.0}
     };
     this.index = 0;
-    this.els = els
+    this.towerElements = towerElements
   }
 
   launchSequence() {
@@ -26,7 +25,7 @@ export default class Projectile {
     const tl = gsap.timeline({ onComplete: () => {
       this.startTimeline();
     }});
-    const currentAngle = Number(this.els.towerTop.rotation.y);
+    const currentAngle = Number(this.towerElements.towerTop.rotation.y);
     let pointAngle = Math.atan2(this.tower.position.x - this.landingAreas[this.index].position.x, this.tower.position.z - this.landingAreas[this.index].position.z);
     /*if (pointAngle < 0) {
       pointAngle = pointAngle + (Math.PI * 2)
@@ -36,7 +35,7 @@ export default class Projectile {
     // console.log('current', this.els.towerTop.rotation.y % (Math.PI * 2));
     // console.log('angle+=', this.els.towerTop.rotation.y + angle);
 
-    tl.to(this.els.towerTop.rotation, {
+    tl.to(this.towerElements.towerTop.rotation, {
       onStart: () => {
         this.uniforms.uSize.value = -6.0;
         this.scene.remove(this.scene.getObjectByName("LandingArea"));
@@ -44,10 +43,10 @@ export default class Projectile {
         this.landingAreas[this.index].position.y = 0;
         this.createLandingPoint(this.landingAreas[this.index].position);
       },
-      y: `${pointAngle}`,
+      y: `${angle}`,
       delay: 1,
       duration: 1.5
-    })
+    });
     tl.to(this.uniforms.uSize, {
       onStart: () => {
         this.createProjectileFrom(this.tower.position, this.landingAreas[this.index].position);

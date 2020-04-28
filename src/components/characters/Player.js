@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import InputManager from "../core/InputManager";
 import { Body, Box,  Vec3 } from "cannon-es";
-import { makeTextSprite, toRadian } from "../../utils";
+import { makeTextSprite, toRadian, drawRay } from "../../utils";
 import AudioManager from "../core/AudioManager";
 import Character, { ACTIONS } from "./Character";
 
@@ -15,6 +15,7 @@ export default class extends Character {
     this.wakable = true;
     this.inputManager = new InputManager();
     this.inputManager.setInputReceiver(this);
+    this.nextPosition;
 
     this.raycaster = new THREE.Raycaster();
 
@@ -69,7 +70,7 @@ export default class extends Character {
     this.hitbox = new THREE.Mesh( geometry, material );
     this.hitbox.position.set(0, size.y / 2, 0);
     this.hitbox.name = 'hitbox';
-    // this.group.add(this.hitbox);
+    this.group.add(this.hitbox);
     // sceneManager.mainSceneAddObject(this.hitbox);
   }
 
@@ -139,7 +140,34 @@ export default class extends Character {
     });
   }
 
-  detectWallCollision () {
+  detectWallCollision(nextPosition){
+    const hitbox = this.character.parent.children[2];
+    const walls = this.sceneManager.walls;
+    let isCollide = false;
+
+    //hitbox.position.x += nextPosition.x;
+    //hitbox.position.z += nextPosition.z;
+
+    const originPoint = new THREE.Vector3().setFromMatrixPosition(hitbox.matrixWorld);
+    originPoint.x += nextPosition.x
+    originPoint.z += nextPosition.z
+
+    for (let vertexIndex = 0; vertexIndex < hitbox.geometry.vertices.length; vertexIndex++)
+    {
+      const localVertex = hitbox.geometry.vertices[vertexIndex].clone();
+      const globalVertex = localVertex.applyMatrix4( hitbox.matrix );
+      const directionVector = globalVertex.sub( hitbox.position );
+
+      const ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize());
+
+      const collisionResults = ray.intersectObjects( [walls] );
+      if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() )
+        isCollide = true;
+    }
+    return isCollide;
+  }
+
+  detectWallCollisionOld () {
     const character = new THREE.Vector3().setFromMatrixPosition(this.character.matrixWorld);
     const walls = this.sceneManager.walls;
 
@@ -172,19 +200,15 @@ export default class extends Character {
                   this.inputManager.controls.left && this.inputManager.controls.down ||
                   this.inputManager.controls.right && this.inputManager.controls.down;
     if (this.inputManager.controls.up) {
-      if (this.detectWallCollision() === "forward") return;
       this.move(0, strafe)
     }
     if (this.inputManager.controls.down) {
-      if (this.detectWallCollision() === "backward") return;
       this.move(quartDegree * 2, strafe)
     }
     if (this.inputManager.controls.left) {
-      if (this.detectWallCollision() === "left") return;
       this.move(quartDegree, strafe)
     }
     if (this.inputManager.controls.right) {
-      if (this.detectWallCollision() === "right") return;
       this.move(-quartDegree, strafe)
     }
   }
@@ -193,6 +217,13 @@ export default class extends Character {
     const speed = isStrafing ? this.speed / 2 : this.speed;
     // this.character.body.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
     // this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
+
+    // get nextPosition
+    this.nextPosition = {
+      x: Math.sin(this.character.rotation.y + decay) * speed,
+      z: Math.cos(this.character.rotation.y + decay) * speed};
+    if(this.detectWallCollision(this.nextPosition)) return;
+
     this.group.position.x += Math.sin(this.character.rotation.y + decay) * speed;
     this.group.position.z += Math.cos(this.character.rotation.y + decay) * speed;
     this.setWalking();
