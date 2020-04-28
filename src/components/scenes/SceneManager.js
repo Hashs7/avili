@@ -156,6 +156,7 @@ export default class {
     });
 
     this.mainSceneAddObject(t2Gltf.scene);
+    //console.log(new THREE.Vector3().setFromMatrixPosition(t2.towerTop.matrixWorld));
     this.towerEl.push(t2);
   }
 
@@ -172,10 +173,12 @@ export default class {
 
   setFov() {
     //this.setNPC(this.map, this.matesPos);
+    //console.log(this.towerEl[1]);
     this.addScene(new FieldOfViewScene(this.world, this.matesPos, this.towers, this.landingAreas, this.towerEl[1]));
   }
 
   setProjectile() {
+    //console.log(this.towerEl[0]);
     this.addScene(new ProjectileScene(this.towers, this.landingAreas, this.world, this.towerEl[0]))
   }
 

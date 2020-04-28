@@ -1,7 +1,7 @@
 import * as THREE from 'three'
 import InputManager from "../core/InputManager";
 import { Body, Box,  Vec3 } from "cannon-es";
-import { makeTextSprite, toRadian } from "../../utils";
+import { makeTextSprite, toRadian, drawRay } from "../../utils";
 import AudioManager from "../core/AudioManager";
 import Character, { ACTIONS } from "./Character";
 
@@ -69,7 +69,7 @@ export default class extends Character {
     this.hitbox = new THREE.Mesh( geometry, material );
     this.hitbox.position.set(0, size.y / 2, 0);
     this.hitbox.name = 'hitbox';
-    // this.group.add(this.hitbox);
+    this.group.add(this.hitbox);
     // sceneManager.mainSceneAddObject(this.hitbox);
   }
 
@@ -139,7 +139,32 @@ export default class extends Character {
     });
   }
 
-  detectWallCollision () {
+  detectWallCollision(){
+    const hitbox = this.character.parent.children[2];
+    const walls = this.sceneManager.walls;
+
+    const originPoint = new THREE.Vector3().setFromMatrixPosition(hitbox.matrixWorld);
+
+    for (let vertexIndex = 0; vertexIndex < hitbox.geometry.vertices.length; vertexIndex++)
+    {
+      const localVertex = hitbox.geometry.vertices[vertexIndex].clone();
+      const globalVertex = localVertex.applyMatrix4( hitbox.matrix );
+      const directionVector = globalVertex.sub( hitbox.position );
+
+      const ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize());
+
+      // debug
+      //const debugRay = drawRay(originPoint, directionVector.clone().normalize())
+      //this.sceneManager.mainSceneAddObject(debugRay);
+
+      const collisionResults = ray.intersectObjects( [walls] );
+      //console.log(collisionResults);
+      if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() )
+        console.log(" Hit ");
+    }
+  }
+
+  detectWallCollisionOld () {
     const character = new THREE.Vector3().setFromMatrixPosition(this.character.matrixWorld);
     const walls = this.sceneManager.walls;
 
@@ -172,19 +197,15 @@ export default class extends Character {
                   this.inputManager.controls.left && this.inputManager.controls.down ||
                   this.inputManager.controls.right && this.inputManager.controls.down;
     if (this.inputManager.controls.up) {
-      if (this.detectWallCollision() === "forward") return;
       this.move(0, strafe)
     }
     if (this.inputManager.controls.down) {
-      if (this.detectWallCollision() === "backward") return;
       this.move(quartDegree * 2, strafe)
     }
     if (this.inputManager.controls.left) {
-      if (this.detectWallCollision() === "left") return;
       this.move(quartDegree, strafe)
     }
     if (this.inputManager.controls.right) {
-      if (this.detectWallCollision() === "right") return;
       this.move(-quartDegree, strafe)
     }
   }
@@ -207,6 +228,7 @@ export default class extends Character {
   }
 
   setWalking() {
+    this.detectWallCollision();
     const playerMovedEvent = new CustomEvent('playerMoved', {
       detail: this.character,
     });
