@@ -67,3 +67,9 @@ const roundRect = (ctx, x, y, w, h, r) => {
   ctx.fill();
   ctx.stroke();
 };
+
+export const drawRay = (pointA, pointB) => {
+  const geometry = new THREE.BufferGeometry().setFromPoints([pointA, pointB]);
+  const material = new THREE.LineBasicMaterial( { color: 0xaa0000 } );
+  return new THREE.Line( geometry, material );
+}
