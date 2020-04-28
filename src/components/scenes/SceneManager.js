@@ -84,7 +84,7 @@ export default class {
   }
 
   async addMap() {
-    const gltf = await LoadManager.loadGLTF('./assets/models/map/map.glb');
+    const gltf = await LoadManager.loadGLTF('./assets/models/map/map2.glb');
     let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
     gltf.scene.traverse((child) => {
       if (child.name.startsWith('section')) {
@@ -149,7 +149,7 @@ export default class {
     t2Gltf.scene.position.y = this.towers[1].position.y - 10;
     t2Gltf.scene.position.z = this.towers[1].position.z;
 
-    let t2 = {towerTop: null, crystal: null}
+    let t2 = {towerTop: null, crystal: null};
     t1Gltf.scene.traverse(child => {
       if(child.name === "BatimentHaut") t2.towerTop = child;
       if(child.name === "GrosCrystal") t2.crystal = child;

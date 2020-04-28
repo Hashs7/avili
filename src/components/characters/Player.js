@@ -144,14 +144,14 @@ export default class extends Character {
     const walls = this.sceneManager.walls;
 
     const directions = [
-      {vector : new THREE.Vector3(0, 0, 1), label: "forward"},
-      {vector : new THREE.Vector3(0.5, 0, 0.5), label: "for-left"},
-      {vector : new THREE.Vector3(0.5, 0, -0.5), label: "for-right"},
-      {vector : new THREE.Vector3(0, 0, -1), label: "backward"},
-      {vector : new THREE.Vector3(0.5, 0, -0.5), label: "back-left"},
-      {vector : new THREE.Vector3(-0.5, 0, -0.5), label: "back-right"},
-      {vector : new THREE.Vector3(1, 0, 0), label: "left"},
-      {vector : new THREE.Vector3(-1, 0, 0), label: "right"},
+      { vector: new THREE.Vector3(0, 0, 1), label: "forward" },
+      { vector: new THREE.Vector3(0.5, 0, 0.5), label: "for-left" },
+      { vector: new THREE.Vector3(0.5, 0, -0.5), label: "for-right" },
+      { vector: new THREE.Vector3(0, 0, -1), label: "backward" },
+      { vector: new THREE.Vector3(0.5, 0, -0.5), label: "back-left" },
+      { vector: new THREE.Vector3(-0.5, 0, -0.5), label: "back-right" },
+      { vector: new THREE.Vector3(1, 0, 0), label: "left" },
+      { vector: new THREE.Vector3(-1, 0, 0), label: "right" },
     ];
 
     let collisionWall = '';

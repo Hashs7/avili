@@ -5,6 +5,7 @@ import { toRadian } from "../../utils";
 
 export default class Projectile {
   constructor(tower, landingAreas, scene, els) {
+    console.log('create, Projectile', els);
     this.tower = tower;
     this.landingAreas = landingAreas;
     this.scene = scene;
@@ -12,22 +13,29 @@ export default class Projectile {
     this.projAreaName = "Laser";
     this.uniforms = {
       uSize: {type: 'float', value:  -6.0}
-    }
+    };
     this.index = 0;
     this.els = els
   }
 
-  launchSequence(){
-    this.startTimeline(toRadian(-90))
+  launchSequence() {
+    this.startTimeline();
   }
 
   startTimeline() {
     const tl = gsap.timeline({ onComplete: () => {
-      this.startTimeline()
+      this.startTimeline();
     }});
-    const pointAngle = Math.atan2(this.tower.position.x - this.landingAreas[this.index].position.x, this.tower.position.z - this.landingAreas[this.index].position.z);
-    const angle = (this.els.towerTop.rotation.y % (Math.PI * 2)) - pointAngle;
-    console.log(pointAngle);
+    const currentAngle = Number(this.els.towerTop.rotation.y);
+    let pointAngle = Math.atan2(this.tower.position.x - this.landingAreas[this.index].position.x, this.tower.position.z - this.landingAreas[this.index].position.z);
+    /*if (pointAngle < 0) {
+      pointAngle = pointAngle + (Math.PI * 2)
+    }
+    const angle = currentAngle + (this.els.towerTop.rotation.y % (Math.PI * 2) - pointAngle);*/
+
+    // console.log('current', this.els.towerTop.rotation.y % (Math.PI * 2));
+    // console.log('angle+=', this.els.towerTop.rotation.y + angle);
+
     tl.to(this.els.towerTop.rotation, {
       onStart: () => {
         this.uniforms.uSize.value = -6.0;
