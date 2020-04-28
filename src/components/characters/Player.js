@@ -15,6 +15,7 @@ export default class extends Character {
     this.wakable = true;
     this.inputManager = new InputManager();
     this.inputManager.setInputReceiver(this);
+    this.nextPosition;
 
     this.raycaster = new THREE.Raycaster();
 
@@ -139,11 +140,17 @@ export default class extends Character {
     });
   }
 
-  detectWallCollision(){
+  detectWallCollision(nextPosition){
     const hitbox = this.character.parent.children[2];
     const walls = this.sceneManager.walls;
+    let isCollide = false;
+
+    //hitbox.position.x += nextPosition.x;
+    //hitbox.position.z += nextPosition.z;
 
     const originPoint = new THREE.Vector3().setFromMatrixPosition(hitbox.matrixWorld);
+    originPoint.x += nextPosition.x
+    originPoint.z += nextPosition.z
 
     for (let vertexIndex = 0; vertexIndex < hitbox.geometry.vertices.length; vertexIndex++)
     {
@@ -153,15 +160,11 @@ export default class extends Character {
 
       const ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize());
 
-      // debug
-      //const debugRay = drawRay(originPoint, directionVector.clone().normalize())
-      //this.sceneManager.mainSceneAddObject(debugRay);
-
       const collisionResults = ray.intersectObjects( [walls] );
-      //console.log(collisionResults);
       if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() )
-        console.log(" Hit ");
+        isCollide = true;
     }
+    return isCollide;
   }
 
   detectWallCollisionOld () {
@@ -214,6 +217,13 @@ export default class extends Character {
     const speed = isStrafing ? this.speed / 2 : this.speed;
     // this.character.body.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
     // this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
+
+    // get nextPosition
+    this.nextPosition = {
+      x: Math.sin(this.character.rotation.y + decay) * speed,
+      z: Math.cos(this.character.rotation.y + decay) * speed};
+    if(this.detectWallCollision(this.nextPosition)) return;
+
     this.group.position.x += Math.sin(this.character.rotation.y + decay) * speed;
     this.group.position.z += Math.cos(this.character.rotation.y + decay) * speed;
     this.setWalking();
@@ -228,7 +238,6 @@ export default class extends Character {
   }
 
   setWalking() {
-    this.detectWallCollision();
     const playerMovedEvent = new CustomEvent('playerMoved', {
       detail: this.character,
     });
