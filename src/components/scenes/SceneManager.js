@@ -30,11 +30,14 @@ export default class {
   }
 
   initMainScene() {
-    new Skybox(this.mainScene, 'afterrain');
-    const light = new THREE.HemisphereLight(0xffffff, 0x444444, 2);
+    // new Skybox(this.mainScene, 'afterrain');
+    const light = new THREE.HemisphereLight(0xffffff, 0x444444);
     this.addFloor();
     this.addMap();
     this.mainScene.add(light);
+    this.mainScene.background = new THREE.Color(0x05052b);
+    // this.mainScene.background = new THREE.Color(0xfefefe);
+
   }
 
   setNPC(map, positions) {
@@ -50,6 +53,10 @@ export default class {
       name: 'Farkana',
       position: new THREE.Vector3(5, 0, -3),
       target: new THREE.Vector3(positions[2].x, 0, positions[2].z),
+    },{
+      name: 'Schteppe',
+      position: new THREE.Vector3(3, 0, 3),
+      target: new THREE.Vector3(positions[3].x, 0, positions[3].z),
     }];
     npcs.forEach(async (n) => {
       const gltf = await LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb');

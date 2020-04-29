@@ -97,8 +97,9 @@
   border-radius: 50%;
   width: 50px;
   height: 50px;
-  border: 1px solid antiquewhite;
-  /*background-color: red;*/
+  /*border: 1px solid antiquewhite;*/
+  background-color: antiquewhite;
+  opacity: 0.8;
   /*background-color: #f6f6f6;*/
   pointer-events: none;
 }
