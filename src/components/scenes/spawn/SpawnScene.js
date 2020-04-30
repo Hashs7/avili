@@ -7,11 +7,12 @@ import LoadManager from "../../core/LoadManager";
 import State from "../../core/State";
 
 export default class extends Scene {
-  constructor(world, spline, sections) {
+  constructor(world, spline, sections, finishCallback) {
     super();
     this.scene.name = 'SpawnScene';
     this.world = world;
     this.sections = sections;
+    this.finishCallback = finishCallback;
     this.spline = new THREE.SplineCurve([
       new THREE.Vector3(289.76843686945404, 452.51481137238443, 56.10018915737797),
       new THREE.Vector3(16.577771319586702, 240.23374531404815, -280.3833052451697),
@@ -51,8 +52,8 @@ export default class extends Scene {
       new THREE.Vector3(150, 3, 0),
       new THREE.Vector3(90, 3, 0),
       new THREE.Vector3( 80, 3, 20 ),
-      new THREE.Vector3( 30, 3, 0 ),
-      new THREE.Vector3( 20, 3, -20 ),
+      new THREE.Vector3( 50, 3, 0 ),
+      new THREE.Vector3( 40, 3, -20 ),
       new THREE.Vector3( 10, 2, 5 ),
       new THREE.Vector3(-9, 6.5, 5.8)
     ]);
@@ -64,6 +65,7 @@ export default class extends Scene {
       setTimeout(() => {
         this.world.cameraOperator.setTravelling(false);
         this.world.player.groupCamera();
+        this.finishCallback();
       }, 1500)
     });
     // this.world.player.groupCamera();

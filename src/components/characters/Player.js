@@ -64,7 +64,7 @@ export default class extends Character {
     });
 
     this.world.addBody(this.character.body);*/
-
+z
     const geometry = new THREE.CylinderGeometry( size.x, size.x, size.y, 8 );
     // const geometry = new THREE.BoxGeometry( mesh.size.y, mesh.size.z, mesh.size.y, 4);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true, visible: false });
@@ -85,9 +85,9 @@ export default class extends Character {
     const spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, 0.314, 1);
     spotLight.position.set(-12, 15, 5);
     spotLight.lookAt(this.character.position);
-    this.group.add(spotLight);
-    const spotLightHelper = new THREE.SpotLightHelper( spotLight );
-    this.group.add( spotLightHelper );
+    // this.group.add(spotLight);
+    // const spotLightHelper = new THREE.SpotLightHelper( spotLight );
+    // this.group.add( spotLightHelper );
     this.camera.position.set(-9, 6.5, 5.8);
     this.camera.lookAt(this.character.position);
     this.group.add(this.camera);

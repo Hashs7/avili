@@ -8,6 +8,24 @@ import ProjectileScene from "./projectile/ProjectileScene";
 import NPC from "../characters/NPC";
 import WordScene from "./word/WordScene";
 
+const npcsDefinition = (positions) => [{
+  name: 'Daesu',
+  position: new THREE.Vector3(-1, 0, 2),
+  target: new THREE.Vector3(positions[0].x, 0, positions[0].z),
+},{
+  name: 'Tardys',
+  position: new THREE.Vector3(2, 0, -2),
+  target: new THREE.Vector3(positions[1].x, 0, positions[1].z),
+},{
+  name: 'Farkana',
+  position: new THREE.Vector3(5, 0, -3),
+  target: new THREE.Vector3(positions[2].x, 0, positions[2].z),
+},{
+  name: 'Schteppe',
+  position: new THREE.Vector3(3, 0, 3),
+  target: new THREE.Vector3(positions[3].x, 0, positions[3].z),
+}];
+
 export default class {
   constructor(world, worldPhysic, camera) {
     this.world = world;
@@ -40,33 +58,6 @@ export default class {
     // this.mainScene.background = new THREE.Color(0xfefefe);
   }
 
-  setNPC(map, positions) {
-    const npcs = [{
-      name: 'Daesu',
-      position: new THREE.Vector3(-1, 0, 2),
-      target: new THREE.Vector3(positions[0].x, 0, positions[0].z),
-    },{
-      name: 'Tardys',
-      position: new THREE.Vector3(2, 0, -2),
-      target: new THREE.Vector3(positions[1].x, 0, positions[1].z),
-    },{
-      name: 'Farkana',
-      position: new THREE.Vector3(5, 0, -3),
-      target: new THREE.Vector3(positions[2].x, 0, positions[2].z),
-    },{
-      name: 'Schteppe',
-      position: new THREE.Vector3(3, 0, 3),
-      target: new THREE.Vector3(positions[3].x, 0, positions[3].z),
-    }];
-    npcs.forEach(async (n) => {
-      const gltf = await LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb');
-      const npc = new NPC(gltf, this.world, this, 'EMILIE', n.position, map.geometry, n.name);
-      this.npc.push(npc);
-      npc.moveTo(n.target)
-      console.log(n.target);
-    });
-  }
-
   /**
    * Add floor on main scene
    */
@@ -93,8 +84,6 @@ export default class {
 
   async addMap() {
     const gltf = await LoadManager.loadGLTF('./assets/models/map/map4.glb');
-    console.log('map', gltf);
-    console.log('postion', gltf.scene);
     let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
     gltf.scene.traverse((child) => {
       if (child.name.startsWith('section')) {
@@ -113,7 +102,6 @@ export default class {
       if (child.name === 'NurbsPath') {
         this.spline = child;
       }
-
       if (sectionName.includes(child.name)) {
         this.sections.push(child);
       }
@@ -172,19 +160,31 @@ export default class {
     this.mainScene.add(this.map);
   }
 
+
+  setNPC(map, positions) {
+    npcsDefinition(positions).forEach(async (n) => {
+      const gltf = await LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb');
+      const npc = new NPC(gltf, this.world, this, 'EMILIE', n.position, map.geometry, n.name);
+      this.npc.push(npc);
+    });
+  }
+
+  moveNPC() {
+    setTimeout(() => {
+      this.npc.forEach((n, i) => n.moveTo(npcsDefinition(this.matesPos)[i].target));
+    }, 3000)
+  }
+
   setSpawn() {
-    this.addScene(new SpawnScene(this.world, this.spline, this.sections));
+    this.addScene(new SpawnScene(this.world, this.spline, this.sections, () => this.moveNPC()));
   }
 
   setFov() {
     this.setNPC(this.map, this.matesPos);
-
-    //console.log(this.towerEl[1]);
     this.addScene(new FieldOfViewScene(this.world, this.matesPos, this.towers, this.landingAreas, this.towerEl[1]));
   }
 
   setProjectile() {
-    //console.log(this.towerEl[0]);
     this.addScene(new ProjectileScene(this.towers, this.landingAreas, this.world, this.towerEl[0]))
   }
 

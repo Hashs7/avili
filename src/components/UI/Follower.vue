@@ -72,6 +72,7 @@
             break;
           case "none":
             // à debug si on utilise
+            follower.style.mixBlendMode = "initial";
             this.state = 'none';
             gsap.to(follower, { scale: 0, duration: 0.5 });
             break;

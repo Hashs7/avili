@@ -6,7 +6,7 @@ import { Pathfinding } from "three-pathfinding";
 export default class extends Character {
   constructor(gltf, world, sceneManager, name, startPosition, mapGeometry, pseudo) {
     super(gltf, world, sceneManager, name);
-    this.speed = 0.2;
+    this.speed = 0.25;
     this.isWalking = false;
     this.target = [];
     this.group.name = 'NPC';
@@ -25,7 +25,6 @@ export default class extends Character {
     this.pathfinding = new Pathfinding();
     this.ZONE = 'level1';
     this.pathfinding.setZoneData(this.ZONE, Pathfinding.createZone(map));
-    console.log(this.pathfinding);
   }
 
   /**
@@ -36,7 +35,7 @@ export default class extends Character {
     const groupID = this.pathfinding.getGroup(this.ZONE, this.group.position);
     this.target = this.pathfinding.findPath(this.group.position, target, this.ZONE, groupID);
     if (!this.target) {
-      console.log('not found');
+      console.error('Path not found');
       return
     }
     this.setWalking(true);
