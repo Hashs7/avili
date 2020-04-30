@@ -53,11 +53,9 @@ export default class {
     this.stats.showPanel(0);
     document.body.appendChild( this.stats.dom );
 
-
     this.resize();
     this.render();
     this.wow();
-    // this.debugCamera();
   }
 
   /**
@@ -66,7 +64,7 @@ export default class {
   async loadProps() {
     const gltf = await LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb');
     this.player = new Player(gltf, this.world, this.camera, this.gameManager.sceneManager, 'EMILIE');
-    this.player.groupCamera();
+    // this.player.groupCamera();
   }
 
   getplayer(){

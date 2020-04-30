@@ -34,11 +34,10 @@ export default class Projectile {
     // const pos = new THREE.Vector3().copy(this.tower.position).sub(this.landingAreas[this.index].position);
     // console.log(pos.angleTo(new THREE.Vector3(0, 0, 1)));
     const angle = currentAngle + (this.towerElements.towerTop.rotation.y % (Math.PI * 2) - pointAngle);
-    console.log('pointAngle', pointAngle);
-    console.log('angle', angle);
-    console.log('currentAngle', currentAngle);
-    console.log('decay', (this.towerElements.towerTop.rotation.y % (Math.PI * 2) - pointAngle));
-    debugger
+    // console.log('pointAngle', pointAngle);
+    // console.log('angle', angle);
+    // console.log('currentAngle', currentAngle);
+    // console.log('decay', (this.towerElements.towerTop.rotation.y % (Math.PI * 2) - pointAngle));
 
     // console.log('current', this.els.towerTop.rotation.y % (Math.PI * 2));
     // console.log('angle+=', this.els.towerTop.rotation.y + angle);

@@ -67,7 +67,7 @@
         switch(e.target.dataset.hover) {
           case "big":
             this.state = 'big';
-            // follower.style.mixBlendMode = "difference";
+            follower.style.mixBlendMode = "difference";
             gsap.to(follower, { scale: 2, duration: 0.5 });
             break;
           case "none":

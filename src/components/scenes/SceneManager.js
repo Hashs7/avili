@@ -37,13 +37,12 @@ export default class {
     this.mainScene.add(light);
     this.mainScene.background = new THREE.Color(0x05052b);
     // this.mainScene.background = new THREE.Color(0xfefefe);
-
   }
 
   setNPC(map, positions) {
     const npcs = [{
       name: 'Daesu',
-      position: new THREE.Vector3(-2, 0, 2),
+      position: new THREE.Vector3(-1, 0, 2),
       target: new THREE.Vector3(positions[0].x, 0, positions[0].z),
     },{
       name: 'Tardys',
@@ -62,8 +61,8 @@ export default class {
       const gltf = await LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb');
       const npc = new NPC(gltf, this.world, this, 'EMILIE', n.position, map.geometry, n.name);
       this.npc.push(npc);
-      console.log(n.target);
       npc.moveTo(n.target)
+      console.log(n.target);
     });
   }
 
@@ -92,21 +91,22 @@ export default class {
   }
 
   async addMap() {
-    const gltf = await LoadManager.loadGLTF('./assets/models/map/map2.glb');
+    const gltf = await LoadManager.loadGLTF('./assets/models/map/map3.glb');
+    console.log('map', gltf);
+    console.log('postion', gltf.scene);
     let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
     gltf.scene.traverse((child) => {
       if (child.name.startsWith('section')) {
         child.material.transparent = true;
-        child.material.opacity = 0.;
+        child.material.opacity = 0;
       }
       if (child.name.split('mate').length > 1) {
         this.matesPos.push(child.position)
       }
       if (child.name === 'walls') {
         this.walls = child;
-        //this.setWalls(child);
       }
-      if (child.name === 'map') {
+      if (child.name === 'Plane') {
         this.map = child;
       }
       if (child.name === 'NurbsPath') {
@@ -132,6 +132,7 @@ export default class {
     this.setMap();
     this.setFov();
     this.setProjectile();
+    this.setWords();
   }
 
   async addTowers(){
@@ -166,7 +167,7 @@ export default class {
   }
 
   setMap() {
-    this.map.material = new THREE.MeshBasicMaterial({ color: 0xaaaaaa });
+    // this.map.material = new THREE.MeshBasicMaterial({ color: 0xaaaaaa });
     this.mainScene.add(this.map);
   }
 

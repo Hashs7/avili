@@ -1,7 +1,7 @@
 <template>
   <div class="quality-selection">
-    <div>
-      <h1>Sélectionnez la qualitée</h1>
+    <div class="quality-selection__box">
+      <h1 class="quality-selection__title">Sélectionnez le niveau de qualité de l'expérience</h1>
       <ul class="quality-selection__container">
         <li
             v-for="(q, i) in qualities"
@@ -59,6 +59,15 @@
     align-items: center;
     color: $white;
     background-color: #2A2A2A;
+  }
+
+  .quality-selection__box {
+    text-align: center;
+    max-width: 500px;
+  }
+
+  .quality-selection__title {
+    font-size: 2rem;
   }
 
   .quality-selection__container {

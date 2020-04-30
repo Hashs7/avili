@@ -7,6 +7,9 @@
         </div>
         <span class="loader__percent">{{percent}}%</span>
       </div>
+      <div class="advertising">
+        <span ref="advertising">L'usage d'un casque audio est vivement recommandé</span>
+      </div>
     </div>
   </transition>
 </template>
@@ -29,6 +32,16 @@
     },
     mounted() {
       LoadManager.setReceiver(this);
+      const tl = gsap.timeline();
+      tl.from(this.$refs.advertising, {
+        opacity: 0,
+        y: 20,
+      });
+      tl.to(this.$refs.advertising, {
+        opacity: 0,
+        y: -20,
+        delay: 5,
+      });
     },
     methods: {
       progressHandler(percent) {
@@ -65,25 +78,37 @@
     right: 0;
     background-color: black;
   }
-  .loader {
+  .advertising {
     position: fixed;
+    display: flex;
+    align-items: center;
+    max-width: 300px;
+    text-align: center;
+    color: white;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
     margin: auto;
-    width: 200px;
-    height: 30px;
+  }
+  .loader {
+    position: fixed;
+    bottom: 50px;
+    right: 70px;
+    margin: auto;
   }
   .loader__percent {
     position: relative;
     z-index: 10000;
-    display: block;
+    display: inline-block;
     margin-top: 8px;
     text-align: center;
     color: white;
+    margin-left: 16px;
   }
   .loader__container {
+    display: inline-block;
+    width: 140px;
     height: 10px;
     background-color: gray;
   }

@@ -25,6 +25,7 @@ export default class extends Character {
     this.pathfinding = new Pathfinding();
     this.ZONE = 'level1';
     this.pathfinding.setZoneData(this.ZONE, Pathfinding.createZone(map));
+    console.log(this.pathfinding);
   }
 
   /**
@@ -34,7 +35,10 @@ export default class extends Character {
   moveTo(target) {
     const groupID = this.pathfinding.getGroup(this.ZONE, this.group.position);
     this.target = this.pathfinding.findPath(this.group.position, target, this.ZONE, groupID);
-    if (!this.target) return;
+    if (!this.target) {
+      console.log('not found');
+      return
+    }
     this.setWalking(true);
     this.setOrientation(this.target[0]);
   }
@@ -90,7 +94,7 @@ export default class extends Character {
   addPseudo(name) {
     const mesh = this.character.children.find(el => el.name === 'unamed');
     mesh.geometry.computeBoundingBox();
-    mesh.material.color = new THREE.Color(0x00aa00);
+    mesh.material.color = new THREE.Color(0x0e0e7c);
     mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
     const playerName = makeTextSprite( ` ${name} `, { fontsize: 20, fontface: "Arial" });
     playerName.position.set(mesh.size.x, mesh.size.y, mesh.size.z);

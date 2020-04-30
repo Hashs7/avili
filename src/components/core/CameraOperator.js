@@ -46,6 +46,7 @@ export default class {
     const radiusSegments = radSeg || 3;
     this.mesh = this.mesh || null;
 
+    console.log('mesh', mesh);
     if (this.tubeMesh) parent.remove(this.tubeMesh);
 
     this.tube = new THREE.TubeGeometry(spline, segments, 0.1, radiusSegments, false);
@@ -64,27 +65,31 @@ export default class {
       this.tubeMesh = SceneUtils.createMultiMaterialObject( geometry, [
         new THREE.MeshLambertMaterial({
           color: color,
-          side: geoSide
-        }),
-        new THREE.MeshBasicMaterial({
-          color: 0x000000,
-          opacity: 0.3,
-          wireframe: true,
-          transparent: true
+          side: geoSide,
+          opacity: 0,
+          transparent: true,
         })]);
+      console.log(this.tubeMesh);
     } else {
       this.tubeMesh = mesh;
     }
+    this.tubeMesh.visibility = false;
 
     this.parent.add( this.tubeMesh );
   }
-
 
   addSpline(mesh, geometry) {
     this.tube = geometry;
     this.parent.add( mesh );
   }
 
+  setCallback(cl) {
+    this.callback = cl
+  }
+
+  launchCallback() {
+    this.callback()
+  }
 
   /**
    * Animate the camera along the spline
@@ -92,7 +97,7 @@ export default class {
   renderFollowCamera() {
     if (!this.travelling) return;
     const time = Date.now() - this.start;
-    const looptime = 10 * 1000;
+    const looptime = 20 * 1000;
     const t = ( time % looptime ) / looptime;
     const pos = this.tube.parameters.path.getPointAt( t );
 
@@ -113,8 +118,8 @@ export default class {
 
     // We move on a offset on its binormal
     pos.add( this.normal.clone().multiplyScalar( this.offset ) );
-
     this.camera.position.copy( pos );
+
 
     // Using arclength for stablization in look ahead.
     const lookAt = this.tube.parameters.path.getPointAt( ( t + 30 / this.tube.parameters.path.getLength() ) % 1 ).multiplyScalar( this.scale );
@@ -123,11 +128,12 @@ export default class {
     // if (!this.lookAhead) {
     lookAt.copy( pos ).add( dir );
     // }
-    this.camera.matrix.lookAt(this.camera.position, lookAt, this.normal);
+    // this.camera.matrix.lookAt(this.camera.position, lookAt - 15, this.normal);
     this.camera.rotation.setFromRotationMatrix( this.camera.matrix.makeRotationAxis(new THREE.Vector3(0, 1, 0), Math.PI/2), this.camera.rotation.order );
-    this.camera.rotateY(toRadian(180))
+    this.camera.rotateY(toRadian(180));
     if (Number(t.toFixed(3)) > 0.995) {
       this.travelling = false;
+      this.launchCallback()
     }
   }
 }

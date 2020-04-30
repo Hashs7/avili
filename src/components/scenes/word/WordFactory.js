@@ -55,7 +55,7 @@ export default class WordFactory {
     this.world.addBody(this.jointBody);
 
     setTimeout(() => {
-      this.addWord('Cuisine', new Vec3(118, 50, -4));
+      this.addWord('Bitch', new Vec3(118, 50, -3));
     }, 2000)
 
     // this.addWord('Cuisine', new Vec3(118, 3, -4));
@@ -109,7 +109,8 @@ export default class WordFactory {
     // ... and parse each letter to generate a mesh
 
     const geometry = new THREE.TextGeometry(text, this.fontOption);
-    const material = new THREE.MeshPhongMaterial({ color: 0x97df5e });
+    const material = new THREE.MeshPhongMaterial({ color: 0x97df5e, transparent: true, opacity: 0 });
+    // const material = new THREE.MeshPhongMaterial({ color: 0x97df5e });
     geometry.computeBoundingBox();
     geometry.computeBoundingSphere();
     const mesh = new THREE.Mesh(geometry, material);
@@ -139,6 +140,9 @@ export default class WordFactory {
     // mesh.body.addShape(box, new Vec3(center.x, center.y, center.z));
     this.world.addBody(mesh.body);
     this.finishSetWord(mesh);
+    setTimeout(() => {
+      mesh.material.opacity = 1
+    }, 30000)
   }
 
   finishSetWord(word) {
