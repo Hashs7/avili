@@ -28,12 +28,12 @@ export default class Projectile {
     }});
     const currentAngle = Number(this.towerElements.towerTop.rotation.y);
     let pointAngle = Math.atan2(this.tower.position.x - this.landingAreas[this.index].position.x, this.tower.position.z - this.landingAreas[this.index].position.z);
-    if (pointAngle < 0) {
+    /*if (pointAngle < 0) {
       pointAngle = pointAngle + (Math.PI * 2)
-    }
+    }*/
     // const pos = new THREE.Vector3().copy(this.tower.position).sub(this.landingAreas[this.index].position);
     // console.log(pos.angleTo(new THREE.Vector3(0, 0, 1)));
-    const angle = currentAngle + (this.towerElements.towerTop.rotation.y % (Math.PI * 2) - pointAngle);
+    // const angle = currentAngle + (this.towerElements.towerTop.rotation.y % (Math.PI * 2) - pointAngle);
     // console.log('pointAngle', pointAngle);
     // console.log('angle', angle);
     // console.log('currentAngle', currentAngle);
@@ -50,7 +50,7 @@ export default class Projectile {
         this.landingAreas[this.index].position.y = 0;
         this.createLandingPoint(this.landingAreas[this.index].position);
       },
-      y: `${angle}`,
+      y: `${pointAngle}`,
       delay: 1,
       duration: 1.5
     });

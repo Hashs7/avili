@@ -56,6 +56,7 @@ export default class {
     this.resize();
     this.render();
     this.wow();
+    // this.debugCamera()
   }
 
   /**

@@ -31,10 +31,11 @@ export default class {
 
   initMainScene() {
     // new Skybox(this.mainScene, 'afterrain');
-    const light = new THREE.HemisphereLight(0xffffff, 0x444444);
+    const light = new THREE.HemisphereLight(0xffffff, 0x444444, 0.2);
     this.addFloor();
     this.addMap();
     this.mainScene.add(light);
+    this.mainScene.fog = new THREE.Fog( 0x05052b, 7, 50);
     this.mainScene.background = new THREE.Color(0x05052b);
     // this.mainScene.background = new THREE.Color(0xfefefe);
   }
@@ -91,7 +92,7 @@ export default class {
   }
 
   async addMap() {
-    const gltf = await LoadManager.loadGLTF('./assets/models/map/map3.glb');
+    const gltf = await LoadManager.loadGLTF('./assets/models/map/map4.glb');
     console.log('map', gltf);
     console.log('postion', gltf.scene);
     let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
