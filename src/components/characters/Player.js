@@ -82,10 +82,10 @@ export default class extends Character {
 
   groupCamera() {
     // this.character.position.set(0, 1, 0);
-    // const spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, 0.314, 1);
-    // spotLight.position.set(-12, 15, 5);
-    // spotLight.lookAt(this.character.position);
-    // this.group.add(spotLight);
+    const spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, 0.314, 1);
+    spotLight.position.set(-12, 15, 5);
+    spotLight.lookAt(this.character.position);
+    this.group.add(spotLight);
     // const spotLightHelper = new THREE.SpotLightHelper( spotLight );
     // this.group.add( spotLightHelper );
     this.camera.position.set(-9, 6.5, 5.8);
