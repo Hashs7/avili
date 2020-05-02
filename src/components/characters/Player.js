@@ -82,12 +82,13 @@ export default class extends Character {
 
   groupCamera() {
     // this.character.position.set(0, 1, 0);
-    const spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, 0.314, 1);
-    spotLight.position.set(-12, 15, 5);
-    spotLight.lookAt(this.character.position);
-    this.group.add(spotLight);
-    // const spotLightHelper = new THREE.SpotLightHelper( spotLight );
-    // this.group.add( spotLightHelper );
+    this.spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, 0.314, 1);
+    this.spotLight.position.set(-12, 15, 5);
+    this.spotLight.castShadow = true;
+    this.spotLight.target = this.group;
+
+    // this.spotLight.lookAt(this.character.position);
+    this.sceneManager.mainScene.add(this.spotLight);
     this.camera.position.set(-9, 6.5, 5.8);
     this.camera.lookAt(this.character.position);
     this.group.add(this.camera);
@@ -232,8 +233,10 @@ export default class extends Character {
       z: Math.cos(this.character.rotation.y + decay) * speed};
     if(this.detectWallCollision(this.nextPosition)) return;
 
-    this.group.position.x += Math.sin(this.character.rotation.y + decay) * speed;
-    this.group.position.z += Math.cos(this.character.rotation.y + decay) * speed;
+    this.group.position.x += this.nextPosition.x;
+    this.group.position.z += this.nextPosition.z;
+    this.spotLight.position.x += this.nextPosition.x;
+    this.spotLight.position.z += this.nextPosition.z;
     this.setWalking();
   }
 
