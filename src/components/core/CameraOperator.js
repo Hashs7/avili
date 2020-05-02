@@ -46,7 +46,6 @@ export default class {
     const radiusSegments = radSeg || 3;
     this.mesh = this.mesh || null;
 
-    console.log('mesh', mesh);
     if (this.tubeMesh) parent.remove(this.tubeMesh);
 
     this.tube = new THREE.TubeGeometry(spline, segments, 0.1, radiusSegments, false);
@@ -69,7 +68,6 @@ export default class {
           opacity: 0,
           transparent: true,
         })]);
-      console.log(this.tubeMesh);
     } else {
       this.tubeMesh = mesh;
     }
@@ -131,8 +129,11 @@ export default class {
     // this.camera.matrix.lookAt(this.camera.position, lookAt - 15, this.normal);
     this.camera.rotation.setFromRotationMatrix( this.camera.matrix.makeRotationAxis(new THREE.Vector3(0, 1, 0), Math.PI/2), this.camera.rotation.order );
     this.camera.rotateY(toRadian(180));
+    this.camera.rotateX(toRadian(-15));
+
     if (Number(t.toFixed(3)) > 0.995) {
       this.travelling = false;
+      this.parent.remove(this.tubeMesh);
       this.launchCallback()
     }
   }
