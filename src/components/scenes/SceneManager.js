@@ -92,7 +92,7 @@ export default class {
   }
 
   async addMap() {
-    const gltf = await LoadManager.loadGLTF('./assets/models/map/map4.glb');
+    const gltf = await LoadManager.loadGLTF('./assets/models/map/map5.glb');
     console.log('map', gltf);
     console.log('postion', gltf.scene);
     let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
@@ -104,7 +104,7 @@ export default class {
       if (child.name.split('mate').length > 1) {
         this.matesPos.push(child.position)
       }
-      if (child.name === 'walls') {
+      if (child.name === 'wall') {
         this.walls = child;
       }
       if (child.name === 'Plane') {
