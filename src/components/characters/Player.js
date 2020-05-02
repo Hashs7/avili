@@ -65,7 +65,7 @@ export default class extends Character {
 
     this.world.addBody(this.character.body);*/
 
-    const geometry = new THREE.CylinderGeometry( size.x, size.x, size.y, 8 );
+    const geometry = new THREE.CylinderGeometry( size.x, size.x, size.y, 3 );
     // const geometry = new THREE.BoxGeometry( mesh.size.y, mesh.size.z, mesh.size.y, 4);
     const material = new THREE.MeshBasicMaterial({ color: 0x00ff00, wireframe: true, visible: false });
     this.hitbox = new THREE.Mesh( geometry, material );
@@ -73,7 +73,7 @@ export default class extends Character {
     this.hitbox.name = 'hitbox';
 
     this.group.add(this.hitbox);
-    // sceneManager.mainSceneAddObject(this.hitbox);
+    //sceneManager.mainSceneAddObject(this.hitbox);
   }
 
   destroy() {

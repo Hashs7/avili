@@ -13,8 +13,8 @@ export default class {
   constructor(canvas) {
     this.canvas = canvas;
 
-    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true, physicallyCorrectLights: true });
-    this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true});
+    //this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     // this.renderer.toneMapping = THREE.ReinhardToneMapping;
     this.renderer.outputEncoding = THREE.sRGBEncoding;

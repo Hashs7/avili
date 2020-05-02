@@ -20,10 +20,11 @@ export default class extends Scene {
       new THREE.Vector3(-742.5872885993069, 562.7261116761865, 123.47982751001086),
       new THREE.Vector3(-1094.6486616448392, 562.7261116761865, 123.47982751001086)
     ]);
-    setTimeout(() => {
+    this.world.player.groupCamera();
+    /*setTimeout(() => {
       // TODO set after load manager finished
       this.initTravelling();
-    }, 5000);
+    }, 5000);*/
     this.detectSectionPassed();
 
     return {
