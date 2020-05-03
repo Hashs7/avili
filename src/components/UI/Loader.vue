@@ -1,6 +1,9 @@
 <template>
-  <transition>
-    <div v-show="isLoading" class="modal">
+  <transition
+      @enter="enter"
+      @leave="leave"
+  >
+    <div v-show="isLoading || !completeTime" class="modal">
       <div class="loader">
         <div class="loader__container">
           <span ref="progress" class="loader__progress"></span>
@@ -23,6 +26,8 @@
     data() {
       return {
         percent: 0,
+        minTime: 4000,
+        completeTime: false
       }
     },
     computed: {
@@ -32,26 +37,33 @@
     },
     mounted() {
       LoadManager.setReceiver(this);
-      const tl = gsap.timeline();
-      tl.from(this.$refs.advertising, {
+      setTimeout(() => this.completeTime = true, this.minTime);
+      gsap.from(this.$refs.advertising, {
         opacity: 0,
-        y: 20,
-      });
-      tl.to(this.$refs.advertising, {
-        opacity: 0,
-        y: -20,
-        delay: 5,
+        y: 40,
+        delay: 1,
+        duration: 3,
       });
     },
     methods: {
+      enter(el, done) {},
+      leave(el, done) {
+        gsap.to(this.$refs.advertising, {
+          opacity: 0,
+          y: -40,
+          onComplete: () => {
+            done()
+          },
+        });
+      },
       progressHandler(percent) {
         const percentValue = this.percent < percent ? percent : this.percent;
         this.updateUI(percentValue);
         if (percent !== 100) return;
         setTimeout(() => {
           this.$store.commit('setLoader', false);
-          this.percent = 0;
-          this.updateUI(0);
+          // this.percent = 0;
+          // this.updateUI(0);
         }, 500)
       },
       updateUI(value) {
@@ -63,14 +75,14 @@
           width: `${value}%`,
           duration: .01,
         });
-      }
+      },
     },
   }
 </script>
 
 <style scoped>
   .modal {
-    z-index: 100;
+    z-index: 1000;
     position: fixed;
     top: 0;
     bottom: 0;

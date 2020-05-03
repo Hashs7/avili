@@ -37,6 +37,14 @@
       },
       notSupported() {
         return this.width < 425;
+      },
+      qualitySet() {
+        return this.$store.state.quality;
+      }
+    },
+    watch: {
+      qualitySet(newVal, oldVal) {
+        this.world.setQuality(newVal)
       }
     },
     mounted() {

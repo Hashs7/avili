@@ -10,7 +10,7 @@
     data() {
       return {
         enable: true,
-        state: 'initial'
+        state: 'normal'
       }
     },
     mounted() {
@@ -59,6 +59,7 @@
       mouseMove(e) {
         if (this.state === 'none') this.enterFollower();
         const { follower } = this.$refs;
+        if (!follower) return;
         const relX = e.pageX  - (follower.offsetWidth / 2) ;
         const relY = e.pageY - (follower.offsetHeight / 2);
 
@@ -72,14 +73,14 @@
             break;
           case "none":
             // à debug si on utilise
-            follower.style.mixBlendMode = "initial";
+            follower.style.mixBlendMode = "normal";
             this.state = 'none';
             gsap.to(follower, { scale: 0, duration: 0.5 });
             break;
           default:
-            if (this.state === 'initial') return;
-            this.state = 'initial';
-            follower.style.mixBlendMode = "initial";
+            if (this.state === 'normal') return;
+            this.state = 'normal';
+            follower.style.mixBlendMode = "normal";
             gsap.killTweensOf(this.$refs.follower, 'scale');
             gsap.to(follower, { scale: 1, duration: 0.3 });
             break;

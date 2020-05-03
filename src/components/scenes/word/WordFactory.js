@@ -4,8 +4,20 @@ import LoadManager from "../../core/LoadManager";
 import { toRadian } from "../../../utils";
 import { Quaternion } from "cannon-es";
 
-const margin = 15;
-const force = 25;
+const wordsDef = [{
+  text: 'Kitchen',
+  mass: 25,
+  position: new Vec3(118, 50, -3),
+},{
+  text: 'Sandwich',
+  mass: 30,
+  position: new Vec3(125, 50, -5),
+},
+{
+  text: 'Bitch',
+  mass: 20,
+  position: new Vec3(132, 70, -3),
+}]
 
 export default class WordFactory {
   constructor(scene, world, camera, material) {
@@ -18,6 +30,7 @@ export default class WordFactory {
     this.material = material;
     this.clickMarker = false;
     this.words = [];
+    this.wordIndex = 0;
     // this.offset = this.words.length * margin * 0.5;
 
     this.mouse = {
@@ -55,10 +68,20 @@ export default class WordFactory {
     this.world.addBody(this.jointBody);
 
     setTimeout(() => {
-      this.addWord('Bitch', new Vec3(118, 50, -3));
+      this.dropWord()
     }, 2000)
-
+    setTimeout(() => {
+      this.dropWord()
+    }, 5000)
+    setTimeout(() => {
+      this.dropWord()
+    }, 7000)
     // this.addWord('Cuisine', new Vec3(118, 3, -4));
+  }
+
+  dropWord() {
+    this.addWord(wordsDef[this.wordIndex].text, wordsDef[this.wordIndex].position, wordsDef[this.wordIndex].mass);
+    this.wordIndex++
   }
 
   setConstraints() {
@@ -101,23 +124,22 @@ export default class WordFactory {
     this.moveJointToPoint(pos.x, pos.y, pos.z);
   }
 
-  addWord(text, position) {
-    const geometry = new THREE.TextBufferGeometry(text, this.fontOption);
+  addWord(text, position, mass) {
     const material = new THREE.MeshPhongMaterial({ color: 0x97df5e, transparent: false, opacity: 0 });
+    const geometry = new THREE.TextBufferGeometry(text, this.fontOption);
     geometry.computeBoundingBox();
     geometry.computeBoundingSphere();
+
     const mesh = new THREE.Mesh(geometry, material);
-
-
     const scaleFactor = 0.1;
     mesh.scale.set(scaleFactor,scaleFactor,scaleFactor);
     mesh.name = text;
     mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3()).multiplyScalar(scaleFactor);
 
     mesh.body = new Body({
-      mass: 20,
-      material: this.material,
+      mass,
       position,
+      material: this.material,
       quaternion: new Quaternion().setFromAxisAngle(new Vec3(0, 1, 0), toRadian(-90)),
       velocity: new Vec3(0, 0, 0),
       fixedRotation: true,
@@ -130,17 +152,11 @@ export default class WordFactory {
     const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
     const box = new Box(new Vec3().copy(mesh.size).scale(0.5));
     mesh.body.name = 'word';
-
     mesh.body.addShape(box);
 
-    // mesh.body.addShape(box, new Vec3(center.x, center.y, center.z));
     this.world.addBody(mesh.body);
     this.words.push(mesh);
     this.scene.add(mesh);
-
-    /*setTimeout(() => {
-      mesh.material.opacity = 1
-    }, 30000)*/
   }
 
   update() {

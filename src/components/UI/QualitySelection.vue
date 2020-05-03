@@ -4,7 +4,7 @@
       <h1 class="quality-selection__title">Sélectionnez le niveau de qualité de l'expérience</h1>
       <ul class="quality-selection__container">
         <li
-            v-for="(q, i) in qualities"
+            v-for="(q, i) in QUALITY_SETTING"
             :key="i"
             :class="{recommended: q.recommended}"
             class="quality-selection__el"
@@ -19,20 +19,13 @@
 </template>
 
 <script>
+  import { QUALITY_SETTING } from "../../constantes";
+
   export default {
     name: 'QualitySelection',
     data() {
       return {
-        qualities: [{
-          name: 'Basse',
-          recommended: false,
-        },{
-          name: 'Moyenne',
-          recommended: false,
-        },{
-          name: 'Haute',
-          recommended: true,
-        }]
+        QUALITY_SETTING,
       }
     },
     mounted() {
@@ -48,7 +41,7 @@
 
 <style lang="scss" scoped>
   .quality-selection {
-    z-index: 1000;
+    z-index: 500;
     position: fixed;
     top: 0;
     bottom: 0;
