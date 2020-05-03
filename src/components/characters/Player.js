@@ -1,9 +1,9 @@
 import * as THREE from 'three'
 import InputManager from "../core/InputManager";
-import { Body, Box,  Vec3 } from "cannon-es";
-import { makeTextSprite, toRadian, drawRay } from "../../utils";
+import { toRadian } from "../../utils";
 import AudioManager from "../core/AudioManager";
 import Character, { ACTIONS } from "./Character";
+import Stats from 'stats.js'
 
 const quartDegree = toRadian(90);
 
@@ -32,9 +32,14 @@ export default class extends Character {
     this.sceneManager = sceneManager;
     this.addBody(sceneManager);
     sceneManager.mainSceneAddObject(this.camera);
+
+    // Debug
+    this.stats = new Stats();
+    this.stats.showPanel(1);
+    document.body.appendChild( this.stats.dom );
   }
 
-  addBody(sceneManager) {
+  addBody() {
     const mesh = this.character.children.find(el => el.name === 'unamed');
     // const mesh = this.character;
     mesh.geometry.computeBoundingBox();
@@ -83,7 +88,7 @@ export default class extends Character {
   groupCamera() {
     this.group.position.set(100, 0, 0);
     this.spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, 0.314, 1);
-    this.spotLight.position.set(-12, 15, 5);
+    this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(this.group.position));
     this.spotLight.castShadow = true;
     this.spotLight.target = this.group;
 
@@ -151,57 +156,36 @@ export default class extends Character {
 
   detectWallCollision(nextPosition){
     const hitbox = this.character.parent.children[2];
-    const walls = this.sceneManager.walls;
+    // const walls = this.sceneManager.walls;
     let isCollide = false;
 
     //hitbox.position.x += nextPosition.x;
     //hitbox.position.z += nextPosition.z;
 
     const originPoint = new THREE.Vector3().setFromMatrixPosition(hitbox.matrixWorld);
-    originPoint.x += nextPosition.x
-    originPoint.z += nextPosition.z
+    originPoint.x += nextPosition.x;
+    originPoint.z += nextPosition.z;
+    console.log(hitbox.geometry.vertices.length);
+    this.stats.begin();
 
-    for (let vertexIndex = 0; vertexIndex < hitbox.geometry.vertices.length; vertexIndex++)
-    {
+    for (let vertexIndex = 0; vertexIndex < hitbox.geometry.vertices.length; vertexIndex++) {
+
       const localVertex = hitbox.geometry.vertices[vertexIndex].clone();
       const globalVertex = localVertex.applyMatrix4( hitbox.matrix );
       const directionVector = globalVertex.sub( hitbox.position );
 
       const ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize());
 
-      const collisionResults = ray.intersectObjects( [walls] );
-      if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() )
-        isCollide = true;
+      const collisionResults = ray.intersectObjects( this.sceneManager.colliders );
+      if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
+        // isCollide = true;
+        return isCollide;
+      }
     }
+    this.stats.end();
+
     return isCollide;
   }
-
-  detectWallCollisionOld () {
-    const character = new THREE.Vector3().setFromMatrixPosition(this.character.matrixWorld);
-    const walls = this.sceneManager.walls;
-
-    const directions = [
-      { vector: new THREE.Vector3(0, 0, 1), label: "forward" },
-      { vector: new THREE.Vector3(0.5, 0, 0.5), label: "for-left" },
-      { vector: new THREE.Vector3(0.5, 0, -0.5), label: "for-right" },
-      { vector: new THREE.Vector3(0, 0, -1), label: "backward" },
-      { vector: new THREE.Vector3(0.5, 0, -0.5), label: "back-left" },
-      { vector: new THREE.Vector3(-0.5, 0, -0.5), label: "back-right" },
-      { vector: new THREE.Vector3(1, 0, 0), label: "left" },
-      { vector: new THREE.Vector3(-1, 0, 0), label: "right" },
-    ];
-
-    let collisionWall = '';
-
-    directions.forEach(dir => {
-      const ray = new THREE.Raycaster(character, dir.vector.applyQuaternion( this.character.quaternion ),0, 0.5);
-      const objs = ray.intersectObject(walls, false);
-      collisionWall = objs.length > 0 ? dir.label : collisionWall;
-    });
-
-    return collisionWall;
-  }
-
 
   playerControls() {
     const strafe = this.inputManager.controls.left && this.inputManager.controls.up ||

@@ -4,33 +4,18 @@ import LoadManager from "../../core/LoadManager";
 import { toRadian } from "../../../utils";
 import { Quaternion } from "cannon-es";
 
-const wordsDef = [{
-  text: 'Kitchen',
-  mass: 25,
-  position: new Vec3(118, 50, -3),
-},{
-  text: 'Sandwich',
-  mass: 30,
-  position: new Vec3(125, 50, -5),
-},
-{
-  text: 'Bitch',
-  mass: 20,
-  position: new Vec3(132, 70, -3),
-}]
-
 export default class WordFactory {
-  constructor(scene, world, camera, material) {
+  constructor(scene, world, camera, manager, material) {
     this.lastx = null;
     this.lasty = null;
     this.last = null;
     this.scene = scene;
     this.world = world;
     this.camera = camera;
+    this.manager = manager;
     this.material = material;
     this.clickMarker = false;
     this.words = [];
-    this.wordIndex = 0;
     // this.offset = this.words.length * margin * 0.5;
 
     this.mouse = {
@@ -67,22 +52,10 @@ export default class WordFactory {
     this.jointBody.collisionFilterMask = 0;
     this.world.addBody(this.jointBody);
 
-    setTimeout(() => {
-      this.dropWord()
-    }, 2000)
-    setTimeout(() => {
-      this.dropWord()
-    }, 5000)
-    setTimeout(() => {
-      this.dropWord()
-    }, 7000)
+
     // this.addWord('Cuisine', new Vec3(118, 3, -4));
   }
 
-  dropWord() {
-    this.addWord(wordsDef[this.wordIndex].text, wordsDef[this.wordIndex].position, wordsDef[this.wordIndex].mass);
-    this.wordIndex++
-  }
 
   setConstraints() {
     /*this.words.forEach(word => {
@@ -124,7 +97,7 @@ export default class WordFactory {
     this.moveJointToPoint(pos.x, pos.y, pos.z);
   }
 
-  addWord(text, position, mass) {
+  addWord({ text, position, mass, collide }) {
     const material = new THREE.MeshPhongMaterial({ color: 0x97df5e, transparent: false, opacity: 0 });
     const geometry = new THREE.TextBufferGeometry(text, this.fontOption);
     geometry.computeBoundingBox();
@@ -132,10 +105,20 @@ export default class WordFactory {
 
     const mesh = new THREE.Mesh(geometry, material);
     const scaleFactor = 0.1;
-    mesh.scale.set(scaleFactor,scaleFactor,scaleFactor);
-    mesh.name = text;
-    mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3()).multiplyScalar(scaleFactor);
 
+    mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
+    mesh.name = text;
+    mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
+
+    if (collide) {
+      console.log(mesh.size);
+      const hitGeometry = new THREE.BoxGeometry( mesh.size.x, mesh.size.y, mesh.size.z );
+      const hitbox = new THREE.Mesh(hitGeometry, new THREE.MeshBasicMaterial({ wireframe: true }));
+      hitbox.name = 'hitbox-' + text;
+      hitbox.position.add(new THREE.Vector3(mesh.size.x/2, mesh.size.y/2, mesh.size.z/2));
+      mesh.add(hitbox);
+      this.manager.addCollider(hitbox);
+    }
     mesh.body = new Body({
       mass,
       position,
@@ -150,7 +133,7 @@ export default class WordFactory {
 
     // Add the shape to the body and offset it to match the center of our mesh
     const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
-    const box = new Box(new Vec3().copy(mesh.size).scale(0.5));
+    const box = new Box(new Vec3().copy(mesh.size).scale(0.5 * scaleFactor));
     mesh.body.name = 'word';
     mesh.body.addShape(box);
 
@@ -172,6 +155,7 @@ export default class WordFactory {
       const shape = new THREE.SphereGeometry(0.2, 8, 8);
       const markerMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
       this.clickMarker = new THREE.Mesh(shape, markerMaterial);
+      this.clickMarker.name = 'ClickMarker'
       this.scene.add(this.clickMarker);
     }
     this.clickMarker.visible = true;
@@ -212,6 +196,7 @@ export default class WordFactory {
       const planeGeo = new THREE.PlaneGeometry(100,100);
       const material = new THREE.MeshBasicMaterial( { transparent: true, opacity: 0 } );
       this.gplane = new THREE.Mesh(planeGeo, material);
+      this.gplane.name = 'GPlane';
       this.scene.add(this.gplane);
     }
 

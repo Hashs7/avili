@@ -2,7 +2,6 @@ import * as THREE from "three";
 import { Body, Box, ContactMaterial, Quaternion, Material, Plane, Vec3 } from "cannon-es";
 import SpawnScene from "./spawn/SpawnScene";
 import FieldOfViewScene from "./fieldOfView/FieldOfViewScene";
-import Skybox from "../core/Skybox";
 import LoadManager from '../core/LoadManager';
 import ProjectileScene from "./projectile/ProjectileScene";
 import NPC from "../characters/NPC";
@@ -38,6 +37,7 @@ export default class {
     this.mainScene = new THREE.Scene();
     this.initMainScene();
 
+    this.colliders = [];
     this.sections = [];
     this.npc = [];
     this.towers = [];
@@ -84,8 +84,6 @@ export default class {
 
   async addMap() {
     const gltf = await LoadManager.loadGLTF('./assets/models/map/map5.glb');
-    console.log('map', gltf);
-    console.log('postion', gltf.scene);
     let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
     gltf.scene.traverse((child) => {
       if (child.name.startsWith('section')) {
@@ -97,6 +95,7 @@ export default class {
       }
       if (child.name === 'wall') {
         this.walls = child;
+        this.colliders.push(child);
       }
       if (child.name === 'Plane') {
         this.map = child;
@@ -106,6 +105,9 @@ export default class {
       }
       if (sectionName.includes(child.name)) {
         this.sections.push(child);
+      }
+      if(child.name.startsWith('collide')) {
+        this.colliders.push(child);
       }
       if(child.name.startsWith('tower')) {
         this.towers.push(child);
@@ -162,7 +164,6 @@ export default class {
     this.mainScene.add(this.map);
   }
 
-
   setNPC(map, positions) {
     npcsDefinition(positions).forEach(async (n) => {
       const gltf = await LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb');
@@ -191,7 +192,7 @@ export default class {
   }
 
   setWords() {
-    this.addScene(new WordScene(this.worldPhysic, this.camera, this.mat1))
+    this.addScene(new WordScene(this.worldPhysic, this.camera, this, this.mat1))
   }
 
   createBoundingBoxShape(object) {
@@ -241,6 +242,10 @@ export default class {
   addScene(scene) {
     this.loadedScenes.push(scene);
     this.mainScene.add(scene.scene);
+  }
+
+  addCollider(object) {
+    this.colliders.push(object);
   }
 
   update() {

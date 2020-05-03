@@ -13,7 +13,7 @@ export default class {
   constructor(canvas) {
     this.canvas = canvas;
 
-    this.renderer = new THREE.WebGLRenderer({ canvas });
+    this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     //this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     // this.renderer.toneMapping = THREE.ReinhardToneMapping;
@@ -54,9 +54,22 @@ export default class {
     document.body.appendChild( this.stats.dom );
 
     this.resize();
+    // this.setWorker();
     this.render();
     this.wow();
     // this.debugCamera()
+  }
+
+  setWorker() {
+    if (!window.Worker) return;
+    this.worker = new Worker('./worker.js');
+    this.worker.postMessage({
+      some_data: 'foo',
+      some_more_data: 'bar'
+    });
+    this.worker.addEventListener('onmessage', (e) => {
+      console.log('worker result', e);
+    })
   }
 
   /**

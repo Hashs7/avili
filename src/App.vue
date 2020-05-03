@@ -51,6 +51,8 @@
       this.world = new World(this.$refs.canvas);
       this.resize();
       window.addEventListener('resize', this.resize);
+      if (!this.qualitySet) return;
+      this.world.setQuality(this.qualitySet)
     },
     methods: {
       resize() {
