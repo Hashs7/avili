@@ -34,9 +34,10 @@ export default class extends Character {
     sceneManager.mainSceneAddObject(this.camera);
 
     // Debug
+    /*
     this.stats = new Stats();
     this.stats.showPanel(1);
-    document.body.appendChild( this.stats.dom );
+    document.body.appendChild( this.stats.dom );*/
   }
 
   addBody() {
@@ -86,7 +87,7 @@ export default class extends Character {
   }
 
   groupCamera() {
-    this.group.position.set(100, 0, 0);
+    this.group.position.set(0, 0, 0);
     this.spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, 0.314, 1);
     this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(this.group.position));
     this.spotLight.castShadow = true;
@@ -165,8 +166,8 @@ export default class extends Character {
     const originPoint = new THREE.Vector3().setFromMatrixPosition(hitbox.matrixWorld);
     originPoint.x += nextPosition.x;
     originPoint.z += nextPosition.z;
-    console.log(hitbox.geometry.vertices.length);
-    this.stats.begin();
+    //console.log(hitbox.geometry.vertices.length);
+    //this.stats.begin();
 
     for (let vertexIndex = 0; vertexIndex < hitbox.geometry.vertices.length; vertexIndex++) {
 
@@ -174,15 +175,16 @@ export default class extends Character {
       const globalVertex = localVertex.applyMatrix4( hitbox.matrix );
       const directionVector = globalVertex.sub( hitbox.position );
 
-      const ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize());
+      if(directionVector.y < 0) {
+        const ray = new THREE.Raycaster( originPoint, directionVector.clone().normalize());
 
-      const collisionResults = ray.intersectObjects( this.sceneManager.colliders );
-      if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
-        // isCollide = true;
-        return isCollide;
+        const collisionResults = ray.intersectObjects( this.sceneManager.colliders );
+        if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
+          isCollide = true;
+        }
       }
     }
-    this.stats.end();
+    //this.stats.end();
 
     return isCollide;
   }
