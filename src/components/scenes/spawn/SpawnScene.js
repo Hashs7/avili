@@ -5,6 +5,7 @@ import {Raycaster} from "three";
 import AudioManager from "../../core/AudioManager";
 import LoadManager from "../../core/LoadManager";
 import State from "../../core/State";
+import {ProjectileShader} from "../../shaders/ProjectileShader";
 
 export default class extends Scene {
   constructor(world, spline, sections, finishCallback) {
@@ -26,6 +27,22 @@ export default class extends Scene {
       this.initTravelling();
     }, 5000);*/
     this.detectSectionPassed();
+
+    // ============ TEST ===============
+    this.uniforms = {
+      uSize: {type: 'float', value:  6.0},
+    };
+    const geometry = new THREE.CylinderGeometry( 0.05, 0.05, 2, 10 );
+    const material = new THREE.ShaderMaterial({
+      uniforms: this.uniforms,
+      vertexShader: ProjectileShader.vertexShader,
+      fragmentShader: ProjectileShader.fragmentShader,
+      transparent: true,
+    })
+    const cylinder = new THREE.Mesh(geometry, material);
+    cylinder.position.set(0, 1, 0)
+    this.scene.add(cylinder);
+    // =================================
 
     return {
       instance: this,

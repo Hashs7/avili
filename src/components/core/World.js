@@ -46,7 +46,8 @@ export default class {
     this.loadProps();
 
     this.gameManager = new GameManager(this, this.world, this.camera);
-    this.cameraOperator = new CameraOperator(this, this.camera);
+    this.cameraOperator = CameraOperator;
+    CameraOperator.setup(this, this.camera);
 
     // Stats showing fps
     this.stats = new Stats();
