@@ -1,17 +1,15 @@
 import * as THREE from "three";
 import { SceneUtils } from "three/examples/jsm/utils/SceneUtils";
 import { toRadian } from "../../utils";
+import gsap from "gsap";
 
-export default class {
-  constructor(world, camera) {
-    this.world = world;
-    this.camera = camera;
+class CameraOperator{
+  constructor() {
     this.travelling = false;
     this.targetRotation = 0;
 
     this.binormal = new THREE.Vector3();
     this.normal = new THREE.Vector3();
-    this.parent = world.gameManager.sceneManager.mainScene;
 
     this.tube = null;
     this.mesh = null;
@@ -19,6 +17,16 @@ export default class {
     this.lookAhead = true;
     this.scale = 1;
     this.offset = 0;
+
+    this.world = null;
+    this.camera = null;
+    this.parent = null;
+  }
+
+  setup(world, camera) {
+    this.world = world;
+    this.camera = camera;
+    this.parent = world.gameManager.sceneManager.mainScene;
   }
 
   /**
@@ -46,7 +54,7 @@ export default class {
     const radiusSegments = radSeg || 3;
     this.mesh = this.mesh || null;
 
-    if (this.tubeMesh) parent.remove(this.tubeMesh);
+    if (this.tubeMesh) this.parent.remove(this.tubeMesh);
 
     this.tube = new THREE.TubeGeometry(spline, segments, 0.1, radiusSegments, false);
     color = color || 0x2194ce;
@@ -137,4 +145,20 @@ export default class {
       this.launchCallback()
     }
   }
+
+  zoom(callback){
+    const tl = gsap.timeline({repeat: 0});
+    tl.to(this.camera, {
+      zoom: 2,
+      onUpdate: () => {this.camera.updateProjectionMatrix()},
+    });
+    tl.to(this.camera, {
+      zoom: 1,
+      duration: 1.5,
+      onUpdate: () => {this.camera.updateProjectionMatrix()},
+      onComplete: () => {callback()},
+    })
+  }
 }
+
+export default new CameraOperator();

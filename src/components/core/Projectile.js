@@ -3,6 +3,7 @@ import {ProjectileShader} from "../shaders/ProjectileShader";
 import gsap from "gsap";
 import { toRadian } from "../../utils";
 import { Vector3 } from "three";
+import CameraOperator from "./CameraOperator";
 
 export default class Projectile {
   constructor(tower, landingAreas, scene, towerElements) {
@@ -119,8 +120,8 @@ export default class Projectile {
 
     objs.forEach(obj => {
       if (obj.object.name === this.landingAreaName) {
-        const player = world.getPlayer();
-        player.teleport(world.lastCheckpointCoord);
+        const player = world.getplayer();
+        CameraOperator.zoom(() => player.teleport(world.lastCheckpointCoord));
       }
     });
   }
