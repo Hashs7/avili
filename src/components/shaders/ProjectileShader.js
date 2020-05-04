@@ -14,7 +14,7 @@ export let ProjectileShader = {
 
   void main() {
     if(vUv.y < uSize) {
-      gl_FragColor = vec4(1., 0., 0., 1.);
+      gl_FragColor = vec4(1., 1., 1., 1.);
     } else {
       gl_FragColor = vec4(0., 0., 0., 0.);
     }
