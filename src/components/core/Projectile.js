@@ -149,7 +149,7 @@ export default class Projectile {
 
     objs.forEach(obj => {
       if (obj.object.name === this.landingAreaName) {
-        const player = world.getplayer();
+        const player = world.getPlayer();
         CameraOperator.zoom(() => player.teleport(world.lastCheckpointCoord));
       }
     });
