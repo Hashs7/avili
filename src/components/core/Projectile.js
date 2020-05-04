@@ -119,8 +119,8 @@ export default class Projectile {
 
     objs.forEach(obj => {
       if (obj.object.name === this.landingAreaName) {
-        const player = world.getplayer();
-        player.group.position.copy(world.lastCheckpointCoord);
+        const player = world.getPlayer();
+        player.teleport(world.lastCheckpointCoord);
       }
     });
   }

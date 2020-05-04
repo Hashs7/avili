@@ -81,7 +81,7 @@ export default class {
     // this.player.groupCamera();
   }
 
-  getplayer(){
+  getPlayer() {
     return this.player;
   }
 

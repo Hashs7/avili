@@ -36,7 +36,7 @@ export default class extends Character {
     // Debug
     this.stats = new Stats();
     this.stats.showPanel(1);
-    document.body.appendChild( this.stats.dom );
+    // document.body.appendChild( this.stats.dom );
   }
 
   addBody() {
@@ -86,7 +86,7 @@ export default class extends Character {
   }
 
   groupCamera() {
-    this.group.position.set(100, 0, 0);
+    this.group.position.set(0, 0, 0);
     this.spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, 0.314, 1);
     this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(this.group.position));
     this.spotLight.castShadow = true;
@@ -125,7 +125,9 @@ export default class extends Character {
       name: 'UP',
       condition: moving && this.action !== ACTIONS.RUNNING && this.inputManager.controls.up,
       action: this.runAction,
-    },{
+    },
+    /*
+    {
       name: 'DOWN',
       condition: moving && this.action !== ACTIONS.RUNNING && this.inputManager.controls.down,
       action: this.runAction,
@@ -137,7 +139,8 @@ export default class extends Character {
       condition: moving && this.action !== ACTIONS.RIGHT_STRAF && this.inputManager.controls.right,
       name: 'RIGHT',
       action: this.rightAction,
-    }]
+    }*/
+    ];
   }
 
   handleKeyboardEvent(event, code, pressed, moving) {
@@ -156,7 +159,6 @@ export default class extends Character {
 
   detectWallCollision(nextPosition){
     const hitbox = this.character.parent.children[2];
-    // const walls = this.sceneManager.walls;
     let isCollide = false;
 
     //hitbox.position.x += nextPosition.x;
@@ -165,8 +167,6 @@ export default class extends Character {
     const originPoint = new THREE.Vector3().setFromMatrixPosition(hitbox.matrixWorld);
     originPoint.x += nextPosition.x;
     originPoint.z += nextPosition.z;
-    console.log(hitbox.geometry.vertices.length);
-    this.stats.begin();
 
     for (let vertexIndex = 0; vertexIndex < hitbox.geometry.vertices.length; vertexIndex++) {
 
@@ -178,11 +178,10 @@ export default class extends Character {
 
       const collisionResults = ray.intersectObjects( this.sceneManager.colliders );
       if ( collisionResults.length > 0 && collisionResults[0].distance < directionVector.length() ) {
-        // isCollide = true;
-        return isCollide;
+        isCollide = true;
+        // return isCollide;
       }
     }
-    this.stats.end();
 
     return isCollide;
   }
@@ -195,6 +194,7 @@ export default class extends Character {
     if (this.inputManager.controls.up) {
       this.move(0, strafe)
     }
+    /*
     if (this.inputManager.controls.down) {
       this.move(quartDegree * 2, strafe)
     }
@@ -204,6 +204,7 @@ export default class extends Character {
     if (this.inputManager.controls.right) {
       this.move(-quartDegree, strafe)
     }
+    */
   }
 
   move(decay, isStrafing) {
@@ -230,6 +231,11 @@ export default class extends Character {
     this.mixer.update( 0.01 );
     this.raycaster.setFromCamera( this.mouse, this.camera );
     this.playerControls();
+  }
+
+  teleport(position) {
+    this.group.position.copy(position);
+    this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(position));
   }
 
   setWalking() {

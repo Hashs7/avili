@@ -31,12 +31,12 @@ export default class FieldOfViewManager {
       const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
       this.lastPosition = playerPosition;
       this.detectFieldOfView(playerPosition);
-      if(!this.proj) return
+      if(!this.proj) return;
       this.proj.detectLandingArea(playerPosition, this.world);
     });
   }
 
-  update(){
+  update() {
     if(this.fieldOfViews.length === 0) return;
     const movingFov = this.fieldOfViews.filter(fieldOfView => fieldOfView.anime)
     movingFov.forEach(fieldOfView => {
@@ -97,8 +97,8 @@ export default class FieldOfViewManager {
 
     objs.forEach(obj => {
       if (obj.object.name === this.fieldOfViewName) {
-        const player = this.world.getplayer();
-        player.group.position.copy(this.world.lastCheckpointCoord);
+        const player = this.world.getPlayer();
+        player.teleport(this.world.lastCheckpointCoord);
         AudioManager.playSound("audio_mot_cuisine.mp3");
       }
     });
