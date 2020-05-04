@@ -4,6 +4,7 @@ import gsap from "gsap";
 import { toRadian } from "../../utils";
 import { Vector3 } from "three";
 import CameraOperator from "./CameraOperator";
+import {GlowShader} from "../shaders/GlowShader";
 
 export default class Projectile {
   constructor(tower, landingAreas, scene, towerElements) {
@@ -13,10 +14,18 @@ export default class Projectile {
     this.landingAreaName = "LandingArea";
     this.projAreaName = "Laser";
     this.uniforms = {
-      uSize: {type: 'float', value:  -6.0}
+      uSize: {type: 'f', value:  -6.0}
     };
     this.index = 0;
-    this.towerElements = towerElements
+    this.towerElements = towerElements;
+    this.cameraPos = CameraOperator.camera.position;
+    this.uniformsGlowEffect = {
+      uSize: {type: 'f', value: -6.0},
+      'c': {type: 'f', value: 0.2},
+      'p': {type: 'f', value: 2.0},
+      glowColor: {type: 'c', value: new THREE.Color(0xff0000)},
+      viewVector: {type: 'v3', value: this.cameraPos},
+    }
   }
 
   launchSequence() {
@@ -46,8 +55,10 @@ export default class Projectile {
     tl.to(this.towerElements.towerTop.rotation, {
       onStart: () => {
         this.uniforms.uSize.value = -6.0;
+        this.uniformsGlowEffect.uSize.value = -6.0;
         this.scene.remove(this.scene.getObjectByName("LandingArea"));
         this.scene.remove(this.scene.getObjectByName("Laser"));
+        this.scene.remove(this.scene.getObjectByName("LaserGlow"));
         this.landingAreas[this.index].position.y = 0;
         this.createLandingPoint(this.landingAreas[this.index].position);
       },
@@ -55,7 +66,7 @@ export default class Projectile {
       delay: 1,
       duration: 1.5
     });
-    tl.to(this.uniforms.uSize, {
+    tl.to([this.uniforms.uSize, this.uniformsGlowEffect.uSize], {
       onStart: () => {
         this.createProjectileFrom(this.tower.position, this.landingAreas[this.index].position);
         this.index = this.index === this.landingAreas.length - 1 ? 0 : this.index + 1;
@@ -77,7 +88,7 @@ export default class Projectile {
       0, 0, 0, 1
     ));
 
-    const geometry = new THREE.CylinderGeometry( 0.05, 0.05, direction.length(), 10 );
+    const geometry = new THREE.CylinderGeometry( 0.05, 0.05, direction.length(), 10);
     const material = new THREE.ShaderMaterial({
       uniforms: this.uniforms,
       vertexShader: ProjectileShader.vertexShader,
@@ -94,6 +105,24 @@ export default class Projectile {
     cylinder.position.z = (endCoord.z + originCoord.z) / 2;
 
     this.scene.add( cylinder );
+
+    // Glowing effect
+    const customMaterial = new THREE.ShaderMaterial({
+      uniforms: this.uniformsGlowEffect,
+      vertexShader: GlowShader.vertexShader,
+      fragmentShader: GlowShader.fragmentShader,
+      side: THREE.FrontSide,
+      blending: THREE.AdditiveBlending,
+      transparent: true,
+    })
+    const cylinderGlow = new THREE.Mesh(geometry, customMaterial);
+    cylinderGlow.name = "LaserGlow";
+    cylinderGlow.applyMatrix4(orientation);
+    cylinderGlow.position.x = cylinder.position.x;
+    cylinderGlow.position.y = cylinder.position.y;
+    cylinderGlow.position.z = cylinder.position.z;
+    cylinderGlow.scale.setX(5);
+    this.scene.add(cylinderGlow);
   }
 
   createLandingPoint(coord){
