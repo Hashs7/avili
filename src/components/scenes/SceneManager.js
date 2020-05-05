@@ -40,6 +40,7 @@ export default class {
 
     this.colliders = [];
     this.sections = [];
+    this.sectionsWord = [];
     this.npc = [];
     this.towers = [];
     this.towerEls = [];
@@ -137,6 +138,9 @@ export default class {
       if (sectionName.includes(child.name)) {
         this.sections.push(child);
       }
+      if (['m1', 'm2', 'm3'].includes(child.name)) {
+        this.sectionsWord.push(child);
+      }
       if(child.name.startsWith('collide')) {
         this.colliders.push(child);
       }
@@ -207,7 +211,7 @@ export default class {
   moveNPC() {
     setTimeout(() => {
       this.npc.forEach((n, i) => n.moveTo(npcsDefinition(this.matesPos)[i].target));
-    }, 3000)
+    }, 3000);
   }
 
   setSpawn() {
@@ -224,7 +228,7 @@ export default class {
   }
 
   setWords() {
-    this.addScene(new WordScene(this.worldPhysic, this.camera, this, this.mat1))
+    this.addScene(new WordScene(this.worldPhysic, this.camera, this, this.mat1, this.sectionsWord))
   }
 
   createBoundingBoxShape(object) {

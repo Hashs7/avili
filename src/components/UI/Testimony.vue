@@ -23,7 +23,8 @@
     left: 0;
     right: 0;
     margin: auto;
-    max-width: 500px;
+    padding: 0 16px;
+    max-width: 832px;
     text-align: center;
     font-size: 20px;
   }
