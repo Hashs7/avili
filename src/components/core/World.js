@@ -8,6 +8,7 @@ import LoadManager from './LoadManager';
 import { NaiveBroadphase, World } from "cannon-es";
 import AudioManager from "./AudioManager";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
+import TestimonyManager from "./TestimonyManager";
 
 export default class {
   constructor(canvas) {
@@ -73,6 +74,13 @@ export default class {
     this.worker.addEventListener('onmessage', (e) => {
       console.log('worker result', e);
     })
+  }
+
+  setTestimony(receiver, tr) {
+    TestimonyManager.setReceiver(receiver, tr);
+    setTimeout(() => {
+      TestimonyManager.speak('blbl.mp3', 'start')
+    }, 2000)
   }
 
   /**

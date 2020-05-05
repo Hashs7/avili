@@ -98,7 +98,7 @@ export default class WordFactory {
   }
 
   addWord({ text, position, mass, collide }) {
-    const material = new THREE.MeshPhongMaterial({ color: 0x97df5e, transparent: false, opacity: 0 });
+    const material = new THREE.MeshPhongMaterial({ color: 0x97df5e });
     const geometry = new THREE.TextBufferGeometry(text, this.fontOption);
     geometry.computeBoundingBox();
     geometry.computeBoundingSphere();
@@ -111,7 +111,6 @@ export default class WordFactory {
     mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
 
     if (collide) {
-      console.log(mesh.size);
       const hitGeometry = new THREE.BoxGeometry( mesh.size.x, mesh.size.y, mesh.size.z );
       const hitbox = new THREE.Mesh(hitGeometry, new THREE.MeshBasicMaterial({ wireframe: true }));
       hitbox.name = 'hitbox-' + text;

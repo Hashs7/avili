@@ -2,6 +2,7 @@
   <div id="app">
     <Loader />
     <Follower />
+    <Testimony ref="testimony"/>
     <router-view />
     <canvas class="webgl-render" ref="canvas" />
     <div v-if="notSupported" class="not-supported">
@@ -14,12 +15,14 @@
   import World from '@/components/core/World';
   import Loader from '@/components/UI/Loader';
   import Follower from '@/components/UI/Follower';
+  import Testimony from '@/components/UI/Testimony';
 
   export default {
     name: 'App',
     components: {
       Loader,
       Follower,
+      Testimony,
     },
     data() {
       return {
@@ -49,6 +52,7 @@
     },
     mounted() {
       this.world = new World(this.$refs.canvas);
+      this.world.setTestimony(this.$refs.testimony, this.$t);
       this.resize();
       window.addEventListener('resize', this.resize);
       if (!this.qualitySet) return;

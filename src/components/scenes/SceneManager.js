@@ -54,7 +54,7 @@ export default class {
     this.addFloor();
     this.addMap();
     this.mainScene.add(light);
-    this.mainScene.fog = new THREE.Fog(0x96e1ff, 45, 50);
+    // this.mainScene.fog = new THREE.Fog(0x96e1ff, 45, 50);
     // this.mainScene.fog = new THREE.Fog( 0x96e1ff, 7, 50);
     this.mainScene.background = new THREE.Color(0x96e1ff);
     // this.mainScene.background = new THREE.Color(0xfefefe);

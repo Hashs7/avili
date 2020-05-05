@@ -44,7 +44,7 @@ export const makeTextSprite = ( message, parameters ) => {
   const texture = new THREE.Texture(canvas);
   texture.needsUpdate = true;
 
-  const spriteMaterial = new THREE.SpriteMaterial({ map: texture, useScreenCoordinates: false } );
+  const spriteMaterial = new THREE.SpriteMaterial({ map: texture } );
   // const spriteMaterial = new THREE.SpriteMaterial({ map: texture, useScreenCoordinates: false, alignment: spriteAlignment } );
   const sprite = new THREE.Sprite( spriteMaterial );
   sprite.scale.set(2,1,1);
