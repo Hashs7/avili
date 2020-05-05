@@ -4,6 +4,7 @@ import { toRadian } from "../../utils";
 import AudioManager from "../core/AudioManager";
 import Character, { ACTIONS } from "./Character";
 import Stats from 'stats.js'
+import gsap from "gsap/gsap-core";
 
 const quartDegree = toRadian(90);
 

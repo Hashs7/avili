@@ -54,9 +54,11 @@ export default class {
     this.stats.showPanel(0);
     document.body.appendChild( this.stats.dom );
 
+    LoadManager.setLoadedCallback(() => this.render());
+
     this.resize();
     // this.setWorker();
-    this.render();
+    // this.render();
     this.wow();
     // this.debugCamera()
   }

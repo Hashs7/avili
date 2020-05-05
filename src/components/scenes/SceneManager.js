@@ -6,6 +6,7 @@ import LoadManager from '../core/LoadManager';
 import ProjectileScene from "./projectile/ProjectileScene";
 import NPC from "../characters/NPC";
 import WordScene from "./word/WordScene";
+import gsap from 'gsap';
 
 const npcsDefinition = (positions) => [{
   name: 'Daesu',
@@ -49,13 +50,43 @@ export default class {
 
   initMainScene() {
     // new Skybox(this.mainScene, 'afterrain');
-    const light = new THREE.HemisphereLight(0xffffff, 0x444444, 0.2);
+    const light = new THREE.HemisphereLight(0xffffff, 0x444444, 0.7);
     this.addFloor();
     this.addMap();
     this.mainScene.add(light);
-    this.mainScene.fog = new THREE.Fog( 0x05052b, 7, 50);
-    this.mainScene.background = new THREE.Color(0x05052b);
+    this.mainScene.fog = new THREE.Fog(0x96e1ff, 45, 50);
+    // this.mainScene.fog = new THREE.Fog( 0x96e1ff, 7, 50);
+    this.mainScene.background = new THREE.Color(0x96e1ff);
     // this.mainScene.background = new THREE.Color(0xfefefe);
+    /*setTimeout(() => {
+     this.ambianceTransition()
+     }, 6000)*/
+  }
+
+  ambianceTransition() {
+    const nextColor = new THREE.Color(0x05052b);
+    const duration = 5
+    const tl = gsap.timeline({ repeat: 0 });
+    tl.to(this.globalLight, {
+      intensity: 0.2,
+      duration,
+    }, 'start');
+    tl.to(this.mainScene.background, {
+      r: nextColor.r,
+      g: nextColor.g,
+      b: nextColor.b,
+      duration,
+    }, 'start');
+    tl.to(this.mainScene.fog.color, {
+      r: nextColor.r,
+      g: nextColor.g,
+      b: nextColor.b,
+      duration,
+    }, 'start');
+    tl.to(this.mainScene.fog, {
+      near: 7,
+      duration,
+    }, 'start');
   }
 
   /**

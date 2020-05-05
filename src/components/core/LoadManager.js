@@ -14,6 +14,8 @@ class LoadManager {
     this.fbxLoader = new FBXLoader();
     this.stlLoader = new STLLoader();
     this.audioLoader = new THREE.AudioLoader(this.manager);
+    this.receiver = null;
+    this.loadedCallback = null;
 
     this.manager.onStart = (url, itemsLoaded, itemsTotal) => this.startHandler(url, itemsLoaded, itemsTotal);
     this.manager.onLoad = () => this.loadedHandler();
@@ -91,9 +93,21 @@ class LoadManager {
   }
 
   /**
+   * Set callback invoke after loader
+   * @param fn
+   */
+  setLoadedCallback(fn) {
+    this.loadedCallback = fn;
+  }
+
+  /**
    * All elements are loaded
    */
-  loadedHandler() {}
+  loadedHandler() {
+    if (!this.loadedCallback) return;
+    this.loadedCallback();
+    this.loadedCallback = null;
+  }
 
   /**
    * Update loader progress
