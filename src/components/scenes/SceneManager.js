@@ -41,7 +41,7 @@ export default class {
     this.sections = [];
     this.npc = [];
     this.towers = [];
-    this.towerEl = [];
+    this.towerEls = [];
     this.landingAreas = [];
     this.walls = new THREE.Mesh();
     this.crystals = [];
@@ -134,29 +134,30 @@ export default class {
     t1Gltf.scene.position.y = this.towers[0].position.y - 10;
     t1Gltf.scene.position.z = this.towers[0].position.z;
 
-    let t1 = {towerTop: null, crystal: null};
+    let t1 = {name: "", towerTop: null, crystal: null};
     t1Gltf.scene.traverse(child => {
       if(child.name === "BatimentHaut") t1.towerTop = child;
       if(child.name === "GrosCrystal") t1.crystal = child;
+      t1.name = "Tower1";
     });
 
     this.mainSceneAddObject(t1Gltf.scene);
-    this.towerEl.push(t1);
+    this.towerEls.push(t1);
 
     const t2Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v1.glb');
     t2Gltf.scene.position.x = this.towers[1].position.x;
     t2Gltf.scene.position.y = this.towers[1].position.y - 10;
     t2Gltf.scene.position.z = this.towers[1].position.z;
 
-    let t2 = {towerTop: null, crystal: null};
-    t1Gltf.scene.traverse(child => {
+    let t2 = {name: "", towerTop: null, crystal: null};
+    t2Gltf.scene.traverse(child => {
       if(child.name === "BatimentHaut") t2.towerTop = child;
       if(child.name === "GrosCrystal") t2.crystal = child;
+      t2.name = "Tower2";
     });
 
     this.mainSceneAddObject(t2Gltf.scene);
-    //console.log(new THREE.Vector3().setFromMatrixPosition(t2.towerTop.matrixWorld));
-    this.towerEl.push(t2);
+    this.towerEls.push(t2);
   }
 
   setMap() {
@@ -184,11 +185,11 @@ export default class {
 
   setFov() {
     this.setNPC(this.map, this.matesPos);
-    this.addScene(new FieldOfViewScene(this.world, this.matesPos, this.towers, this.landingAreas, this.towerEl[1]));
+    this.addScene(new FieldOfViewScene(this.world, this.matesPos, this.towers, this.landingAreas, this.towerEls));
   }
 
   setProjectile() {
-    this.addScene(new ProjectileScene(this.towers, this.landingAreas, this.world, this.towerEl[0]))
+    this.addScene(new ProjectileScene(this.towers, this.landingAreas, this.world, this.towerEls))
   }
 
   setWords() {
