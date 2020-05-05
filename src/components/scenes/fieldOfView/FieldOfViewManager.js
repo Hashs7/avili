@@ -21,9 +21,8 @@ export default class FieldOfViewManager {
 
     document.addEventListener('stateUpdate', e => {
       if (e.detail !== 'infiltration_sequence_start') return;
-
       const arr = landingAreas.slice(4);
-      this.proj = new Projectile(towers[1], arr, this.scene, this.towerElements);
+      this.proj = new Projectile(towers[1], arr, this.scene, this.towerElements[1]);
       this.proj.launchSequence();
     });
 

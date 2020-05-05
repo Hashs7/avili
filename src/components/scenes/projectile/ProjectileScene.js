@@ -2,10 +2,10 @@ import Scene from "../Scene";
 import ProjectileManager from "./ProjectileManager";
 
 export default class extends Scene {
-  constructor(towers, landingAreas, world, towerEl) {
+  constructor(towers, landingAreas, world, towerEls) {
     super();
     this.scene.name = "Projectile";
-    this.manager = new ProjectileManager(this.scene, towers, landingAreas, world, towerEl);
+    this.manager = new ProjectileManager(this.scene, towers, landingAreas, world, towerEls);
 
     return {
       instance: this,
