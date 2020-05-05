@@ -19,13 +19,6 @@ export default class Projectile {
     this.index = 0;
     this.towerElements = towerElements;
     this.cameraPos = CameraOperator.camera.position;
-    this.uniformsGlowEffect = {
-      uSize: {type: 'f', value: -6.0},
-      'c': {type: 'f', value: 0.2},
-      'p': {type: 'f', value: 2.0},
-      glowColor: {type: 'c', value: new THREE.Color(0xff0000)},
-      viewVector: {type: 'v3', value: this.cameraPos},
-    }
   }
 
   launchSequence() {
@@ -55,7 +48,6 @@ export default class Projectile {
     tl.to(this.towerElements.towerTop.rotation, {
       onStart: () => {
         this.uniforms.uSize.value = -6.0;
-        this.uniformsGlowEffect.uSize.value = -6.0;
         this.scene.remove(this.scene.getObjectByName("LandingArea"));
         this.scene.remove(this.scene.getObjectByName("Laser"));
         this.scene.remove(this.scene.getObjectByName("LaserGlow"));
@@ -66,7 +58,7 @@ export default class Projectile {
       delay: 1,
       duration: 1.5
     });
-    tl.to([this.uniforms.uSize, this.uniformsGlowEffect.uSize], {
+    tl.to(this.uniforms.uSize, {
       onStart: () => {
         this.createProjectileFrom(this.tower.position, this.landingAreas[this.index].position);
         this.index = this.index === this.landingAreas.length - 1 ? 0 : this.index + 1;
@@ -108,10 +100,10 @@ export default class Projectile {
 
     // Glowing effect
     const customMaterial = new THREE.ShaderMaterial({
-      uniforms: this.uniformsGlowEffect,
+      uniforms: this.uniforms,
       vertexShader: GlowShader.vertexShader,
       fragmentShader: GlowShader.fragmentShader,
-      side: THREE.FrontSide,
+      side: THREE.BackSide,
       blending: THREE.AdditiveBlending,
       transparent: true,
     })
@@ -121,7 +113,8 @@ export default class Projectile {
     cylinderGlow.position.x = cylinder.position.x;
     cylinderGlow.position.y = cylinder.position.y;
     cylinderGlow.position.z = cylinder.position.z;
-    cylinderGlow.scale.setX(5);
+    cylinderGlow.scale.setX(3);
+    cylinderGlow.scale.setZ(3);
     this.scene.add(cylinderGlow);
   }
 
