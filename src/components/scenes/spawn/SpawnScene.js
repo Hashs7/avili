@@ -100,11 +100,11 @@ export default class extends Scene {
 
       const state = new State();
 
-      if(objs[0].object.name === "sectionTutoPassed") {
+      if (objs[0].object.name === "sectionTutoPassed") {
         state.goToState("projectile_sequence_start");
       }
 
-      if(objs[0].object.name === "sectionInfiltrationPassed") {
+      if (objs[0].object.name === "sectionInfiltrationPassed") {
         state.goToState("infiltration_sequence_start")
       }
 
