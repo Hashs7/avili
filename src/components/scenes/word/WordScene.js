@@ -33,7 +33,15 @@ export default class extends Scene {
     // this.scene.fog = new THREE.Fog(0x202533, -1, 100);
     //console.log(this.scene);
     this.factory = new WordFactory(this.scene, this.world, camera, manager, material);
-    this.init();
+    this.ray = new Raycaster(
+      new THREE.Vector3(0,0,0),
+      new THREE.Vector3(0,0,0),
+      0,
+      0.5,
+    );
+    this.ray.firstHitOnly = true;
+
+    document.addEventListener('playerMoved', (e) => this.detectWall(e));
 
     return {
       instance: this,
@@ -41,43 +49,31 @@ export default class extends Scene {
     };
   }
 
-  init() {
-    const ray = new Raycaster(
-      new THREE.Vector3(0,0,0),
-      new THREE.Vector3(0,0,0),
-      0,
-      0.5,
-    );
-    ray.firstHitOnly = true;
-    console.log(this.sections);
-
-    document.addEventListener('playerMoved', e => {
-      const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
-      const direction = new THREE.Vector3( 0, 0, -1 ).applyQuaternion( e.detail.quaternion );
-      ray.set(playerPosition, direction);
-      const objs = ray.intersectObjects(this.sections, false);
-      if(objs.length === 0) return;
-      if (objs[0].object.name === "m1") {
-        this.dropWord();
-        objs[0].object.name += 'Passed';
-        this.sections = this.sections.filter(s => s.name !== 'm1');
-      }
-      if (objs[0].object.name === "m2") {
-        this.dropWord();
-        objs[0].object.name += 'Passed';
-        this.sections = this.sections.filter(s => s.name !== 'm2');
-      }
-      if (objs[0].object.name === "m3") {
-        this.dropWord();
-        objs[0].object.name += 'Passed';
-        this.sections = this.sections.filter(s => s.name !== 'm3');
-
-      }
-    });
+  detectWall(e) {
+    const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
+    const direction = new THREE.Vector3( 0, 0, -1 ).applyQuaternion( e.detail.quaternion );
+    ray.set(playerPosition, direction);
+    const objs = ray.intersectObjects(this.sections, false);
+    if(objs.length === 0) return;
+    // TODO refacto
+    if (objs[0].object.name === "m1") {
+      this.dropWord();
+      objs[0].object.name += 'Passed';
+      this.sections = this.sections.filter(s => s.name !== 'm1');
+    }
+    if (objs[0].object.name === "m2") {
+      this.dropWord();
+      objs[0].object.name += 'Passed';
+      this.sections = this.sections.filter(s => s.name !== 'm2');
+    }
+    if (objs[0].object.name === "m3") {
+      this.dropWord();
+      objs[0].object.name += 'Passed';
+      this.sections = this.sections.filter(s => s.name !== 'm3');
+    }
   }
 
   dropWord() {
-    console.log('dropWord');
     this.factory.addWord(wordsDef[this.wordIndex]);
     this.wordIndex++;
   }
