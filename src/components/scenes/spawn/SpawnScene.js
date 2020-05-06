@@ -5,6 +5,7 @@ import {Raycaster} from "three";
 import AudioManager from "../../core/AudioManager";
 import LoadManager from "../../core/LoadManager";
 import State from "../../core/State";
+import TestimonyManager from "../../core/TestimonyManager";
 
 export default class extends Scene {
   constructor(world, spline, sections, finishCallback) {
@@ -26,6 +27,34 @@ export default class extends Scene {
       this.initTravelling();
     }, 5000);*/
     this.detectSectionPassed();
+
+
+    // Mettre a false pour jouer la première partie
+    let isPlaying = true;
+    document.body.addEventListener('click', () => {
+      if(isPlaying) return;
+      isPlaying = true;
+      //TODO Lorsqu'on appuie sur joueur
+      setTimeout(() => {
+        TestimonyManager.speak('black_screen.mp3', 'black_screen');
+      }, 2000)
+
+      //TODO Pendant le travelling
+      setTimeout(() => {
+        TestimonyManager.speak('travelling.mp3', 'travelling');
+      }, 6000)
+
+      //TODO Lorsque les coéquipiers apparaissent
+      setTimeout(() => {
+        TestimonyManager.speak('spawn_mates.mp3', 'spawn_mates');
+      }, 28000)
+
+      //TODO Lorsque la joueuse apparait
+      setTimeout(() => {
+        TestimonyManager.speak('spawn_player.mp3', 'spawn_player');
+      }, 65000)
+    });
+
 
     return {
       instance: this,
@@ -108,7 +137,7 @@ export default class extends Scene {
         state.goToState("infiltration_sequence_start")
       }
 
-      AudioManager.playSound(audio);
+      //AudioManager.playSound(audio);
     });
   }
 }

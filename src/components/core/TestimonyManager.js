@@ -17,7 +17,7 @@ class TestimonyManager {
    * @param sequence
    */
   speak(audio, sequence) {
-    // AudioManager.playSound(audio);
+    AudioManager.playSound(audio);
     this.launchSequence(sequence);
   }
 

@@ -5,20 +5,15 @@ class AudioManager {
   constructor() {
     const prefix ='./assets/audio/';
     const audioPaths = [
-      'audio_ecran_noir.mp3',
-      'audio_fin_infiltration.mp3',
-      'audio_fin_mot.mp3',
-      'audio_info_infiltration.mp3',
-      'audio_intro_insulte.mp3',
-      'audio_mot_cuisine.mp3',
-      'audio_mot_nude.mp3',
-      'audio_mot_pute.mp3',
-      'audio_msg_infiltration_1.mp3',
-      'audio_msg_infiltration_2.mp3',
-      'audio_msg_infiltration_3.mp3',
-      'audio_msg_infiltration_4.mp3',
-      'audio_npc_bougezvous.mp3',
-      'KO.m4a'
+      'black_screen.mp3',
+      'ending.mp3',
+      'first_badword.mp3',
+      'infiltration_end.mp3',
+      'infiltration_introduction.mp3',
+      'second_badword.mp3',
+      'spawn_mates.mp3',
+      'spawn_player.mp3',
+      'travelling.mp3',
     ];
     this.listener = new THREE.AudioListener();
     this.audios = [];

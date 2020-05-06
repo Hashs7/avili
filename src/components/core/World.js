@@ -93,9 +93,9 @@ export default class {
 
   setTestimony(receiver, tr) {
     TestimonyManager.setReceiver(receiver, tr);
-    setTimeout(() => {
+    /*setTimeout(() => {
       TestimonyManager.speak('blbl.mp3', 'start')
-    }, 2000)
+    }, 2000)*/
   }
 
   /**

@@ -199,7 +199,7 @@ export default class {
     this.mainSceneAddObject(t2Gltf.scene);
     this.towerEls.push(t2);
 
-    this.addGlowEffect([t1.crystal, t2.crystal]);
+    //this.addGlowEffect([t1.crystal, t2.crystal]);
   }
 
   addGlowEffect(objects){
@@ -217,6 +217,7 @@ export default class {
     outlinePass.edgeThickness = 1.7;
     outlinePass.visibleEdgeColor.set('#ff0202');
     outlinePass.hiddenEdgeColor.set('#ff0202');
+    outlinePass.pulsePeriod = 2;
 
     const effectFXAA = new ShaderPass( FXAAShader );
     effectFXAA.uniforms[ 'resolution' ].value.set( 1 / window.innerWidth, 1 / window.innerHeight );

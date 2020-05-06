@@ -6,6 +6,7 @@ import State from "../../core/State";
 import AudioManager from "../../core/AudioManager";
 import { Raycaster } from "three";
 import { GAME_STATES } from "../../../constantes";
+import TestimonyManager from "../../core/TestimonyManager";
 
 const wordsDef = [{
   text: 'Kitchen',
@@ -62,16 +63,19 @@ export default class extends Scene {
       this.dropWord();
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm1');
+      TestimonyManager.speak('first_badword.mp3', 'first_badword');
     }
     if (objs[0].object.name === "m2") {
       this.dropWord();
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm2');
+      TestimonyManager.speak('second_badword.mp3', 'second_badword');
     }
     if (objs[0].object.name === "m3") {
       this.dropWord();
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm3');
+      TestimonyManager.speak('ending.mp3', 'ending');
     }
   }
 
