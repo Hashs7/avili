@@ -3,8 +3,6 @@ import * as THREE from 'three'
 export const ACTIONS = {
   IDLE: 'Idle',
   RUNNING: 'Running',
-  RIGHT_STRAF: 'RightStraf',
-  LEFT_STRAF: 'LeftStraf',
 };
 
 export default class {
@@ -25,9 +23,9 @@ export default class {
   setAnimations(animations) {
     this.idleAction = this.mixer.clipAction( animations.find(act => act.name === ACTIONS.IDLE));
     this.runAction = this.mixer.clipAction( animations.find(act => act.name === ACTIONS.RUNNING));
-    this.rightAction = this.mixer.clipAction( animations.find(act => act.name === ACTIONS.RIGHT_STRAF));
-    this.leftAction = this.mixer.clipAction( animations.find(act => act.name === ACTIONS.LEFT_STRAF));
-    this.actions = [this.idleAction, this.runAction, this.rightAction, this.leftAction];
+    // this.rightAction = this.mixer.clipAction( animations.find(act => act.name === ACTIONS.RIGHT_STRAF));
+    // this.leftAction = this.mixer.clipAction( animations.find(act => act.name === ACTIONS.LEFT_STRAF));
+    this.actions = [this.idleAction, this.runAction];
     this.activateAllActions();
   }
 

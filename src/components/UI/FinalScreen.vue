@@ -1,6 +1,9 @@
 <template>
   <div class="modal">
-    <div class="content"></div>
+    <div class="content">
+      <p>La phrase de fin</p>
+      <p>Abonne toi poto</p>
+    </div>
   </div>
 </template>
 

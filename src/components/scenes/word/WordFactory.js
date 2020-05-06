@@ -97,13 +97,14 @@ export default class WordFactory {
     this.moveJointToPoint(pos.x, pos.y, pos.z);
   }
 
-  addWord({ text, position, mass, collide }) {
+  addWord({ text, position, mass, collide, movable }) {
     const material = new THREE.MeshPhongMaterial({ color: 0x97df5e });
     const geometry = new THREE.TextBufferGeometry(text, this.fontOption);
     geometry.computeBoundingBox();
     geometry.computeBoundingSphere();
 
     const mesh = new THREE.Mesh(geometry, material);
+    mesh.movable = movable;
     const scaleFactor = 0.1;
 
     mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
@@ -170,7 +171,7 @@ export default class WordFactory {
     // Find mesh from a ray
     const entity = this.findNearestIntersectingObject(this.camera, this.words);
     const pos = entity.point;
-    if (pos && entity.object.geometry instanceof THREE.TextBufferGeometry){
+    if (pos && entity.object.geometry instanceof THREE.TextBufferGeometry && entity.object.movable){
       this.constraintDown = true;
       // Set marker on contact point
       this.setClickMarker(pos.x,pos.y,pos.z, this.scene);

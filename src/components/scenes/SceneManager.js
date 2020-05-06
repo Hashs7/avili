@@ -12,6 +12,7 @@ import {OutlinePass} from "three/examples/jsm/postprocessing/OutlinePass";
 import {ShaderPass} from "three/examples/jsm/postprocessing/ShaderPass";
 import {GammaCorrectionShader} from "three/examples/jsm/shaders/GammaCorrectionShader";
 import {FXAAShader} from "three/examples/jsm/shaders/FXAAShader";
+import FinalScene from "./final/FinalScene";
 
 const npcsDefinition = (positions) => [{
   name: 'Daesu',
@@ -52,15 +53,17 @@ export default class {
     this.landingAreas = [];
     this.walls = new THREE.Mesh();
     this.crystals = [];
+
+    setTimeout(() => this.ambianceTransition(), 5000);
   }
 
   initMainScene() {
     // new Skybox(this.mainScene, 'afterrain');
-    const light = new THREE.HemisphereLight(0xffffff, 0x444444, 0.7);
+    this.globalLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.7);
     this.addFloor();
     this.addMap();
-    this.mainScene.add(light);
-    // this.mainScene.fog = new THREE.Fog(0x96e1ff, 45, 50);
+    this.mainScene.add(this.globalLight);
+    this.mainScene.fog = new THREE.Fog(0x96e1ff, 45, 50);
     // this.mainScene.fog = new THREE.Fog( 0x96e1ff, 7, 50);
     this.mainScene.background = new THREE.Color(0x96e1ff);
     // this.mainScene.background = new THREE.Color(0xfefefe);
@@ -71,7 +74,7 @@ export default class {
 
   ambianceTransition() {
     const nextColor = new THREE.Color(0x05052b);
-    const duration = 5
+    const duration = 5;
     const tl = gsap.timeline({ repeat: 0 });
     tl.to(this.globalLight, {
       intensity: 0.2,
@@ -166,6 +169,7 @@ export default class {
     this.setFov();
     this.setProjectile();
     this.setWords();
+    this.setFinal();
   }
 
   async addTowers(){
@@ -261,6 +265,10 @@ export default class {
 
   setWords() {
     this.addScene(new WordScene(this.worldPhysic, this.camera, this, this.mat1, this.sectionsWord))
+  }
+
+  setFinal() {
+    this.addScene(new FinalScene(this))
   }
 
   createBoundingBoxShape(object) {
