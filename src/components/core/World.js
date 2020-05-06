@@ -30,7 +30,7 @@ export default class {
 
     this.audioManager = AudioManager;
 
-    this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 1, 1000);
+    this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.01, 100);
     this.camera.name = 'MainCamera';
 
     this.world = new World();
@@ -111,9 +111,9 @@ export default class {
    * Load all environement props
    */
   async loadProps() {
-    const gltf = await LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb');
+    const gltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v9.glb');
     console.log(gltf);
-    this.player = new Player(gltf, this.world, this.camera, this.gameManager.sceneManager, 'EMILIE');
+    this.player = new Player(gltf, this.world, this.camera, this.gameManager.sceneManager, 'Emilie');
     // this.player.groupCamera();
   }
 

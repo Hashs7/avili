@@ -1,8 +1,8 @@
 import * as THREE from 'three'
 
 export const ACTIONS = {
-  IDLE: 'Idle',
-  RUNNING: 'Running',
+  IDLE: 'idle',
+  RUNNING: 'running',
 };
 
 export default class {

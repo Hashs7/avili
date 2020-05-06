@@ -39,14 +39,14 @@ export default class extends Character {
   }
 
   addBody() {
-    const mesh = this.character.children.find(el => el.name === 'unamed');
+    /*const mesh = this.character.children.find(el => el.name === 'unamed');
     mesh.geometry.computeBoundingBox();
-    mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
+    mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());*/
     // const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
     const size = {
-      x: mesh.size.x,
-      y: mesh.size.y,
-      z: mesh.size.z,
+      x: 0.3,
+      y: 1.64,
+      z: 1.11
     };
 
     // const cylinderShape = new Cylinder(mesh.size.y/2, mesh.size.y/2,  mesh.size.x/2, 8);
