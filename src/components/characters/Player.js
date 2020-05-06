@@ -212,14 +212,14 @@ export default class extends Character {
   }
 
   move(decay, isStrafing) {
-    const speed = isStrafing ? this.speed / 2 : this.speed;
+    // const speed = isStrafing ? this.speed / 2 : this.speed;
     // this.character.body.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
     // this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
 
     // get nextPosition
     this.nextPosition = {
-      x: Math.sin(this.character.rotation.y + decay) * speed,
-      z: Math.cos(this.character.rotation.y + decay) * speed};
+      x: Math.sin(this.character.rotation.y + decay) * this.speed,
+      z: Math.cos(this.character.rotation.y + decay) * this.speed};
     if(this.detectWallCollision(this.nextPosition)) return;
 
     this.group.position.x += this.nextPosition.x;

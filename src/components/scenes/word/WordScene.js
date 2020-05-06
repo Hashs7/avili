@@ -9,17 +9,17 @@ import { Raycaster } from "three";
 const wordsDef = [{
   text: 'Kitchen',
   mass: 25,
-  position: new Vec3(118, 50, -3),
+  position: new Vec3(125, 10, -3),
   collide: false,
 }, {
   text: 'Sandwich',
   mass: 30,
-  position: new Vec3(125, 50, -5),
+  position: new Vec3(135, 25, -5),
   collide: true,
 }, {
   text: 'Bitch',
   mass: 20,
-  position: new Vec3(132, 70, -3),
+  position: new Vec3(150, 70, -3),
   collide: true,
 }];
 
@@ -57,16 +57,21 @@ export default class extends Scene {
       ray.set(playerPosition, direction);
       const objs = ray.intersectObjects(this.sections, false);
       if(objs.length === 0) return;
-      console.log('detected');
       if (objs[0].object.name === "m1") {
         this.dropWord();
         objs[0].object.name += 'Passed';
-        this.sections.shift();
+        this.sections = this.sections.filter(s => s.name !== 'm1');
       }
       if (objs[0].object.name === "m2") {
         this.dropWord();
         objs[0].object.name += 'Passed';
-        this.sections.shift();
+        this.sections = this.sections.filter(s => s.name !== 'm2');
+      }
+      if (objs[0].object.name === "m3") {
+        this.dropWord();
+        objs[0].object.name += 'Passed';
+        this.sections = this.sections.filter(s => s.name !== 'm3');
+
       }
     });
   }
