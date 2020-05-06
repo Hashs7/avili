@@ -7,6 +7,10 @@ import ProjectileScene from "./projectile/ProjectileScene";
 import NPC from "../characters/NPC";
 import WordScene from "./word/WordScene";
 import gsap from 'gsap';
+import {RenderPass} from "three/examples/jsm/postprocessing/RenderPass";
+import {OutlinePass} from "three/examples/jsm/postprocessing/OutlinePass";
+import {ShaderPass} from "three/examples/jsm/postprocessing/ShaderPass";
+import {GammaCorrectionShader} from "three/examples/jsm/shaders/GammaCorrectionShader";
 
 const npcsDefinition = (positions) => [{
   name: 'Daesu',
@@ -193,6 +197,30 @@ export default class {
 
     this.mainSceneAddObject(t2Gltf.scene);
     this.towerEls.push(t2);
+
+    this.addGlowEffect([t1.crystal, t2.crystal]);
+  }
+
+  addGlowEffect(objects){
+    this.world.postProcessing = true;
+
+    const renderPass = new RenderPass(this.mainScene, this.camera);
+    this.world.composer.addPass( renderPass );
+
+    const gammaCorrectionPass = new ShaderPass( GammaCorrectionShader );
+    this.world.composer.addPass( gammaCorrectionPass );
+
+    const outlinePass = new OutlinePass( new THREE.Vector2( window.innerWidth, window.innerHeight ), this.mainScene, this.camera );
+    this.world.composer.addPass( outlinePass );
+
+
+    outlinePass.selectedObjects = objects;
+    outlinePass.edgeStrength = 8.6;
+    outlinePass.edgeGlow = 1;
+    outlinePass.edgeThickness = 1.7;
+    outlinePass.visibleEdgeColor.set('#ff0202');
+    outlinePass.hiddenEdgeColor.set('#ff0202');
+
   }
 
   setMap() {

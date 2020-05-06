@@ -9,6 +9,8 @@ import { NaiveBroadphase, World } from "cannon-es";
 import AudioManager from "./AudioManager";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import TestimonyManager from "./TestimonyManager";
+import {EffectComposer} from "three/examples/jsm/postprocessing/EffectComposer";
+import {RenderPass} from "three/examples/jsm/postprocessing/RenderPass";
 
 export default class {
   constructor(canvas) {
@@ -17,7 +19,7 @@ export default class {
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     //this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
-    // this.renderer.toneMapping = THREE.ReinhardToneMapping;
+    //this.renderer.toneMapping = THREE.ReinhardToneMapping;
     this.renderer.outputEncoding = THREE.sRGBEncoding;
 
     // RenderLoop
@@ -61,7 +63,10 @@ export default class {
     // this.setWorker();
     // this.render();
     this.wow();
-    // this.debugCamera()
+    //this.debugCamera()
+
+    this.postProcessing = false;
+    this.composer = new EffectComposer(this.renderer);
   }
 
   setWorker() {
@@ -147,7 +152,14 @@ export default class {
     // let timeStep = (this.renderDelta + this.logicDelta) * this.params.Time_Scale;
     this.update(timeStep);
     this.logicDelta = this.clock.getDelta();
-    this.renderer.render(this.gameManager.sceneManager.mainScene, this.camera);
+
+    if(this.postProcessing) {
+      this.composer.render();
+    } else {
+      this.renderer.render(this.gameManager.sceneManager.mainScene, this.camera);
+    }
+
+
     requestAnimationFrame(() => this.render());
     this.stats.end();
   }
