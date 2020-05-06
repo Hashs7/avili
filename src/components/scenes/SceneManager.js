@@ -11,6 +11,7 @@ import {RenderPass} from "three/examples/jsm/postprocessing/RenderPass";
 import {OutlinePass} from "three/examples/jsm/postprocessing/OutlinePass";
 import {ShaderPass} from "three/examples/jsm/postprocessing/ShaderPass";
 import {GammaCorrectionShader} from "three/examples/jsm/shaders/GammaCorrectionShader";
+import {FXAAShader} from "three/examples/jsm/shaders/FXAAShader";
 
 const npcsDefinition = (positions) => [{
   name: 'Daesu',
@@ -207,12 +208,8 @@ export default class {
     const renderPass = new RenderPass(this.mainScene, this.camera);
     this.world.composer.addPass( renderPass );
 
-    const gammaCorrectionPass = new ShaderPass( GammaCorrectionShader );
-    this.world.composer.addPass( gammaCorrectionPass );
-
     const outlinePass = new OutlinePass( new THREE.Vector2( window.innerWidth, window.innerHeight ), this.mainScene, this.camera );
     this.world.composer.addPass( outlinePass );
-
 
     outlinePass.selectedObjects = objects;
     outlinePass.edgeStrength = 8.6;
@@ -221,6 +218,12 @@ export default class {
     outlinePass.visibleEdgeColor.set('#ff0202');
     outlinePass.hiddenEdgeColor.set('#ff0202');
 
+    const effectFXAA = new ShaderPass( FXAAShader );
+    effectFXAA.uniforms[ 'resolution' ].value.set( 1 / window.innerWidth, 1 / window.innerHeight );
+    this.world.composer.addPass( effectFXAA );
+
+    const gammaCorrectionPass = new ShaderPass( GammaCorrectionShader );
+    this.world.composer.addPass( gammaCorrectionPass );
   }
 
   setMap() {
