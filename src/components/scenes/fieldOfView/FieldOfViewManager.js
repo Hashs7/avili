@@ -2,6 +2,7 @@ import * as THREE from "three/src/Three";
 import {Raycaster} from "three/src/Three";
 import AudioManager from "../../core/AudioManager";
 import Projectile from "../../core/Projectile";
+import TestimonyManager from "../../core/TestimonyManager";
 
 export default class FieldOfViewManager {
   constructor(world, scene, npcPositions, towers, landingAreas, towerElements) {
@@ -16,14 +17,16 @@ export default class FieldOfViewManager {
 
     this.index = 0;
     this.towerElements = towerElements;
+    this.alreadyHit = false;
 
-    npcPositions.forEach(({ x, z }) => this.addNPC(x, z));
+    npcPositions.forEach(({x, z}, index) => this.addNPC(x, z, index));
 
     document.addEventListener('stateUpdate', e => {
       if (e.detail !== 'infiltration_sequence_start') return;
       const arr = landingAreas.slice(4);
       this.proj = new Projectile(towers[1], arr, this.scene, this.towerElements[1]);
       this.proj.launchSequence();
+      TestimonyManager.speak('infiltration_introduction.mp3', 'infiltration_introduction')
     });
 
     document.addEventListener('playerMoved', e => {
@@ -44,7 +47,7 @@ export default class FieldOfViewManager {
     this.detectFieldOfView(this.lastPosition);
   }
 
-  addNPC(x, z) {
+  addNPC(x, z, index) {
     let geometry = new THREE.SphereGeometry(1, 20, 20);
     let material = new THREE.MeshBasicMaterial({
       color: 0x0000aa,
@@ -53,11 +56,11 @@ export default class FieldOfViewManager {
     });
     this.sphere = new THREE.Mesh(geometry, material);
     this.sphere.position.set(x, 0, z);
-    this.addFieldOfView(this.sphere);
+    this.addFieldOfView(this.sphere, index);
     this.scene.add(this.sphere);
   }
 
-  addFieldOfView(object) {
+  addFieldOfView(object, index) {
     //let geometry = new THREE.CylinderGeometry(300, 300, 1, 20, 20);
     let geometry = new THREE.CylinderGeometry(
       3,
@@ -75,7 +78,7 @@ export default class FieldOfViewManager {
       transparent: true,
     });
     this.fieldOfView = new THREE.Mesh(geometry, material);
-    this.fieldOfView.name = this.fieldOfViewName;
+    this.fieldOfView.name = `${this.fieldOfViewName}-${index}`;
     this.fieldOfView.position.set(object.position.x, object.position.y - 0.45, object.position.z);
 
     this.index++;
@@ -94,12 +97,30 @@ export default class FieldOfViewManager {
     );
     const objs = ray.intersectObjects(this.scene.children, false);
 
-    objs.forEach(obj => {
-      if (obj.object.name === this.fieldOfViewName) {
+    if(this.alreadyHit) return;
+    for (let i = 0; i < objs.length; i++) {
+      if(!objs[i].object.name.startsWith(this.fieldOfViewName)) return;
+      if(objs[i].object.name === "FieldOfView-3") {
+        TestimonyManager.speak('infiltration_end.mp3', 'infiltration_end');
+        this.alreadyHit = true;
+      } else {
         const player = this.world.getPlayer();
         player.teleport(this.world.lastCheckpointCoord);
-        AudioManager.playSound("audio_mot_cuisine.mp3");
       }
-    });
+    }
+
+    /*
+    objs.forEach(obj => {
+      if (obj.object.name.startsWith(this.fieldOfViewName)) {
+        const player = this.world.getPlayer();
+        if(obj.object.name === "FieldOfView-3" && !alreadyHit) {
+          console.log("test");
+          alreadyHit = true;
+          TestimonyManager.speak('infiltration_end.mp3', 'infiltration_end');
+        } else {
+          player.teleport(this.world.lastCheckpointCoord);
+        }
+      }
+    });*/
   }
 }
