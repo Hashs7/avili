@@ -12,16 +12,25 @@ const wordsDef = [{
   mass: 50,
   position: new Vec3(125, 10, -3),
   collide: false,
+  movable: true,
 }, {
   text: 'Sandwich',
   mass: 70,
   position: new Vec3(135, 25, -5),
   collide: true,
+  movable: true,
 }, {
   text: 'Bitch',
   mass: 40,
   position: new Vec3(150, 70, -3),
   collide: true,
+  movable: false,
+}, {
+  text: 'Bitch',
+  mass: 40,
+  position: new Vec3(145, 70, -3),
+  collide: true,
+  movable: false,
 }];
 
 export default class extends Scene {
@@ -72,6 +81,13 @@ export default class extends Scene {
       this.dropWord();
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm3');
+
+      setTimeout(() => {
+        this.dropWord();
+      }, 2000);
+      setTimeout(() => {
+        new State().goToState(GAME_STATES.final_black_screen);
+      }, 5000);
     }
   }
 

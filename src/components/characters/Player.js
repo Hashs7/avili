@@ -1,12 +1,9 @@
 import * as THREE from 'three'
 import InputManager from "../core/InputManager";
-import { toRadian } from "../../utils";
 import AudioManager from "../core/AudioManager";
 import Character, { ACTIONS } from "./Character";
 import Stats from 'stats.js'
-import gsap from "gsap/gsap-core";
-
-const quartDegree = toRadian(90);
+import gsap from "gsap";
 
 export default class extends Character {
   constructor(gltf, world, camera, sceneManager, name) {
