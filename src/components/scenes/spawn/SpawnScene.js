@@ -6,6 +6,7 @@ import AudioManager from "../../core/AudioManager";
 import LoadManager from "../../core/LoadManager";
 import State from "../../core/State";
 import TestimonyManager from "../../core/TestimonyManager";
+import { GAME_STATES } from "../../../constantes";
 
 export default class extends Scene {
   constructor(world, spline, sections, finishCallback) {
@@ -30,7 +31,7 @@ export default class extends Scene {
 
 
     // Mettre a false pour jouer la première partie
-    let isPlaying = true;
+    let isPlaying = false;
     document.body.addEventListener('click', () => {
       if(isPlaying) return;
       isPlaying = true;
@@ -122,20 +123,24 @@ export default class extends Scene {
       if(objs.length === 0) return;
       const audio = sectionsAudio[objs[0].object.name];
       if (!audio) return;
-      objs[0].object.name += 'Passed';
 
       playerPosition.y = 0;
       this.world.lastCheckpointCoord = playerPosition;
 
       const state = new State();
 
-      if (objs[0].object.name === "sectionTutoPassed") {
+      if (objs[0].object.name === "sectionTuto") {
         state.goToState("projectile_sequence_start");
       }
 
-      if (objs[0].object.name === "sectionInfiltrationPassed") {
-        state.goToState("infiltration_sequence_start")
+      if (objs[0].object.name === "sectionInfiltration") {
+        state.goToState(GAME_STATES.infiltration_sequence_start)
       }
+
+      if (objs[0].object.name === "sectionHarcelement") {
+        state.goToState(GAME_STATES.words_sequence_start);
+      }
+      objs[0].object.name += 'Passed';
 
       //AudioManager.playSound(audio);
     });

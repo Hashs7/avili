@@ -14,6 +14,7 @@ class AudioManager {
       'spawn_mates.mp3',
       'spawn_player.mp3',
       'travelling.mp3',
+      'audio_mot_cuisine.mp3',
     ];
     this.listener = new THREE.AudioListener();
     this.audios = [];

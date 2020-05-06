@@ -2,10 +2,11 @@ import Scene from "../Scene";
 import FieldOfViewManager from "./FieldOfViewManager";
 
 export default class extends Scene {
-  constructor(world, npcPositions, towers, landingAreas, towerEl) {
+  constructor(world, manager, npcPositions, towers, landingAreas, towerEl) {
     super();
+    this.manager = manager;
     this.scene.name = "FieldOfView";
-    this.manager = new FieldOfViewManager(world, this.scene, npcPositions, towers, landingAreas, towerEl);
+    this.fov = new FieldOfViewManager(world, this.scene, npcPositions, towers, landingAreas, towerEl);
 
     return {
       instance: this,
@@ -14,6 +15,6 @@ export default class extends Scene {
   }
 
   update() {
-    this.manager.update();
+    this.fov.update();
   }
 }

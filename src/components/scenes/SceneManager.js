@@ -13,6 +13,7 @@ import {ShaderPass} from "three/examples/jsm/postprocessing/ShaderPass";
 import {GammaCorrectionShader} from "three/examples/jsm/shaders/GammaCorrectionShader";
 import {FXAAShader} from "three/examples/jsm/shaders/FXAAShader";
 import FinalScene from "./final/FinalScene";
+import { GAME_STATES } from "../../constantes";
 
 const npcsDefinition = (positions) => [{
   name: 'Daesu',
@@ -54,7 +55,14 @@ export default class {
     this.walls = new THREE.Mesh();
     this.crystals = [];
 
-    setTimeout(() => this.ambianceTransition(), 5000);
+    document.addEventListener('stateUpdate', (e) => {
+      if (e.detail !== GAME_STATES.infiltration_sequence_start) return;
+      this.ambianceInfiltrationTransition();
+    });
+    document.addEventListener('stateUpdate', (e) => {
+      if (e.detail !== GAME_STATES.words_sequence_start) return;
+      this.ambianceWordsTransition();
+    });
   }
 
   initMainScene() {
@@ -72,9 +80,9 @@ export default class {
      }, 6000)*/
   }
 
-  ambianceTransition() {
+  ambianceInfiltrationTransition() {
     const nextColor = new THREE.Color(0x05052b);
-    const duration = 5;
+    const duration = 15;
     const tl = gsap.timeline({ repeat: 0 });
     tl.to(this.globalLight, {
       intensity: 0.2,
@@ -94,6 +102,29 @@ export default class {
     }, 'start');
     tl.to(this.mainScene.fog, {
       near: 7,
+      duration,
+    }, 'start');
+  }
+
+  ambianceWordsTransition() {
+    console.log('ambianceWordsTransition');
+    const { spotLight } = this.world.getPlayer();
+
+    const nextColor = new THREE.Color(0x05052b);
+    const duration = 5;
+    const tl = gsap.timeline({ repeat: 0 });
+    tl.to(this.globalLight, {
+      intensity: 0.1,
+      duration,
+    }, 'start');
+    tl.to(spotLight, {
+      angle: Math.PI/12,
+      intensity: 0.8,
+      penumbra: .3,
+      duration,
+    }, 'start');
+    tl.to(this.mainScene.fog, {
+      near: 35,
       duration,
     }, 'start');
   }
@@ -207,7 +238,7 @@ export default class {
   }
 
   addGlowEffect(objects){
-    this.world.postProcessing = true;
+    this.world.setPostProcessing(true);
 
     const renderPass = new RenderPass(this.mainScene, this.camera);
     this.world.composer.addPass( renderPass );
@@ -256,7 +287,7 @@ export default class {
 
   setFov() {
     this.setNPC(this.map, this.matesPos);
-    this.addScene(new FieldOfViewScene(this.world, this.matesPos, this.towers, this.landingAreas, this.towerEls));
+    this.addScene(new FieldOfViewScene(this.world, this, this.matesPos, this.towers, this.landingAreas, this.towerEls));
   }
 
   setProjectile() {

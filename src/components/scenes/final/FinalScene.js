@@ -51,6 +51,7 @@ export default class extends Scene {
     tl.add(gsap.delayedCall(5, () => {
       group.position.set(0, 0, 0);
       this.manager.mainScene.fog.near = 45;
+      console.log('fadein');
     }));
     const color = new THREE.Color(0x96e1ff);
 
@@ -69,6 +70,7 @@ export default class extends Scene {
     tl.to(spotLight, {
       intensity: 1,
       duration: 3,
+      penumbra: 1,
     }, 'fadeIn');
     tl.to(this.manager.globalLight, {
       intensity: 0.7,

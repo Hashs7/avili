@@ -66,7 +66,7 @@ export default class {
     //this.debugCamera()
     document.addEventListener('visibilitychange', () => this.handleVisibilityChange(), false);
 
-    this.postProcessing = false;
+    this.setPostProcessing(false);
     this.composer = new EffectComposer(this.renderer);
   }
 
@@ -77,6 +77,15 @@ export default class {
     } else  {
       this.clock.start()
     }
+  }
+
+  setPostProcessing(enable) {
+    cancelAnimationFrame(this.loop);
+    if (enable) {
+      this.renderPostProcessing();
+      return;
+    }
+    this.render();
   }
 
   setWorker() {
@@ -155,22 +164,28 @@ export default class {
    * Rendering loop
    */
   render() {
+    // console.log('render');
     this.stats.begin();
     this.renderDelta = this.clock.getDelta();
     let timeStep = this.renderDelta + this.logicDelta;
     // let timeStep = (this.renderDelta + this.logicDelta) * this.params.Time_Scale;
     this.update(timeStep);
     this.logicDelta = this.clock.getDelta();
-
-    if(this.postProcessing) {
-      this.composer.render();
-    } else {
-      this.renderer.render(this.gameManager.sceneManager.mainScene, this.camera);
-    }
-
-
-    requestAnimationFrame(() => this.render());
+    this.renderer.render(this.gameManager.sceneManager.mainScene, this.camera);
+    this.loop = requestAnimationFrame(() => this.render());
     this.stats.end();
+  }
+
+  renderPostProcessing() {
+    // this.stats.begin();
+    this.renderDelta = this.clock.getDelta();
+    let timeStep = this.renderDelta + this.logicDelta;
+    // let timeStep = (this.renderDelta + this.logicDelta) * this.params.Time_Scale;
+    this.update(timeStep);
+    this.logicDelta = this.clock.getDelta();
+    this.composer.render();
+    this.loop = requestAnimationFrame(() => this.renderPostProcessing());
+    // this.stats.end();
   }
 
   debugCamera() {

@@ -27,6 +27,7 @@
     max-width: 832px;
     text-align: center;
     font-size: 20px;
+    user-select: none;
   }
 
   .testimony {

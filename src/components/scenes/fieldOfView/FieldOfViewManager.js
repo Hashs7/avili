@@ -40,10 +40,10 @@ export default class FieldOfViewManager {
 
   update() {
     if(this.fieldOfViews.length === 0) return;
-    const movingFov = this.fieldOfViews.filter(fieldOfView => fieldOfView.anime)
-    movingFov.forEach(fieldOfView => {
-      fieldOfView.obj.rotateY(Math.PI / 100);
-    });
+    const movingFov = this.fieldOfViews.filter(fieldOfView => fieldOfView.anime);
+    for (let i = 0; i < movingFov.length; i++) {
+      movingFov[i].obj.rotateY(Math.PI / 100);
+    }
     this.detectFieldOfView(this.lastPosition);
   }
 
@@ -104,6 +104,7 @@ export default class FieldOfViewManager {
         TestimonyManager.speak('infiltration_end.mp3', 'infiltration_end');
         this.alreadyHit = true;
       } else {
+        TestimonyManager.speak('audio_mot_cuisine.mp3');
         const player = this.world.getPlayer();
         player.teleport(this.world.lastCheckpointCoord);
       }

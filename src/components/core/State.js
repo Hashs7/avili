@@ -16,6 +16,7 @@ export default class {
 
   goToState(name) {
     this.currentState = name;
+    console.log('newstate ', name);
     const event = new CustomEvent('stateUpdate', {detail : this.currentState});
     document.dispatchEvent(event);
   }
