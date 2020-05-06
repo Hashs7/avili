@@ -22,13 +22,13 @@ const wordsDef = [{
   movable: true,
 }, {
   text: 'Bitch',
-  mass: 40,
+  mass: 100,
   position: new Vec3(150, 70, -3),
   collide: true,
   movable: false,
 }, {
   text: 'Bitch',
-  mass: 40,
+  mass: 100,
   position: new Vec3(145, 70, -3),
   collide: true,
   movable: false,
@@ -81,9 +81,10 @@ export default class extends Scene {
       TestimonyManager.speak('second_badword.mp3', 'second_badword');
     }
     if (objs[0].object.name === "m3") {
+      this.dropWord();
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm3');
-      TestimonyManager.speak('ending.mp3', 'ending');
+
       setTimeout(() => {
         this.dropWord();
       }, 2000);

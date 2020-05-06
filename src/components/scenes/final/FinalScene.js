@@ -1,6 +1,7 @@
 import Scene from "../Scene";
 import gsap from "gsap/gsap-core";
 import { GAME_STATES } from "../../../constantes";
+import * as THREE from "three";
 
 export default class extends Scene {
   constructor(manager) {
@@ -20,7 +21,7 @@ export default class extends Scene {
   }
 
   blackFade() {
-    const { spotLight } = this.manager.world.getPlayer();
+    const { spotLight, group } = this.manager.world.getPlayer();
     const tl = gsap.timeline({ repeat: 0 });
     console.log(this.manager.mainScene);
     tl.to(this.manager.globalLight, {
@@ -36,18 +37,43 @@ export default class extends Scene {
       g:0,
       b:0,
       duration: 1,
-    }, 'final');
+    }, 'fadeOut');
     tl.to(this.manager.mainScene.background, {
       r: 0,
       g: 0,
       b: 0,
       duration: 1,
-    }, 'final');
+    }, 'fadeOut');
     tl.to(this.manager.mainScene.fog, {
       near: 0,
       duration: 2,
-    }, 'final');
+    }, 'fadeOut');
+    tl.add(gsap.delayedCall(5, () => {
+      group.position.set(0, 0, 0);
+      this.manager.mainScene.fog.near = 45;
+    }));
+    const color = new THREE.Color(0x96e1ff);
 
+    tl.to(this.manager.mainScene.fog.color, {
+      r: color.r,
+      g: color.g,
+      b: color.b,
+      duration: 1,
+    }, 'fadeIn');
+    tl.to(this.manager.mainScene.background, {
+      r: color.r,
+      g: color.g,
+      b: color.b,
+      duration: 1,
+    }, 'fadeIn');
+    tl.to(spotLight, {
+      intensity: 1,
+      duration: 3,
+    }, 'fadeIn');
+    tl.to(this.manager.globalLight, {
+      intensity: 0.7,
+      duration: 5,
+    }, 'fadeIn');
   }
 
   update() {}
