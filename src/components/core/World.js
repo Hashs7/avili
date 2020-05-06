@@ -64,9 +64,19 @@ export default class {
     // this.render();
     this.wow();
     //this.debugCamera()
+    document.addEventListener('visibilitychange', () => this.handleVisibilityChange(), false);
 
     this.postProcessing = false;
     this.composer = new EffectComposer(this.renderer);
+  }
+
+
+  handleVisibilityChange() {
+    if (document.hidden) {
+      this.clock.stop()
+    } else  {
+      this.clock.start()
+    }
   }
 
   setWorker() {
@@ -130,7 +140,6 @@ export default class {
     this.gameManager.sceneManager.update();
     this.cameraOperator.renderFollowCamera();
     this.updatePhysics(timeStep);
-    // this.cameraOperator.update();
   }
 
   /**
@@ -138,7 +147,6 @@ export default class {
    * @param timeStep
    */
   updatePhysics(timeStep) {
-    this.world.step(1 / 60);
     this.world.step(timeStep);
   }
 

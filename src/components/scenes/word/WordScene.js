@@ -5,6 +5,7 @@ import * as THREE from "three";
 import State from "../../core/State";
 import AudioManager from "../../core/AudioManager";
 import { Raycaster } from "three";
+import { GAME_STATES } from "../../../constantes";
 
 const wordsDef = [{
   text: 'Kitchen',
@@ -41,6 +42,7 @@ export default class extends Scene {
     );
     this.ray.firstHitOnly = true;
 
+    //TODO enable after player enter section
     document.addEventListener('playerMoved', (e) => this.detectWall(e));
 
     return {
@@ -52,8 +54,8 @@ export default class extends Scene {
   detectWall(e) {
     const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
     const direction = new THREE.Vector3( 0, 0, -1 ).applyQuaternion( e.detail.quaternion );
-    ray.set(playerPosition, direction);
-    const objs = ray.intersectObjects(this.sections, false);
+    this.ray.set(playerPosition, direction);
+    const objs = this.ray.intersectObjects(this.sections, false);
     if(objs.length === 0) return;
     // TODO refacto
     if (objs[0].object.name === "m1") {

@@ -15,7 +15,7 @@
   import World from '@/components/core/World';
   import Loader from '@/components/UI/Loader';
   import Follower from '@/components/UI/Follower';
-  import Testimony from '@/components/UI/Testimony';
+  import Testimony from '@/components/UI/layout/Testimony';
 
   export default {
     name: 'App',
