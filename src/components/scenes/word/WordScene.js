@@ -9,17 +9,17 @@ import { GAME_STATES } from "../../../constantes";
 
 const wordsDef = [{
   text: 'Kitchen',
-  mass: 25,
+  mass: 50,
   position: new Vec3(125, 10, -3),
   collide: false,
 }, {
   text: 'Sandwich',
-  mass: 30,
+  mass: 70,
   position: new Vec3(135, 25, -5),
   collide: true,
 }, {
   text: 'Bitch',
-  mass: 20,
+  mass: 40,
   position: new Vec3(150, 70, -3),
   collide: true,
 }];

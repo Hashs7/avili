@@ -43,7 +43,6 @@ export default class extends Character {
 
   addBody() {
     const mesh = this.character.children.find(el => el.name === 'unamed');
-    // const mesh = this.character;
     mesh.geometry.computeBoundingBox();
     mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
     // const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());

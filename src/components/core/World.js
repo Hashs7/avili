@@ -34,7 +34,7 @@ export default class {
     this.camera.name = 'MainCamera';
 
     this.world = new World();
-    this.world.gravity.set(0, -5, 0);
+    this.world.gravity.set(0, -60, 0);
     this.world.broadphase = new NaiveBroadphase();
     // Opti cannon
     // this.world.quatNormalizeFast = true;
@@ -103,6 +103,7 @@ export default class {
    */
   async loadProps() {
     const gltf = await LoadManager.loadGLTF('./assets/models/characters/character-mixamo.glb');
+    console.log(gltf);
     this.player = new Player(gltf, this.world, this.camera, this.gameManager.sceneManager, 'EMILIE');
     // this.player.groupCamera();
   }
