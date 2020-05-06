@@ -21,7 +21,6 @@ export default class {
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     //this.renderer.toneMapping = THREE.ReinhardToneMapping;
     this.renderer.outputEncoding = THREE.sRGBEncoding;
-    this.renderer.toneMapping = THREE.NoToneMapping;
 
     // RenderLoop
     this.clock = new THREE.Clock();
