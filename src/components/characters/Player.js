@@ -9,7 +9,7 @@ export default class extends Character {
     this.camera = camera;
     // this.speed = 0.1;
     this.speed = 0.05;
-    this.wakable = true;
+    this.walkable = true;
     this.inputManager = new InputManager();
     this.inputManager.setInputReceiver(this);
     this.nextPosition;
@@ -140,7 +140,7 @@ export default class extends Character {
   }
 
   handleKeyboardEvent(event, code, pressed, moving) {
-    if (!this.wakable) return;
+    if (!this.walkable) return;
     this.isWalking = moving;
     if (!moving && this.action !== ACTIONS.IDLE) {
       this.prepareCrossFade(this.idleAction);
@@ -211,6 +211,7 @@ export default class extends Character {
     // this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
     //console.log(this.group.position);
     // get nextPosition
+    if(!this.walkable) return;
     this.nextPosition = {
       x: Math.sin(this.character.rotation.y + decay) * this.speed,
       z: Math.cos(this.character.rotation.y + decay) * this.speed};
@@ -247,6 +248,6 @@ export default class extends Character {
   }
 
   setWalkable(value) {
-    this.wakable = value;
+    this.walkable = value;
   }
 }
