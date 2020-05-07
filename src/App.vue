@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Loader />
-    <Follower />
+    <Follower ref="follower"/>
     <Testimony ref="testimony"/>
     <router-view />
     <canvas class="webgl-render" ref="canvas" />
@@ -53,6 +53,7 @@
     mounted() {
       this.world = new World(this.$refs.canvas);
       this.world.setTestimony(this.$refs.testimony, this.$t);
+      this.world.setFollower(this.$refs.follower);
       this.resize();
       window.addEventListener('resize', this.resize);
       if (!this.qualitySet) return;

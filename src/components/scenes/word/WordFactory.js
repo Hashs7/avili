@@ -3,6 +3,7 @@ import { Body, Box, PointToPointConstraint, Sphere, Vec3 } from "cannon-es/dist/
 import LoadManager from "../../core/LoadManager";
 import { toRadian } from "../../../utils";
 import { Quaternion } from "cannon-es";
+import Stats from 'stats.js'
 
 export default class WordFactory {
   constructor(scene, world, camera, manager, material) {
@@ -18,6 +19,9 @@ export default class WordFactory {
     this.words = [];
     this.models = [];
     // this.offset = this.words.length * margin * 0.5;
+    this.stats = new Stats();
+    this.stats.showPanel(1);
+    // document.body.appendChild( this.stats.dom );
 
     this.mouse = {
       x: 0,
@@ -54,11 +58,9 @@ export default class WordFactory {
     this.jointBody.collisionFilterGroup = 0;
     this.jointBody.collisionFilterMask = 0;
     this.world.addBody(this.jointBody);
-    console.log(this.jointBody);
   }
 
   setMeshes(meshes) {
-    console.log(meshes);
     this.models = meshes;
   }
 
@@ -86,22 +88,6 @@ export default class WordFactory {
     });*/
   }
 
-  /**
-   *
-   * @param event
-   */
-  onMouseMove(event) {
-    // We set the normalized coordinate of the mouse
-    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
-
-    if (!this.gplane || !this.mouseConstraint) return;
-    const pos = this.projectOntoPlane(this.gplane, this.camera);
-
-    if(!pos) return;
-    this.setClickMarker(pos.x, pos.y, pos.z, this.scene);
-    this.moveJointToPoint(pos.x, pos.y, pos.z);
-  }
 
   addWord({ text, position, mass, collide, movable }, index) {
     /*const material = new THREE.MeshPhongMaterial({ color: 0x97df5e });
@@ -172,6 +158,33 @@ export default class WordFactory {
   removeClickMarker(){
     if (!this.clickMarker) return;
     this.clickMarker.visible = false;
+  }
+
+  /**
+   *
+   * @param event
+   */
+  onMouseMove(event) {
+    this.stats.begin();
+
+    // We set the normalized coordinate of the mouse
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    /*
+     TODO optimize mouse hover word detection
+    const entity = this.findNearestIntersectingObject(this.camera, this.words);
+    if (entity.object && entity.object.movable) {
+      // console.log('hover text');
+    }
+    */
+
+    if (!this.gplane || !this.mouseConstraint) return;
+    const pos = this.projectOntoPlane(this.gplane, this.camera);
+
+    if(!pos) return;
+    this.setClickMarker(pos.x, pos.y, pos.z, this.scene);
+    this.moveJointToPoint(pos.x, pos.y, pos.z);
+    this.stats.end();
   }
 
   onMouseDown() {

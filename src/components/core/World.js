@@ -121,23 +121,6 @@ export default class {
     return this.player;
   }
 
-  setQuality(name) {
-    switch (name) {
-      case 'Basse':
-          this.renderer.antialias = false;
-          this.renderer.powerPreference  = 'low-power';
-        break;
-      case 'Moyenne':
-        this.renderer.antialias = false;
-        this.renderer.powerPreference  = 'default';
-        break;
-      case 'Haute':
-        this.renderer.antialias = true;
-        this.renderer.powerPreference = 'high-performance';
-        break;
-    }
-  }
-
 
   /**
    * Handle logic to update each frame
@@ -187,6 +170,27 @@ export default class {
     this.composer.render();
     this.loop = requestAnimationFrame(() => this.renderPostProcessing());
     // this.stats.end();
+  }
+
+  setFollower(el) {
+    this.follower = el;
+  }
+
+  setQuality(name) {
+    switch (name) {
+      case 'Basse':
+        this.renderer.antialias = false;
+        this.renderer.powerPreference  = 'low-power';
+        break;
+      case 'Moyenne':
+        this.renderer.antialias = false;
+        this.renderer.powerPreference  = 'default';
+        break;
+      case 'Haute':
+        this.renderer.antialias = true;
+        this.renderer.powerPreference = 'high-performance';
+        break;
+    }
   }
 
   debugCamera() {
