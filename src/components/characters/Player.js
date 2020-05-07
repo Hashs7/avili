@@ -225,10 +225,10 @@ export default class extends Character {
     this.setWalking();
   }
 
-  update() {
+  update(timeStep) {
     // this.character.position.copy(this.character.body.position);
     // this.hitbox.position.copy(this.character.body.position);
-    this.mixer.update( 0.01 );
+    this.mixer.update( timeStep );
     this.raycaster.setFromCamera( this.mouse, this.camera );
     this.playerControls();
   }

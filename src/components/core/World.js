@@ -80,6 +80,7 @@ export default class {
   }
 
   setPostProcessing(enable) {
+    console.log('setPostProcessing', enable);
     cancelAnimationFrame(this.loop);
     if (enable) {
       this.renderPostProcessing();
@@ -145,7 +146,7 @@ export default class {
    */
   update(timeStep) {
     if(this.player) {
-      this.player.update()
+      this.player.update(timeStep)
     }
     this.gameManager.sceneManager.update();
     this.cameraOperator.renderFollowCamera();
@@ -164,15 +165,16 @@ export default class {
    * Rendering loop
    */
   render() {
-    // console.log('render');
     this.stats.begin();
     this.renderDelta = this.clock.getDelta();
     let timeStep = this.renderDelta + this.logicDelta;
+    // console.log('render', timeStep);
+
     // let timeStep = (this.renderDelta + this.logicDelta) * this.params.Time_Scale;
     this.update(timeStep);
     this.logicDelta = this.clock.getDelta();
     this.renderer.render(this.gameManager.sceneManager.mainScene, this.camera);
-    this.loop = requestAnimationFrame(() => this.render());
+    requestAnimationFrame(() => this.render());
     this.stats.end();
   }
 
