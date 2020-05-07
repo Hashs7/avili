@@ -122,7 +122,7 @@ export default class WordFactory {
       const hitGeometry = new THREE.BoxGeometry( mesh.size.x, mesh.size.y, mesh.size.z );
       const hitbox = new THREE.Mesh(hitGeometry, new THREE.MeshBasicMaterial({ wireframe: true }));
       hitbox.name = 'hitbox-' + text;
-      hitbox.position.add(new THREE.Vector3(mesh.size.x/2, mesh.size.y/2, mesh.size.z/2));
+      hitbox.position.add(new THREE.Vector3(0,mesh.size.y/2, 0));
       mesh.add(hitbox);
       this.manager.addCollider(hitbox);
     }
@@ -133,13 +133,12 @@ export default class WordFactory {
       quaternion: new Quaternion().setFromAxisAngle(new Vec3(0, 1, 0), toRadian(-90)),
       velocity: new Vec3(0, 0, 0),
       fixedRotation: true,
-      // linearDamping: 0.01,
       // collisionFilterGroup: 1,
     });
     // mesh.body.force = new Vec3(0, -100, 0);
 
     // Add the shape to the body and offset it to match the center of our mesh
-    const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
+    // const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
     const box = new Box(new Vec3().copy(mesh.size).scale(0.5 * scaleFactor));
     mesh.body.name = 'word';
     mesh.body.addShape(box);
@@ -179,7 +178,7 @@ export default class WordFactory {
     // Find mesh from a ray
     const entity = this.findNearestIntersectingObject(this.camera, this.words);
     const pos = entity.point;
-    
+
     if (pos && entity.object && entity.object.movable) {
       console.log('inside');
       this.constraintDown = true;
