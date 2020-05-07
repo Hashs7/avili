@@ -16,6 +16,7 @@ export default class WordFactory {
     this.material = material;
     this.clickMarker = false;
     this.words = [];
+    this.models = [];
     // this.offset = this.words.length * margin * 0.5;
 
     this.mouse = {
@@ -28,13 +29,15 @@ export default class WordFactory {
     document.addEventListener("mousedown", (e) => this.onMouseDown(e));
     document.addEventListener("mouseup", () => this.onMouseUp());
     window.addEventListener('mousemove', (e) => this.onMouseMove(e));
-    LoadManager.loadFont('./assets/fonts/Anton/Anton-Regular.json', f => this.setup(f));
+    // LoadManager.loadFont('./assets/fonts/Anton/Anton-Regular.json', f => this.setup(f));
+    // LoadManager.loadFont('./assets/fonts/Anton/Anton-Regular.json', f => this.setup(f));
+    this.setup()
   }
 
-  setup(f) {
+  setup() {
     // These options give us a more candy-ish render on the font
     this.fontOption = {
-      font: f,
+      // font: f,
       size: 18,
       height: 2,
       curveSegments: 24,
@@ -51,9 +54,12 @@ export default class WordFactory {
     this.jointBody.collisionFilterGroup = 0;
     this.jointBody.collisionFilterMask = 0;
     this.world.addBody(this.jointBody);
+    console.log(this.jointBody);
+  }
 
-
-    // this.addWord('Cuisine', new Vec3(118, 3, -4));
+  setMeshes(meshes) {
+    console.log(meshes);
+    this.models = meshes;
   }
 
 
@@ -97,15 +103,16 @@ export default class WordFactory {
     this.moveJointToPoint(pos.x, pos.y, pos.z);
   }
 
-  addWord({ text, position, mass, collide, movable }) {
-    const material = new THREE.MeshPhongMaterial({ color: 0x97df5e });
+  addWord({ text, position, mass, collide, movable }, index) {
+    /*const material = new THREE.MeshPhongMaterial({ color: 0x97df5e });
     const geometry = new THREE.TextBufferGeometry(text, this.fontOption);
     geometry.computeBoundingBox();
     geometry.computeBoundingSphere();
 
-    const mesh = new THREE.Mesh(geometry, material);
+    const mesh = new THREE.Mesh(geometry, material);*/
+    const mesh = this.models[index];
     mesh.movable = movable;
-    const scaleFactor = 0.1;
+    const scaleFactor = 2;
 
     mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
     mesh.name = text;
@@ -147,6 +154,7 @@ export default class WordFactory {
     for (let i = 0; i < this.words.length; i++) {
       this.words[i].position.copy(this.words[i].body.position);
       this.words[i].quaternion.copy(this.words[i].body.quaternion);
+      this.words[i].geometry.attributes.position.needsUpdate = true;
     }
   }
 
@@ -155,7 +163,7 @@ export default class WordFactory {
       const shape = new THREE.SphereGeometry(0.2, 8, 8);
       const markerMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
       this.clickMarker = new THREE.Mesh(shape, markerMaterial);
-      this.clickMarker.name = 'ClickMarker'
+      this.clickMarker.name = 'ClickMarker';
       this.scene.add(this.clickMarker);
     }
     this.clickMarker.visible = true;
@@ -171,7 +179,9 @@ export default class WordFactory {
     // Find mesh from a ray
     const entity = this.findNearestIntersectingObject(this.camera, this.words);
     const pos = entity.point;
-    if (pos && entity.object.geometry instanceof THREE.TextBufferGeometry && entity.object.movable){
+    
+    if (pos && entity.object && entity.object.movable) {
+      console.log('inside');
       this.constraintDown = true;
       // Set marker on contact point
       this.setClickMarker(pos.x,pos.y,pos.z, this.scene);

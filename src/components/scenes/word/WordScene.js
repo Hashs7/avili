@@ -7,6 +7,7 @@ import AudioManager from "../../core/AudioManager";
 import { Raycaster } from "three";
 import { GAME_STATES } from "../../../constantes";
 import TestimonyManager from "../../core/TestimonyManager";
+import LoadManager from "../../core/LoadManager";
 
 const wordsDef = [{
   text: 'Kitchen',
@@ -14,24 +15,28 @@ const wordsDef = [{
   position: new Vec3(125, 10, -3),
   collide: false,
   movable: true,
+  path: 'cuisine.glb',
 }, {
   text: 'Sandwich',
   mass: 70,
   position: new Vec3(135, 25, -5),
   collide: true,
   movable: true,
+  path: 'cuisine.glb',
 }, {
   text: 'Bitch',
   mass: 100,
   position: new Vec3(150, 70, -3),
   collide: true,
   movable: false,
+  path: 'cuisine.glb',
 }, {
   text: 'Bitch',
   mass: 100,
   position: new Vec3(145, 70, -3),
   collide: true,
   movable: false,
+  path: 'cuisine.glb',
 }];
 
 export default class extends Scene {
@@ -54,11 +59,23 @@ export default class extends Scene {
 
     //TODO enable after player enter section
     document.addEventListener('playerMoved', (e) => this.detectWall(e));
-
+    this.init()
     return {
       instance: this,
       scene: this.scene,
     };
+  }
+
+  async init() {
+    const wordsMeshes = await this.loadWordsMesh();
+    this.factory.setMeshes(wordsMeshes)
+  }
+
+  async loadWordsMesh() {
+    return await Promise.all(wordsDef.map(async (word) => {
+      let gltf = await LoadManager.loadGLTF(`./assets/models/environment/${word.path}`);
+      return gltf.scene.children[0];
+    }));
   }
 
   detectWall(e) {
@@ -95,7 +112,7 @@ export default class extends Scene {
   }
 
   dropWord() {
-    this.factory.addWord(wordsDef[this.wordIndex]);
+    this.factory.addWord(wordsDef[this.wordIndex], this.wordIndex);
     this.wordIndex++;
   }
 

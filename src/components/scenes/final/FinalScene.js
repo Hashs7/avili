@@ -21,14 +21,14 @@ export default class extends Scene {
   }
 
   blackFade() {
-    const { spotLight, group } = this.manager.world.getPlayer();
+    const player = this.manager.world.getPlayer();
     const tl = gsap.timeline({ repeat: 0 });
     console.log(this.manager.mainScene);
     tl.to(this.manager.globalLight, {
       intensity: 0,
       duration: 1,
     });
-    tl.to(spotLight, {
+    tl.to(player.spotLight, {
       intensity: 0,
       duration: 3,
     });
@@ -49,7 +49,7 @@ export default class extends Scene {
       duration: 2,
     }, 'fadeOut');
     tl.add(gsap.delayedCall(5, () => {
-      group.position.set(0, 0, 0);
+      player.teleport(new THREE.Vector3(0, 0, 0));
       this.manager.mainScene.fog.near = 45;
       console.log('fadein');
     }));
@@ -67,7 +67,7 @@ export default class extends Scene {
       b: color.b,
       duration: 1,
     }, 'fadeIn');
-    tl.to(spotLight, {
+    tl.to(player.spotLight, {
       intensity: 1,
       duration: 3,
       penumbra: 1,
