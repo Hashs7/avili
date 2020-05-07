@@ -154,7 +154,7 @@ export default class {
   }
 
   async addMap() {
-    const gltf = await LoadManager.loadGLTF('./assets/models/map/map5.glb');
+    const gltf = await LoadManager.loadGLTF('./assets/models/map/map07_05.glb');
     let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
     gltf.scene.traverse((child) => {
       if (child.name.startsWith('section')) {
@@ -175,6 +175,7 @@ export default class {
         this.spline = child;
       }
       if (sectionName.includes(child.name)) {
+        //console.log(child.name)
         this.sections.push(child);
       }
       if (['m1', 'm2', 'm3'].includes(child.name)) {
@@ -184,6 +185,7 @@ export default class {
         this.colliders.push(child);
       }
       if(child.name.startsWith('tower')) {
+        //console.log(child.name);
         this.towers.push(child);
       }
       if(child.name.startsWith('z')) {
@@ -286,7 +288,7 @@ export default class {
   }
 
   setFov() {
-    // this.setNPC(this.map, this.matesPos);
+    //this.setNPC(this.map, this.matesPos);
     this.addScene(new FieldOfViewScene(this.world, this, this.matesPos, this.towers, this.landingAreas, this.towerEls));
   }
 
