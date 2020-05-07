@@ -166,6 +166,7 @@ export default class {
       }
       if (child.name === 'wall') {
         this.walls = child;
+        child.material.visible = false;
         this.colliders.push(child);
       }
       if (child.name === 'Plane') {

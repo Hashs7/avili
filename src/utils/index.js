@@ -2,6 +2,8 @@ import * as THREE from "three";
 
 export const randomInRange = (from, to)  => Math.random() * (to - from) + from;
 
+export const randomInRangeInt = (from, to) => Math.floor(Math.random() * (Math.floor(to) - Math.ceil(from) + 1)) + Math.ceil(from);
+
 export const toRadian = (degrees) => degrees * Math.PI / 180;
 
 
