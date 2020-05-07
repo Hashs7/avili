@@ -5,6 +5,7 @@ import { toRadian } from "../../utils";
 import { Vector3 } from "three";
 import CameraOperator from "./CameraOperator";
 import {GlowShader} from "../shaders/GlowShader";
+import {randomInRangeInt} from "../../utils";
 
 export default class Projectile {
   constructor(tower, landingAreas, scene, towerElements) {
@@ -16,15 +17,17 @@ export default class Projectile {
     this.uniforms = {
       uSize: {type: 'f', value:  -6.0}
     };
-    this.index = 0;
+    this.index = randomInRangeInt(0, landingAreas.length - 1);
     this.towerElements = towerElements;
     this.cameraPos = CameraOperator.camera.position;
-    this.landingAreaModels = [];
+    this.currentLandingPoint = null;
   }
 
   launchSequence() {
     this.startTimeline();
   }
+
+
 
   startTimeline() {
     const tl = gsap.timeline({ onComplete: () => {
@@ -53,23 +56,23 @@ export default class Projectile {
         this.scene.remove(this.scene.getObjectByName("Laser"));
         this.scene.remove(this.scene.getObjectByName("LaserGlow"));
         this.landingAreas[this.index].position.y = 0;
-        this.createLandingPoint(this.landingAreas[this.index].position);
+        this.currentLandingPoint = this.createLandingPoint(this.landingAreas[this.index].position);
       },
       y: `${pointAngle}`,
-      delay: 2,
-      duration: 1.5
+      delay: 0.5,
+      duration: 1.0
     });
     tl.to(this.uniforms.uSize, {
       onStart: () => {
         this.createProjectileFrom(this.tower.position, this.landingAreas[this.index].position);
-        this.index = this.index === this.landingAreas.length - 1 ? 0 : this.index + 1;
+        this.index = randomInRangeInt(0, this.landingAreas.length - 1)
       },
       onComplete: () => {
-        console.log(this.landingAreaModels)
+        this.currentLandingPoint.material.color.set(0xff0000);
+        this.currentLandingPoint.userData.isDetectable = true;
       },
       value: 6.0,
-      delay: 0.5,
-      duration: 0.5,
+      duration: 0.2,
     });
   }
 
@@ -124,16 +127,19 @@ export default class Projectile {
 
   createLandingPoint(coord){
     const geometry = new THREE.CylinderGeometry( 3, 3, 0.2, 10 );
-    const material = new THREE.MeshPhongMaterial( {color: 0x0000aa} );
+    const material = new THREE.MeshPhongMaterial( {color: 0x0000aa, transparent: true, opacity: 0.5} );
     const landingPoint = new THREE.Mesh(geometry, material);
+
     landingPoint.name = this.landingAreaName;
+    landingPoint.userData = {isDetectable: false};
 
     landingPoint.position.x = coord.x;
     landingPoint.position.y = coord.y;
     landingPoint.position.z = coord.z;
 
     this.scene.add(landingPoint);
-    this.landingAreaModels.push(landingPoint);
+
+    return landingPoint;
   }
 
   detectLandingArea(position, world){
@@ -146,7 +152,7 @@ export default class Projectile {
     const objs = ray.intersectObjects(this.scene.children, false);
 
     objs.forEach(obj => {
-      if (obj.object.name === this.landingAreaName) {
+      if (obj.object.name === this.landingAreaName && obj.object.userData.isDetectable) {
         const player = world.getPlayer();
         CameraOperator.zoom(() => player.teleport(world.lastCheckpointCoord));
       }
