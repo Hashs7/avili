@@ -19,6 +19,7 @@ export default class Projectile {
     this.index = 0;
     this.towerElements = towerElements;
     this.cameraPos = CameraOperator.camera.position;
+    this.landingAreaModels = [];
   }
 
   launchSequence() {
@@ -55,13 +56,16 @@ export default class Projectile {
         this.createLandingPoint(this.landingAreas[this.index].position);
       },
       y: `${pointAngle}`,
-      delay: 1,
+      delay: 2,
       duration: 1.5
     });
     tl.to(this.uniforms.uSize, {
       onStart: () => {
         this.createProjectileFrom(this.tower.position, this.landingAreas[this.index].position);
         this.index = this.index === this.landingAreas.length - 1 ? 0 : this.index + 1;
+      },
+      onComplete: () => {
+        console.log(this.landingAreaModels)
       },
       value: 6.0,
       delay: 0.5,
@@ -119,7 +123,7 @@ export default class Projectile {
   }
 
   createLandingPoint(coord){
-    const geometry = new THREE.CylinderGeometry( 1, 1, 0.5, 10 );
+    const geometry = new THREE.CylinderGeometry( 3, 3, 0.2, 10 );
     const material = new THREE.MeshPhongMaterial( {color: 0x0000aa} );
     const landingPoint = new THREE.Mesh(geometry, material);
     landingPoint.name = this.landingAreaName;
@@ -129,6 +133,7 @@ export default class Projectile {
     landingPoint.position.z = coord.z;
 
     this.scene.add(landingPoint);
+    this.landingAreaModels.push(landingPoint);
   }
 
   detectLandingArea(position, world){
