@@ -110,7 +110,7 @@ export default class {
     console.log('ambianceWordsTransition');
     const { spotLight } = this.world.getPlayer();
 
-    const nextColor = new THREE.Color(0x05052b);
+    // const nextColor = new THREE.Color(0x05052b);
     const duration = 5;
     const tl = gsap.timeline({ repeat: 0 });
     tl.to(this.globalLight, {

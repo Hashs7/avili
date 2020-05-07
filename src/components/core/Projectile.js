@@ -1,8 +1,6 @@
 import * as THREE from "three";
 import {ProjectileShader} from "../shaders/ProjectileShader";
 import gsap from "gsap";
-import { toRadian } from "../../utils";
-import { Vector3 } from "three";
 import CameraOperator from "./CameraOperator";
 import {GlowShader} from "../shaders/GlowShader";
 

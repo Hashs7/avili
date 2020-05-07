@@ -2,8 +2,6 @@ import * as THREE from 'three'
 import InputManager from "../core/InputManager";
 import AudioManager from "../core/AudioManager";
 import Character, { ACTIONS } from "./Character";
-import Stats from 'stats.js'
-import gsap from "gsap";
 
 export default class extends Character {
   constructor(gltf, world, camera, sceneManager, name) {
@@ -207,7 +205,7 @@ export default class extends Character {
     */
   }
 
-  move(decay, isStrafing) {
+  move(decay) {
     // const speed = isStrafing ? this.speed / 2 : this.speed;
     // this.character.body.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
     // this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;

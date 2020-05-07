@@ -46,7 +46,7 @@
       }
     },
     watch: {
-      qualitySet(newVal, oldVal) {
+      qualitySet(newVal) {
         this.world.setQuality(newVal)
       }
     },
