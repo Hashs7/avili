@@ -112,7 +112,7 @@ export default class {
    * Load all environement props
    */
   async loadProps() {
-    const gltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v9.glb');
+    const gltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v10.glb');
     this.player = new Player(gltf, this.world, this.camera, this.gameManager.sceneManager, 'Emilie');
     // this.player.groupCamera();
   }

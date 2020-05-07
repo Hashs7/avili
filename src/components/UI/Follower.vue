@@ -71,6 +71,7 @@
         this.applyAnimation(e.target.dataset.hover)
       },
       applyAnimation(name) {
+        const { follower } = this.$refs;
         switch(name) {
           case "big":
             this.state = 'big';
