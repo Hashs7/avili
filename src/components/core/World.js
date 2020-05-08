@@ -30,7 +30,7 @@ export default class {
 
     this.audioManager = AudioManager;
 
-    this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.01, 100);
+    this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.01, 1000);
     this.camera.name = 'MainCamera';
 
     this.world = new World();
@@ -112,31 +112,13 @@ export default class {
    * Load all environement props
    */
   async loadProps() {
-    const gltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v9.glb');
-    //console.log(gltf);
+    const gltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v10.glb');
     this.player = new Player(gltf, this.world, this.camera, this.gameManager.sceneManager, 'Emilie');
     // this.player.groupCamera();
   }
 
   getPlayer() {
     return this.player;
-  }
-
-  setQuality(name) {
-    switch (name) {
-      case 'Basse':
-          this.renderer.antialias = false;
-          this.renderer.powerPreference  = 'low-power';
-        break;
-      case 'Moyenne':
-        this.renderer.antialias = false;
-        this.renderer.powerPreference  = 'default';
-        break;
-      case 'Haute':
-        this.renderer.antialias = true;
-        this.renderer.powerPreference = 'high-performance';
-        break;
-    }
   }
 
 
@@ -188,6 +170,27 @@ export default class {
     this.composer.render();
     this.loop = requestAnimationFrame(() => this.renderPostProcessing());
     // this.stats.end();
+  }
+
+  setFollower(el) {
+    this.follower = el;
+  }
+
+  setQuality(name) {
+    switch (name) {
+      case 'Basse':
+        this.renderer.antialias = false;
+        this.renderer.powerPreference  = 'low-power';
+        break;
+      case 'Moyenne':
+        this.renderer.antialias = false;
+        this.renderer.powerPreference  = 'default';
+        break;
+      case 'Haute':
+        this.renderer.antialias = true;
+        this.renderer.powerPreference = 'high-performance';
+        break;
+    }
   }
 
   debugCamera() {

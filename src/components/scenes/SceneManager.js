@@ -145,7 +145,7 @@ export default class {
       shape: new Plane(),
       material: groundMaterial,
       collisionFilterGroup: 1,
-      position: new Vec3(0, -1.1, 0),
+      position: new Vec3(0, -1, 0),
       quaternion: new Quaternion().setFromAxisAngle(new Vec3(1,0,0),-Math.PI/2)
     });
     this.worldPhysic.addBody(groundBody);

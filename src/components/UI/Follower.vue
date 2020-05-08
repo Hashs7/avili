@@ -38,6 +38,10 @@
       document.removeEventListener('mouseleave', this.boundLeaveFollower);
     },
     methods: {
+      setState(newState) {
+        if (this.state === newState) return;
+        this.applyAnimation(newState)
+      },
       enterFollower() {
         this.state = 'initial';
         gsap.to(this.$refs.follower, 0.3, { scale: 1, opacity: 1 });
@@ -64,8 +68,11 @@
         const relY = e.pageY - (follower.offsetHeight / 2);
 
         gsap.to(follower, 0.3, { x: relX, y: relY });
-
-        switch(e.target.dataset.hover) {
+        this.applyAnimation(e.target.dataset.hover)
+      },
+      applyAnimation(name) {
+        const { follower } = this.$refs;
+        switch(name) {
           case "big":
             this.state = 'big';
             follower.style.mixBlendMode = "difference";

@@ -3,6 +3,7 @@ import { Body, Box, PointToPointConstraint, Sphere, Vec3 } from "cannon-es/dist/
 import LoadManager from "../../core/LoadManager";
 import { toRadian } from "../../../utils";
 import { Quaternion } from "cannon-es";
+import Stats from 'stats.js'
 
 export default class WordFactory {
   constructor(scene, world, camera, manager, material) {
@@ -16,7 +17,11 @@ export default class WordFactory {
     this.material = material;
     this.clickMarker = false;
     this.words = [];
+    this.models = [];
     // this.offset = this.words.length * margin * 0.5;
+    this.stats = new Stats();
+    this.stats.showPanel(1);
+    // document.body.appendChild( this.stats.dom );
 
     this.mouse = {
       x: 0,
@@ -28,13 +33,15 @@ export default class WordFactory {
     document.addEventListener("mousedown", (e) => this.onMouseDown(e));
     document.addEventListener("mouseup", () => this.onMouseUp());
     window.addEventListener('mousemove', (e) => this.onMouseMove(e));
-    LoadManager.loadFont('./assets/fonts/Anton/Anton-Regular.json', f => this.setup(f));
+    // LoadManager.loadFont('./assets/fonts/Anton/Anton-Regular.json', f => this.setup(f));
+    // LoadManager.loadFont('./assets/fonts/Anton/Anton-Regular.json', f => this.setup(f));
+    this.setup()
   }
 
-  setup(f) {
+  setup() {
     // These options give us a more candy-ish render on the font
     this.fontOption = {
-      font: f,
+      // font: f,
       size: 18,
       height: 2,
       curveSegments: 24,
@@ -51,9 +58,10 @@ export default class WordFactory {
     this.jointBody.collisionFilterGroup = 0;
     this.jointBody.collisionFilterMask = 0;
     this.world.addBody(this.jointBody);
+  }
 
-
-    // this.addWord('Cuisine', new Vec3(118, 3, -4));
+  setMeshes(meshes) {
+    this.models = meshes;
   }
 
 
@@ -80,32 +88,17 @@ export default class WordFactory {
     });*/
   }
 
-  /**
-   *
-   * @param event
-   */
-  onMouseMove(event) {
-    // We set the normalized coordinate of the mouse
-    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
-    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
 
-    if (!this.gplane || !this.mouseConstraint) return;
-    const pos = this.projectOntoPlane(this.gplane, this.camera);
-
-    if(!pos) return;
-    this.setClickMarker(pos.x, pos.y, pos.z, this.scene);
-    this.moveJointToPoint(pos.x, pos.y, pos.z);
-  }
-
-  addWord({ text, position, mass, collide, movable }) {
-    const material = new THREE.MeshPhongMaterial({ color: 0x97df5e });
+  addWord({ text, position, mass, collide, movable }, index) {
+    /*const material = new THREE.MeshPhongMaterial({ color: 0x97df5e });
     const geometry = new THREE.TextBufferGeometry(text, this.fontOption);
     geometry.computeBoundingBox();
     geometry.computeBoundingSphere();
 
-    const mesh = new THREE.Mesh(geometry, material);
+    const mesh = new THREE.Mesh(geometry, material);*/
+    const mesh = this.models[index];
     mesh.movable = movable;
-    const scaleFactor = 0.1;
+    const scaleFactor = 2;
 
     mesh.scale.set(scaleFactor, scaleFactor, scaleFactor);
     mesh.name = text;
@@ -115,7 +108,7 @@ export default class WordFactory {
       const hitGeometry = new THREE.BoxGeometry( mesh.size.x, mesh.size.y, mesh.size.z );
       const hitbox = new THREE.Mesh(hitGeometry, new THREE.MeshBasicMaterial({ wireframe: true }));
       hitbox.name = 'hitbox-' + text;
-      hitbox.position.add(new THREE.Vector3(mesh.size.x/2, mesh.size.y/2, mesh.size.z/2));
+      hitbox.position.add(new THREE.Vector3(0,mesh.size.y/2, 0));
       mesh.add(hitbox);
       this.manager.addCollider(hitbox);
     }
@@ -126,13 +119,12 @@ export default class WordFactory {
       quaternion: new Quaternion().setFromAxisAngle(new Vec3(0, 1, 0), toRadian(-90)),
       velocity: new Vec3(0, 0, 0),
       fixedRotation: true,
-      // linearDamping: 0.01,
       // collisionFilterGroup: 1,
     });
     // mesh.body.force = new Vec3(0, -100, 0);
 
     // Add the shape to the body and offset it to match the center of our mesh
-    const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
+    // const center = mesh.geometry.boundingBox.getCenter(new THREE.Vector3());
     const box = new Box(new Vec3().copy(mesh.size).scale(0.5 * scaleFactor));
     mesh.body.name = 'word';
     mesh.body.addShape(box);
@@ -147,6 +139,7 @@ export default class WordFactory {
     for (let i = 0; i < this.words.length; i++) {
       this.words[i].position.copy(this.words[i].body.position);
       this.words[i].quaternion.copy(this.words[i].body.quaternion);
+      this.words[i].geometry.attributes.position.needsUpdate = true;
     }
   }
 
@@ -155,7 +148,7 @@ export default class WordFactory {
       const shape = new THREE.SphereGeometry(0.2, 8, 8);
       const markerMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
       this.clickMarker = new THREE.Mesh(shape, markerMaterial);
-      this.clickMarker.name = 'ClickMarker'
+      this.clickMarker.name = 'ClickMarker';
       this.scene.add(this.clickMarker);
     }
     this.clickMarker.visible = true;
@@ -167,11 +160,40 @@ export default class WordFactory {
     this.clickMarker.visible = false;
   }
 
+  /**
+   *
+   * @param event
+   */
+  onMouseMove(event) {
+    this.stats.begin();
+
+    // We set the normalized coordinate of the mouse
+    this.mouse.x = (event.clientX / window.innerWidth) * 2 - 1;
+    this.mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+    /*
+     TODO optimize mouse hover word detection
+    const entity = this.findNearestIntersectingObject(this.camera, this.words);
+    if (entity.object && entity.object.movable) {
+      // console.log('hover text');
+    }
+    */
+
+    if (!this.gplane || !this.mouseConstraint) return;
+    const pos = this.projectOntoPlane(this.gplane, this.camera);
+
+    if(!pos) return;
+    this.setClickMarker(pos.x, pos.y, pos.z, this.scene);
+    this.moveJointToPoint(pos.x, pos.y, pos.z);
+    this.stats.end();
+  }
+
   onMouseDown() {
     // Find mesh from a ray
     const entity = this.findNearestIntersectingObject(this.camera, this.words);
     const pos = entity.point;
-    if (pos && entity.object.geometry instanceof THREE.TextBufferGeometry && entity.object.movable){
+
+    if (pos && entity.object && entity.object.movable) {
+      console.log('inside');
       this.constraintDown = true;
       // Set marker on contact point
       this.setClickMarker(pos.x,pos.y,pos.z, this.scene);
