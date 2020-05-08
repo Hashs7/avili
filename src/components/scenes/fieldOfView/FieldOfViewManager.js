@@ -5,6 +5,7 @@ import Projectile from "../../core/Projectile";
 import TestimonyManager from "../../core/TestimonyManager";
 import {toRadian} from "../../../utils";
 import {CircleGradientShader} from "../../shaders/CircleGradientShader";
+import CameraOperator from "../../core/CameraOperator";
 
 export default class FieldOfViewManager {
   constructor(world, scene, npcPositions, towers, landingAreas, towerElements) {
@@ -98,9 +99,14 @@ export default class FieldOfViewManager {
         TestimonyManager.speak('infiltration_end.mp3', 'infiltration_end');
         this.alreadyHit = true;
       } else {
-        TestimonyManager.speak('audio_mot_cuisine.mp3');
+        this.alreadyHit = true;
+        //TestimonyManager.speak('audio_mot_cuisine.mp3');
         const player = this.world.getPlayer();
-        player.teleport(this.world.lastCheckpointCoord);
+        player.setWalkable(false);
+        CameraOperator.zoom(() => {
+          player.teleport(this.world.lastCheckpointCoord)
+          player.setWalkable(true);
+        });
       }
     }
 
