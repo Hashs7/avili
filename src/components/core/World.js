@@ -14,6 +14,7 @@ import {RenderPass} from "three/examples/jsm/postprocessing/RenderPass";
 
 export default class {
   constructor(canvas) {
+    console.log('init world');
     this.canvas = canvas;
 
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });

@@ -104,6 +104,7 @@ class LoadManager {
    * All elements are loaded
    */
   loadedHandler() {
+    console.log('loadedHandler');
     if (!this.loadedCallback) return;
     this.loadedCallback();
     this.loadedCallback = null;
@@ -116,6 +117,7 @@ class LoadManager {
    * @param itemsTotal
    */
   progressHandler( url, itemsLoaded, itemsTotal ) {
+    console.log('progressHandler');
     //console.log(`${itemsLoaded / itemsTotal * 100 | 0}%`);
     if(!this.receiver) return;
     this.receiver.progressHandler(itemsLoaded / itemsTotal * 100 | 0)

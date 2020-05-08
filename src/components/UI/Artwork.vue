@@ -13,11 +13,11 @@
   export default {
     name: "Artwork",
     mounted() {
-      this.artwork = new HomeArtwork(this.$refs.homeCanvas);
+      // this.artwork = new HomeArtwork(this.$refs.homeCanvas);
     },
     methods: {
       play() {
-        this.artwork.destroy();
+        // this.artwork.destroy();
         console.log('play');
         this.$store.commit('setPlaying', true);
       }

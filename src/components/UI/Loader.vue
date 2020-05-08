@@ -38,19 +38,26 @@
         return this.$store.state.isPlaying;
       }
     },
-    mounted() {
-      LoadManager.setReceiver(this);
-      setTimeout(() => this.completeTime = true, this.minTime);
-      gsap.from(this.$refs.advertising, {
-        opacity: 0,
-        y: 40,
-        delay: 1,
-        duration: 3,
-      });
+    watch: {
+      /*qualitySet(newVal) {
+       this.world.setQuality(newVal);
+       },*/
+      isPlaying(newVal) {
+        if (!newVal) return;
+        LoadManager.setReceiver(this);
+        setTimeout(() => this.completeTime = true, this.minTime);
+        gsap.from(this.$refs.advertising, {
+          opacity: 0,
+          y: 40,
+          delay: 1,
+          duration: 3,
+        });
+      }
     },
     methods: {
       enter(el, done) {},
       leave(el, done) {
+        console.log('hide loader');
         gsap.to(this.$refs.advertising, {
           opacity: 0,
           y: -40,
