@@ -6,8 +6,7 @@
 
 ::placeholder {
   font-size: 16px;
-  color: $primary-lighter;
-  font-family: $font-secondary;
+  font-family: $font-body;
   font-weight: 400;
 }
 
@@ -23,9 +22,10 @@ textarea {
 }
 
 input {
+  background: none;
+  border: none;
   max-width: 100%;
   padding: 8px 20px;
   border-radius: 6px;
-  border: none;
   outline: none;
 }

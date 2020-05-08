@@ -12,15 +12,17 @@ $white-light:          rgba(255, 255, 255, .25);
 $gray:                 #F6F8FA;
 $gray-dark:            #E2E2E2;
 $gray-darker:          #969696;
+$dark:                 #04081C;
 
 //$primary-darkest:      #2b0c0c;
 //$primary-darker:       #6b1e1e;
-$primary-dark:         #071E2F;
-$primary:              #0A314D;
-$primary-light:        rgba(5, 28, 44, 0.6);
-$primary-lighter:      rgba(10, 49, 77, .3);
-$primary-lightest:     rgba(10, 49, 77, .15);
-$primary-menu:         #437AA5;
+//$primary-dark:         #071E2F;
+$primary:              #222A4D;
+$primary:              #222A4D;
+//$primary-light:        rgba(5, 28, 44, 0.6);
+//$primary-lighter:      rgba(10, 49, 77, .3);
+//$primary-lightest:     rgba(10, 49, 77, .15);
+//$primary-menu:         #437AA5;
 
 //$secondary-darkest:    #12200d;
 $secondary-darker:     #7b5914;
@@ -32,8 +34,6 @@ $secondary-lighter:    rgba(196, 164, 98, .3);
 //$secondary-lightest:   rgba(196, 164, 98, .1);
 
 
-$date: #CED5DB;
-$date-light: rgba(206, 213, 219, .25);
 $color-body:      $white;
 $color-text:      $primary;
 $color-link:      $secondary;

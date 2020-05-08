@@ -6,7 +6,8 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     canvasRef: null,
-    quality: 'Moyenne',
+    quality: null,
+    pseudo: null,
     isLoading: true,
   },
   mutations: {
@@ -22,6 +23,9 @@ export default new Vuex.Store({
     },
     setQuality(state, value) {
       state.quality = value;
+    },
+    setPseudo(state, value) {
+      state.pseudo = value;
     }
   },
   actions: {
