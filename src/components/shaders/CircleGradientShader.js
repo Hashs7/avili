@@ -16,9 +16,9 @@ export let CircleGradientShader = {
 
     vec2 center = vec2(0.5);
 
-    float distanceFromLight = length(vUv - center);
+    float distanceFromCenter = length(vUv - center);
 
-    gl_FragColor = mix(colorA, colorB, distanceFromLight*2.);
+    gl_FragColor = mix(colorA, colorB, distanceFromCenter*2.);
   }
   `,
 }
