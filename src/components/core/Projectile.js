@@ -3,7 +3,8 @@ import {ProjectileShader} from "../shaders/ProjectileShader";
 import gsap from "gsap";
 import CameraOperator from "./CameraOperator";
 import {GlowShader} from "../shaders/GlowShader";
-import {randomInRangeInt} from "../../utils";
+import {CircleOutlineShader} from "../shaders/CircleOutlineShader";
+import {randomInRangeInt, toRadian} from "../../utils";
 
 export default class Projectile {
   constructor(tower, landingAreas, scene, towerElements) {
@@ -69,7 +70,7 @@ export default class Projectile {
         this.index = this.index === this.landingAreas.length - 1 ? 0 : this.index + 1;
       },
       onComplete: () => {
-        this.currentLandingPoint.material.color.set(0xff0000);
+        //this.currentLandingPoint.material.color.set(0xff0000);
         this.currentLandingPoint.userData.isDetectable = true;
       },
       value: 6.0,
@@ -127,16 +128,22 @@ export default class Projectile {
   }
 
   createLandingPoint(coord){
-    const geometry = new THREE.CylinderGeometry( 3, 3, 0.2, 10 );
-    const material = new THREE.MeshPhongMaterial( {color: 0x0000aa, transparent: true, opacity: 0.5} );
-    const landingPoint = new THREE.Mesh(geometry, material);
+    const geometry = new THREE.CircleGeometry( 3, 20);
+    const customMaterial = new THREE.ShaderMaterial({
+      vertexShader: CircleOutlineShader.vertexShader,
+      fragmentShader: CircleOutlineShader.fragmentShader,
+      side: THREE.DoubleSide,
+      transparent: true,
+    })
+    const landingPoint = new THREE.Mesh(geometry, customMaterial);
 
     landingPoint.name = this.landingAreaName;
     landingPoint.userData = {isDetectable: false};
 
     landingPoint.position.x = coord.x;
-    landingPoint.position.y = coord.y;
+    landingPoint.position.y = 0.01;
     landingPoint.position.z = coord.z;
+    landingPoint.rotateX(toRadian(90));
 
     this.scene.add(landingPoint);
 
