@@ -46,4 +46,8 @@
     color: $primary;
     background-color: #fff;
   }
+  .btn-play2 {
+    @extend .btn-play;
+    top: 60%;
+  }
 </style>

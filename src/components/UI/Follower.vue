@@ -10,7 +10,9 @@
     data() {
       return {
         enable: true,
-        state: 'normal'
+        state: 'normal',
+        isAnimating: false,
+        pressed: false,
       }
     },
     mounted() {
@@ -51,13 +53,26 @@
         gsap.to(this.$refs.follower, 0.5, { scale: 0, opacity: 0 });
       },
       pressIn(){
+        console.log('pressIn');
+        this.isAnimating = true;
+        this.pressed = true;
         gsap.killTweensOf(this.$refs.follower, 'scale');
-        gsap.to(this.$refs.follower, 0.5, { scale: .5 });
+        gsap.to(this.$refs.follower, 0.5, {
+          scale: .5,
+          onComplete: () => this.isAnimating = false
+        });
       },
       pressOut(){
+        console.log('pressOut', this.scale);
+        this.pressed = false;
+        this.isAnimating = true;
+        gsap.killTweensOf(this.$refs.follower, 'scale');
+
         gsap.to(this.$refs.follower, 1.2, {
           scale: this.scale,
+          // ease: 'elastic.out(1.8, 0.5)',
           ease: 'elastic.out(1.8, 0.5)',
+          onComplete: () => this.isAnimating = false
         });
       },
       mouseMove(e) {
@@ -67,10 +82,11 @@
         const relX = e.pageX  - (follower.offsetWidth / 2) ;
         const relY = e.pageY - (follower.offsetHeight / 2);
 
-        gsap.to(follower, 0.3, { x: relX, y: relY });
+        gsap.to(follower, { x: relX, y: relY, duration: 0.3 });
         this.applyAnimation(e.target.dataset.hover)
       },
       applyAnimation(name) {
+        if (this.isAnimating || this.pressed) return;
         const { follower } = this.$refs;
         switch(name) {
           case "big":

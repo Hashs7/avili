@@ -45,7 +45,7 @@ export default {
   },
   mounted() {
     this.rect = this.$refs.circle.getBoundingClientRect();
-    // window.addEventListener('mousemove', this.mouseMove, { passive: true });
+    window.addEventListener('mousemove', this.mouseMove, { passive: true });
     this.$on('hook:beforeDestroy', () => {
       window.removeEventListener('mousemove', this.mouseMove);
     });
@@ -98,6 +98,7 @@ export default {
 
 <style lang="scss" scoped>
   .home {
+    user-select: none;
     z-index: 500;
     position: fixed;
     top: 0;
