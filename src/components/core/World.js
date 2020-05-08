@@ -113,7 +113,7 @@ export default class {
    */
   async loadProps() {
     const gltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v9.glb');
-    console.log(gltf);
+    //console.log(gltf);
     this.player = new Player(gltf, this.world, this.camera, this.gameManager.sceneManager, 'Emilie');
     // this.player.groupCamera();
   }
