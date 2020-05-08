@@ -16,6 +16,9 @@ export default class Projectile {
     this.uniforms = {
       uSize: {type: 'f', value:  -6.0}
     };
+    this.circleUniforms = {
+      uCircleSize: {type: 'f', value: 0.48}
+    }
     this.index = 0
     this.indexSequence = [0, 2, 1, 3]
     this.towerElements = towerElements;
@@ -54,6 +57,7 @@ export default class Projectile {
     tl.to(this.towerElements.towerTop.rotation, {
       onStart: () => {
         this.uniforms.uSize.value = -6.0;
+        this.circleUniforms.uCircleSize.value = 0.48;
         this.scene.remove(this.scene.getObjectByName("LandingArea"));
         this.scene.remove(this.scene.getObjectByName("Laser"));
         this.scene.remove(this.scene.getObjectByName("LaserGlow"));
@@ -61,9 +65,13 @@ export default class Projectile {
         this.currentLandingPoint = this.createLandingPoint(this.landingAreas[this.indexSequence[this.index]].position);
       },
       y: `${pointAngle}`,
+      duration: 0.5,
       delay: 0.5,
-      duration: 1.0
     });
+    tl.to(this.circleUniforms.uCircleSize, {
+      value: 0.,
+      duration: 0.5,
+    })
     tl.to(this.uniforms.uSize, {
       onStart: () => {
         this.createProjectileFrom(this.tower.position, this.landingAreas[this.indexSequence[this.index]].position);
@@ -130,6 +138,7 @@ export default class Projectile {
   createLandingPoint(coord){
     const geometry = new THREE.CircleGeometry( 3, 20);
     const customMaterial = new THREE.ShaderMaterial({
+      uniforms: this.circleUniforms,
       vertexShader: CircleOutlineShader.vertexShader,
       fragmentShader: CircleOutlineShader.fragmentShader,
       side: THREE.DoubleSide,

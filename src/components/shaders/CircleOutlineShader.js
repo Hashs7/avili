@@ -9,6 +9,7 @@ export let CircleOutlineShader = {
   fragmentShader:`
   precision mediump float;
   varying vec2 vUv;
+  uniform float uCircleSize;
 
   void main() {
     vec2 center = vec2(0.5);
@@ -16,7 +17,9 @@ export let CircleOutlineShader = {
     if(distanceFromCenter > 0.48) {
       gl_FragColor = vec4(1., 0., 0., 1.);
     } else {
-      gl_FragColor = vec4(0.);
+      if(distanceFromCenter < uCircleSize){
+        gl_FragColor = vec4(0., 0., 1., 1.);
+      }
     }
   }
   `,
