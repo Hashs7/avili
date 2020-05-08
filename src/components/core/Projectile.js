@@ -15,7 +15,8 @@ export default class Projectile {
     this.uniforms = {
       uSize: {type: 'f', value:  -6.0}
     };
-    this.index = randomInRangeInt(0, landingAreas.length - 1);
+    this.index = 0
+    this.indexSequence = [0, 2, 1, 3]
     this.towerElements = towerElements;
     this.cameraPos = CameraOperator.camera.position;
     this.currentLandingPoint = null;
@@ -32,7 +33,9 @@ export default class Projectile {
       this.startTimeline();
     }});
     const currentAngle = Number(this.towerElements.towerTop.rotation.y);
-    let pointAngle = Math.atan2(this.tower.position.x - this.landingAreas[this.index].position.x, this.tower.position.z - this.landingAreas[this.index].position.z);
+    let pointAngle = Math.atan2(
+      this.tower.position.x - this.landingAreas[this.indexSequence[this.index]].position.x,
+      this.tower.position.z - this.landingAreas[this.indexSequence[this.index]].position.z);
     /*if (pointAngle < 0) {
       pointAngle = pointAngle + (Math.PI * 2)
     }*/
@@ -53,8 +56,8 @@ export default class Projectile {
         this.scene.remove(this.scene.getObjectByName("LandingArea"));
         this.scene.remove(this.scene.getObjectByName("Laser"));
         this.scene.remove(this.scene.getObjectByName("LaserGlow"));
-        this.landingAreas[this.index].position.y = 0;
-        this.currentLandingPoint = this.createLandingPoint(this.landingAreas[this.index].position);
+        this.landingAreas[this.indexSequence[this.index]].position.y = 0;
+        this.currentLandingPoint = this.createLandingPoint(this.landingAreas[this.indexSequence[this.index]].position);
       },
       y: `${pointAngle}`,
       delay: 0.5,
@@ -62,8 +65,8 @@ export default class Projectile {
     });
     tl.to(this.uniforms.uSize, {
       onStart: () => {
-        this.createProjectileFrom(this.tower.position, this.landingAreas[this.index].position);
-        this.index = randomInRangeInt(0, this.landingAreas.length - 1)
+        this.createProjectileFrom(this.tower.position, this.landingAreas[this.indexSequence[this.index]].position);
+        this.index = this.index === this.landingAreas.length - 1 ? 0 : this.index + 1;
       },
       onComplete: () => {
         this.currentLandingPoint.material.color.set(0xff0000);
@@ -152,7 +155,11 @@ export default class Projectile {
     objs.forEach(obj => {
       if (obj.object.name === this.landingAreaName && obj.object.userData.isDetectable) {
         const player = world.getPlayer();
-        CameraOperator.zoom(() => player.teleport(world.lastCheckpointCoord));
+        player.setWalkable(false);
+        CameraOperator.zoom(() => {
+          player.teleport(world.lastCheckpointCoord)
+          player.setWalkable(true);
+        });
       }
     });
   }

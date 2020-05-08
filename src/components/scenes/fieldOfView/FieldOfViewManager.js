@@ -3,6 +3,8 @@ import {Raycaster} from "three/src/Three";
 import AudioManager from "../../core/AudioManager";
 import Projectile from "../../core/Projectile";
 import TestimonyManager from "../../core/TestimonyManager";
+import {toRadian} from "../../../utils";
+import {CircleGradientShader} from "../../shaders/CircleGradientShader";
 
 export default class FieldOfViewManager {
   constructor(world, scene, npcPositions, towers, landingAreas, towerElements) {
@@ -19,7 +21,7 @@ export default class FieldOfViewManager {
     this.towerElements = towerElements;
     this.alreadyHit = false;
 
-    npcPositions.forEach(({x, z}, index) => this.addNPC(x, z, index));
+    npcPositions.forEach(({x, z}, index) => this.addFieldOfView(x, z, index));
 
     document.addEventListener('stateUpdate', e => {
       if (e.detail !== 'infiltration_sequence_start') return;
@@ -42,44 +44,36 @@ export default class FieldOfViewManager {
     if(this.fieldOfViews.length === 0) return;
     const movingFov = this.fieldOfViews.filter(fieldOfView => fieldOfView.anime);
     for (let i = 0; i < movingFov.length; i++) {
-      movingFov[i].obj.rotateY(Math.PI / 100);
+      movingFov[i].obj.rotateZ(toRadian(1));
     }
     this.detectFieldOfView(this.lastPosition);
   }
 
-  addNPC(x, z, index) {
-    let geometry = new THREE.SphereGeometry(1, 20, 20);
-    let material = new THREE.MeshBasicMaterial({
-      color: 0x0000aa,
-      transparent: true,
-      opacity: 0,
-    });
-    this.sphere = new THREE.Mesh(geometry, material);
-    this.sphere.position.set(x, 0, z);
-    this.addFieldOfView(this.sphere, index);
-    this.scene.add(this.sphere);
-  }
-
-  addFieldOfView(object, index) {
+  addFieldOfView(x, z, index) {
     //let geometry = new THREE.CylinderGeometry(300, 300, 1, 20, 20);
-    let geometry = new THREE.CylinderGeometry(
+    let geometry = new THREE.CircleGeometry(
       3,
-      3,
-      1,
       20,
-      1,
-      false,
       0,
-      1
+      1.6,
     );
-    let material = new THREE.MeshPhongMaterial({
+    /*let material = new THREE.MeshBasicMaterial({
       color: 0xaa0000,
       opacity: 1,
       transparent: true,
-    });
-    this.fieldOfView = new THREE.Mesh(geometry, material);
+      side: THREE.DoubleSide,
+    });*/
+    const customMaterial = new THREE.ShaderMaterial({
+      vertexShader: CircleGradientShader.vertexShader,
+      fragmentShader: CircleGradientShader.fragmentShader,
+      side: THREE.DoubleSide,
+      transparent: true,
+    })
+
+    this.fieldOfView = new THREE.Mesh(geometry, customMaterial);
     this.fieldOfView.name = `${this.fieldOfViewName}-${index}`;
-    this.fieldOfView.position.set(object.position.x, object.position.y - 0.45, object.position.z);
+    this.fieldOfView.position.set(x,0.1, z);
+    this.fieldOfView.rotateX(toRadian(90))
 
     this.index++;
     const anime = this.index <= 2;

@@ -9,7 +9,7 @@ export default class extends Character {
     this.camera = camera;
     // this.speed = 0.1;
     this.speed = 0.05;
-    this.wakable = true;
+    this.walkable = true;
     this.inputManager = new InputManager();
     this.inputManager.setInputReceiver(this);
     this.nextPosition;
@@ -82,7 +82,7 @@ export default class extends Character {
   }
 
   groupCamera() {
-    this.group.position.set(110, 0, -0.01);
+    this.group.position.set(66.24, 0, 0.68);
     this.spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, Math.PI/10, 1);
     this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(this.group.position));
     this.spotLight.castShadow = true;
@@ -140,7 +140,7 @@ export default class extends Character {
   }
 
   handleKeyboardEvent(event, code, pressed, moving) {
-    if (!this.wakable) return;
+    if (!this.walkable) return;
     this.isWalking = moving;
     if (!moving && this.action !== ACTIONS.IDLE) {
       this.prepareCrossFade(this.idleAction);
@@ -211,6 +211,7 @@ export default class extends Character {
     // this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
     //console.log(this.group.position);
     // get nextPosition
+    if(!this.walkable) return;
     this.nextPosition = {
       x: Math.sin(this.character.rotation.y + decay) * this.speed,
       z: Math.cos(this.character.rotation.y + decay) * this.speed};
@@ -247,6 +248,6 @@ export default class extends Character {
   }
 
   setWalkable(value) {
-    this.wakable = value;
+    this.walkable = value;
   }
 }
