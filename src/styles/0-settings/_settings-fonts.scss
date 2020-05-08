@@ -1,0 +1,34 @@
+$font_path: '~@/assets/fonts/';
+
+@font-face {
+  font-family: 'Roboto Slab';
+  src: url($font_path + 'subset-RobotoSlab-SemiBold.woff2') format('woff2'),
+  url($font_path + 'subset-RobotoSlab-SemiBold.woff') format('woff');
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Combat';
+  src: url($font_path + 'subset-Combat.woff2') format('woff2'),
+  url($font_path + 'subset-Combat.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'DearJoe';
+  src: url($font_path + 'subset-DearJoe5.woff2') format('woff2'),
+  url($font_path + 'subset-DearJoe5.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'Avara';
+  src: url($font_path + 'subset-Avara-Bold.woff2') format('woff2'),
+  url($font_path + 'subset-Avara-Bold.woff') format('woff');
+  font-weight: bold;
+  font-style: normal;
+}
+

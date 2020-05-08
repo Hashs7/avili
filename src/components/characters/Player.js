@@ -185,12 +185,12 @@ export default class extends Character {
   }
 
   playerControls() {
-    const strafe = this.inputManager.controls.left && this.inputManager.controls.up ||
+/*    const strafe = this.inputManager.controls.left && this.inputManager.controls.up ||
                   this.inputManager.controls.right && this.inputManager.controls.up ||
                   this.inputManager.controls.left && this.inputManager.controls.down ||
-                  this.inputManager.controls.right && this.inputManager.controls.down;
+                  this.inputManager.controls.right && this.inputManager.controls.down;*/
     if (this.inputManager.controls.up) {
-      this.move(0, strafe)
+      this.move(0)
     }
     /*
     if (this.inputManager.controls.down) {
