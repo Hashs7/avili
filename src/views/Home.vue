@@ -26,7 +26,6 @@ export default {
   data() {
     return {
       background,
-      isPlaying: false,
       axes: null,
       controls: null,
       rect: null,
@@ -39,6 +38,9 @@ export default {
     },
     pseudo() {
       return this.$store.state.pseudo;
+    },
+    isPlaying() {
+      return this.$store.state.isPlaying;
     }
   },
   mounted() {

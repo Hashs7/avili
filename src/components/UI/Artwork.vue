@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="ui-container">
-      <button class="btn-play" data-hover="big">Jouer</button>
+      <button class="btn-play" data-hover="big" @click="play">Jouer</button>
     </div>
     <canvas ref="homeCanvas" class="home-canvas webgl-render" />
   </div>
@@ -14,7 +14,14 @@
     name: "Artwork",
     mounted() {
       this.artwork = new HomeArtwork(this.$refs.homeCanvas);
-    }
+    },
+    methods: {
+      play() {
+        this.artwork.destroy();
+        console.log('play');
+        this.$store.commit('setPlaying', true);
+      }
+    },
   }
 </script>
 

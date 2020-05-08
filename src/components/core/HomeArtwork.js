@@ -26,7 +26,7 @@ export default class {
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.renderer.shadowMap.enabled = true;
 
-    document.addEventListener( 'mousemove', (e) => this.onDocumentMouseMove(e), false );
+    this.mouseListener = window.addEventListener( 'mousemove', (e) => this.onDocumentMouseMove(e), false );
     this.resizeListener = window.addEventListener('resize', () => this.resize(), { passive: true });
     this.init();
   }
@@ -93,12 +93,18 @@ export default class {
     }
 
     this.renderer.render( this.scene, this.camera );
-    requestAnimationFrame(() => this.render());
+    this.loop = requestAnimationFrame(() => this.render());
     this.stats.end();
   }
 
   destroy() {
-    window.removeListener('resize', this.resizeListener, { passive: true });
+    cancelAnimationFrame(this.loop);
+    this.scene = null;
+    this.spotLight = null;
+    this.camera = null;
+    this.canvas.remove();
+    // window.removeListener('mousemove', this.mouseListener, { passive: true });
+    // window.removeListener('resize', this.resizeListener, { passive: true });
   }
 
   resize() {

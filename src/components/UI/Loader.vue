@@ -3,7 +3,7 @@
       @enter="enter"
       @leave="leave"
   >
-    <div v-show="isLoading || !completeTime" class="modal">
+    <div v-show="isPlaying && isLoading || !completeTime" class="modal">
       <div class="loader">
         <div class="loader__container">
           <span ref="progress" class="loader__progress"></span>
@@ -33,6 +33,9 @@
     computed: {
       isLoading() {
         return this.$store.state.isLoading;
+      },
+      isPlaying() {
+        return this.$store.state.isPlaying;
       }
     },
     mounted() {
@@ -82,7 +85,7 @@
 
 <style scoped>
   .modal {
-    z-index: 1000;
+    z-index: 400;
     position: fixed;
     top: 0;
     bottom: 0;
