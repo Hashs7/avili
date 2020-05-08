@@ -56,7 +56,7 @@
       },
       pressOut(){
         gsap.to(this.$refs.follower, 1.2, {
-          scale: 1,
+          scale: this.scale,
           ease: 'elastic.out(1.8, 0.5)',
         });
       },
@@ -76,12 +76,14 @@
           case "big":
             this.state = 'big';
             follower.style.mixBlendMode = "difference";
+            this.scale = 2;
             gsap.to(follower, { scale: 2, duration: 0.5 });
             break;
           case "none":
             // à debug si on utilise
             follower.style.mixBlendMode = "normal";
             this.state = 'none';
+            this.scale = 0;
             gsap.to(follower, { scale: 0, duration: 0.5 });
             break;
           default:
@@ -89,6 +91,7 @@
             this.state = 'normal';
             follower.style.mixBlendMode = "normal";
             gsap.killTweensOf(this.$refs.follower, 'scale');
+            this.scale = 1;
             gsap.to(follower, { scale: 1, duration: 0.3 });
             break;
         }

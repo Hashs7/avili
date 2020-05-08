@@ -1,5 +1,5 @@
 <template>
-  <button class="btn" @click="$emit('click')" >
+  <button class="btn" @click="$emit('click')" data-hover="big">
     <span class="btn__title">
       <slot></slot>
     </span>
@@ -35,6 +35,8 @@
     }
   }
   .btn__title {
+    pointer-events: none;
+    user-select: none;
     color: $white;
     line-height: 1;
     font-family: $font-primary;
@@ -42,6 +44,7 @@
     transition: all .3s ease-in-out;
   }
   .btn__hover {
+    pointer-events: none;
     position: absolute;
     bottom: -8px;
     right: 0;

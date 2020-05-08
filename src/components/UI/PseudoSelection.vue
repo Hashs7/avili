@@ -6,12 +6,12 @@
         <Chevron class="quality-selection__chevron" />
       </div>
       <div class="pseudo-selection__container">
-        <input class="pseudo-selection__input" type="text" v-model="pseudo" placeholder="Pseudo">
+        <input class="pseudo-selection__input" type="text" v-model="pseudo" placeholder="Pseudo" data-hover="big">
         <Outline class="pseudo-selection__outline"/>
       </div>
     </div>
 
-    <button class="btn-validate" @click="validatePseudo">
+    <button class="btn-validate" @click="validatePseudo" data-hover="big">
       <span>Valider</span>
       <Arrow class="btn-validate__arrow"/>
     </button>
@@ -72,11 +72,13 @@
   }
 
   .pseudo-selection__input {
+    cursor: none;
     width: 100%;
     font-family: $font-pseudo;
     font-size: 42px;
     text-align: center;
     color: $white;
+    padding-bottom: 20px;
 
     &::placeholder {
       font-family: $font-pseudo;
@@ -87,8 +89,9 @@
   }
 
   .pseudo-selection__outline {
+    pointer-events: none;
     position: absolute;
-    bottom: -8px;
+    bottom: 4px;
     left: 0;
     right: 0;
     margin: auto;

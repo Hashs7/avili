@@ -61,6 +61,7 @@ select:-webkit-autofill:focus {
 }
 
 button {
+  cursor: none;
   font-family: $font-btn;
   font-size: 1rem;
   outline: none;
@@ -69,6 +70,14 @@ button {
 
   &:not(:disabled) {
     cursor: pointer;
+  }
+}
+
+button[data-hover='big'] {
+  cursor: none;
+
+  * {
+    pointer-events: none;
   }
 }
 

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <Loader />
-<!--    <Follower ref="follower"/>-->
+    <Follower ref="follower"/>
     <Testimony ref="testimony"/>
     <router-view />
     <canvas class="webgl-render" ref="canvas" />

@@ -1,8 +1,9 @@
 <template>
-  <div class="home" :style="{ backgroundImage: `url(${background})` }">
+  <div v-if="!isPlaying" class="home" :style="{ backgroundImage: `url(${background})` }">
     <CircleIcon class="circle-background" ref="circle" />
     <QualitySelection v-if="!qualitySet"/>
     <PseudoSelection v-if="qualitySet && !pseudo" />
+    <Artwork v-show="qualitySet && pseudo" />
   </div>
 </template>
 
@@ -10,6 +11,7 @@
 import gsap from 'gsap';
 import QualitySelection from '@/components/UI/Quality/QualitySelection';
 import PseudoSelection from '@/components/UI/PseudoSelection';
+import Artwork from '@/components/UI/Artwork';
 import background from '@/assets/img/background.png'
 import CircleIcon from '@/assets/icons/circle.svg';
 
@@ -18,11 +20,13 @@ export default {
   components: {
     QualitySelection,
     PseudoSelection,
+    Artwork,
     CircleIcon,
   },
   data() {
     return {
       background,
+      isPlaying: false,
       axes: null,
       controls: null,
       rect: null,
@@ -39,7 +43,7 @@ export default {
   },
   mounted() {
     this.rect = this.$refs.circle.getBoundingClientRect();
-    window.addEventListener('mousemove', this.mouseMove, { passive: true });
+    // window.addEventListener('mousemove', this.mouseMove, { passive: true });
     this.$on('hook:beforeDestroy', () => {
       window.removeEventListener('mousemove', this.mouseMove);
     });
@@ -48,8 +52,9 @@ export default {
     mouseMove(e) {
       const detectDistance = 1000;
       const movingDistance = 20;
-      // if cursor is too far
+
       /*
+      // detect if cursor is too far
       if (!this.isNear(e, detectDistance)) {
         gsap.to(this.$refs.highlightContainer, {
           x: -this.delta,
@@ -75,10 +80,8 @@ export default {
       gsap.to(this.$refs.circle, {
         x: x * movingDistance + this.delta,
         y: y * movingDistance - this.delta,
-        duration: 0.5,
+        duration: 1.5,
       });
-      console.log(x * movingDistance + this.delta);
-      console.log(y * movingDistance - this.delta);
     },
     isNear(e, distance) {
       const deltaTop = this.rect.top - distance + (this.rect.height / 2);
