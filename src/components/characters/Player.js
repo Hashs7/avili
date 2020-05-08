@@ -249,5 +249,6 @@ export default class extends Character {
 
   setWalkable(value) {
     this.walkable = value;
+    this.prepareCrossFade(this.idleAction);
   }
 }
