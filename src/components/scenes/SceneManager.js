@@ -154,7 +154,7 @@ export default class {
   }
 
   async addMap() {
-    const gltf = await LoadManager.loadGLTF('./assets/models/map/map07_05.glb');
+    const gltf = await LoadManager.loadGLTF('./assets/models/map/map08-05.glb');
     let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
     gltf.scene.traverse((child) => {
       if (child.name.startsWith('section')) {
