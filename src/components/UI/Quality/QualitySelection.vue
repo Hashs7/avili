@@ -49,16 +49,18 @@
     text-align: center;
     max-width: 580px;
     width: 100%;
+    margin: 0 auto;
   }
 
   .circle-background {
-    position: absolute;
+    position: fixed;
     top: 0;
     bottom: 0;
     left: 0;
     right: 0;
     margin: auto;
     width: 540px;
+    height: 540px;
   }
 
   .quality-selection__header {
