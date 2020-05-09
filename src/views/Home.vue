@@ -44,9 +44,12 @@ export default {
     }
   },
   mounted() {
+    if (!this.$refs.circle || this.isPlaying) return;
+    console.log('event mousemove');
     this.rect = this.$refs.circle.getBoundingClientRect();
     window.addEventListener('mousemove', this.mouseMove, { passive: true });
     this.$on('hook:beforeDestroy', () => {
+      console.log('remove event mousemove');
       window.removeEventListener('mousemove', this.mouseMove);
     });
   },

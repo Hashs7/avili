@@ -44,6 +44,15 @@
        },*/
       isPlaying(newVal) {
         if (!newVal) return;
+        this.initLoader();
+      }
+    },
+    mounted() {
+      if (!this.isPlaying) return;
+      this.initLoader();
+    },
+    methods: {
+      initLoader() {
         LoadManager.setReceiver(this);
         setTimeout(() => this.completeTime = true, this.minTime);
         gsap.from(this.$refs.advertising, {
@@ -52,9 +61,7 @@
           delay: 1,
           duration: 3,
         });
-      }
-    },
-    methods: {
+      },
       enter(el, done) {},
       leave(el, done) {
         console.log('hide loader');

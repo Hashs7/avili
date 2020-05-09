@@ -53,7 +53,6 @@
         gsap.to(this.$refs.follower, 0.5, { scale: 0, opacity: 0 });
       },
       pressIn(){
-        console.log('pressIn');
         this.isAnimating = true;
         this.pressed = true;
         gsap.killTweensOf(this.$refs.follower, 'scale');
@@ -63,7 +62,6 @@
         });
       },
       pressOut(){
-        console.log('pressOut', this.scale);
         this.pressed = false;
         this.isAnimating = true;
         gsap.killTweensOf(this.$refs.follower, 'scale');

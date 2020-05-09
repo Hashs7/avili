@@ -9,7 +9,7 @@ export default new Vuex.Store({
     quality: null,
     pseudo: null,
     isLoading: true,
-    isPlaying: false,
+    isPlaying: true,
   },
   mutations: {
     initScene(state, canvas) {

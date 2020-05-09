@@ -53,19 +53,26 @@
         this.world.setQuality(newVal);
       },*/
       isPlaying(newVal) {
-        console.log('init world', newVal);
-
-        if (!newVal) return;
-        console.log('init world');
+        if (!newVal && !this.world) return;
+        this.initWorld();
+      }
+    },
+    mounted() {
+      if (!this.isPlaying && !this.world) return;
+      this.$nextTick(() => {
+        this.initWorld();
+      })
+    },
+    methods: {
+      initWorld() {
+        console.log('init');
         this.world = new World(this.$refs.canvas);
         this.world.setQuality(this.qualitySet);
         this.world.setTestimony(this.$refs.testimony, this.$t);
         this.world.setFollower(this.$refs.follower);
         this.resize();
         window.addEventListener('resize', this.resize);
-      }
-    },
-    methods: {
+      },
       resize() {
         this.width = window.innerWidth;
         this.height = window.innerHeight;
