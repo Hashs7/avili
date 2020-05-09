@@ -149,15 +149,16 @@ class CameraOperator{
   zoom(callback){
     const tl = gsap.timeline({repeat: 0});
     tl.to(this.camera, {
-      zoom: 2,
+      zoom: 2.5,
+      duration: 2,
       onUpdate: () => {this.camera.updateProjectionMatrix()},
+      onComplete: () => {callback()},
     });
     tl.to(this.camera, {
       zoom: 1,
-      duration: 3,
+      duration: 1.5,
       delay: 1,
       onUpdate: () => {this.camera.updateProjectionMatrix()},
-      onComplete: () => {callback()},
     })
   }
 }
