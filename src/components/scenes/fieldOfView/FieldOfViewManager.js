@@ -5,12 +5,13 @@ import Projectile from "../../core/Projectile";
 import TestimonyManager from "../../core/TestimonyManager";
 import {toRadian} from "../../../utils";
 import {CircleGradientShader} from "../../shaders/CircleGradientShader";
+import CameraOperator from "../../core/CameraOperator";
+import gsap from 'gsap';
 
 export default class FieldOfViewManager {
   constructor(world, scene, npcPositions, towers, landingAreas, towerElements) {
     this.scene = scene;
     this.world = world;
-    this.sphere = new THREE.Object3D();
     this.fieldOfView = new THREE.Object3D();
     this.fieldOfViewName = "FieldOfView";
     this.fieldOfViews = [];
@@ -20,6 +21,27 @@ export default class FieldOfViewManager {
     this.index = 0;
     this.towerElements = towerElements;
     this.alreadyHit = false;
+    this.isMoving = false;
+
+    this.player = this.world.getPlayer();
+    this.armor = () => {
+      const armor = {
+        mask: null, cape: null,
+        setOpacity: value => {
+          armor.mask.material.opacity = value;
+          armor.cape.material.opacity = value;
+        },
+        setVisibility: value => {
+          armor.mask.material.visible = value;
+          armor.cape.material.visible = value;
+        }
+      }
+      this.player.character.traverse(child => {
+        if(child.name === 'amask') armor.mask = child;
+        if(child.name === 'ahat') armor.cape = child;
+      });
+      return armor;
+    }
 
     npcPositions.forEach(({x, z}, index) => this.addFieldOfView(x, z, index));
 
@@ -32,6 +54,7 @@ export default class FieldOfViewManager {
     });
 
     document.addEventListener('playerMoved', e => {
+      this.isMoving = true;
       const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
       this.lastPosition = playerPosition;
       this.detectFieldOfView(playerPosition);
@@ -41,28 +64,23 @@ export default class FieldOfViewManager {
   }
 
   update() {
+    this.isMoving = false;
     if(this.fieldOfViews.length === 0) return;
     const movingFov = this.fieldOfViews.filter(fieldOfView => fieldOfView.anime);
     for (let i = 0; i < movingFov.length; i++) {
       movingFov[i].obj.rotateZ(toRadian(1));
     }
+    if(this.alreadyHit && !this.isMoving) return;
     this.detectFieldOfView(this.lastPosition);
   }
 
   addFieldOfView(x, z, index) {
-    //let geometry = new THREE.CylinderGeometry(300, 300, 1, 20, 20);
     let geometry = new THREE.CircleGeometry(
       3,
       20,
       0,
       1.6,
     );
-    /*let material = new THREE.MeshBasicMaterial({
-      color: 0xaa0000,
-      opacity: 1,
-      transparent: true,
-      side: THREE.DoubleSide,
-    });*/
     const customMaterial = new THREE.ShaderMaterial({
       vertexShader: CircleGradientShader.vertexShader,
       fragmentShader: CircleGradientShader.fragmentShader,
@@ -89,33 +107,48 @@ export default class FieldOfViewManager {
       0,
       300,
     );
-    const objs = ray.intersectObjects(this.scene.children, false);
-
-    if(this.alreadyHit) return;
+    let objs = ray.intersectObjects(this.scene.children, false);
     for (let i = 0; i < objs.length; i++) {
       if(!objs[i].object.name.startsWith(this.fieldOfViewName)) return;
-      if(objs[i].object.name === "FieldOfView-3") {
-        TestimonyManager.speak('infiltration_end.mp3', 'infiltration_end');
-        this.alreadyHit = true;
-      } else {
-        TestimonyManager.speak('audio_mot_cuisine.mp3');
-        const player = this.world.getPlayer();
-        player.teleport(this.world.lastCheckpointCoord);
-      }
-    }
+      this.alreadyHit = true;
 
-    /*
-    objs.forEach(obj => {
-      if (obj.object.name.startsWith(this.fieldOfViewName)) {
-        const player = this.world.getPlayer();
-        if(obj.object.name === "FieldOfView-3" && !alreadyHit) {
-          console.log("test");
-          alreadyHit = true;
+      //TestimonyManager.speak('audio_mot_cuisine.mp3');
+      const playerModel = this.player.group.children[0];
+      this.player.setWalkable(false);
+      const rotation = Math.atan2( ( this.world.camera.position.x - playerModel.position.x ), ( this.world.camera.position.z - playerModel.position.z ) );
+      this.armor().mask.material.transparent = true;
+      this.armor().cape.material.transparent = true;
+
+      // mask, cape and rotation animations
+      const tl = gsap.timeline({repeat: 0});
+      tl.to(playerModel.rotation, {
+        y: rotation,
+        duration: 1,
+      })
+      tl.to([
+        this.armor().mask.material,
+        this.armor().cape.material
+      ], {
+        opacity: 0,
+        duration: 0.5,
+        onComplete: () => {
+          this.armor().setVisibility(false)
+        }
+      })
+
+      CameraOperator.zoom(() => {
+        this.lastPosition = new THREE.Vector3();
+        if(objs[i].object.name === "FieldOfView-3") {
+          objs[i].object.name = "Undetectable";
           TestimonyManager.speak('infiltration_end.mp3', 'infiltration_end');
         } else {
-          player.teleport(this.world.lastCheckpointCoord);
+          this.player.teleport(this.world.lastCheckpointCoord, () => {
+            this.armor().setOpacity(1);
+            this.armor().setVisibility(true)
+          });
         }
-      }
-    });*/
+        this.player.setWalkable(true);
+      });
+    }
   }
 }
