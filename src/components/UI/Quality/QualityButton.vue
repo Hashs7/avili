@@ -30,7 +30,7 @@
       }
       .btn__hover {
         opacity: 1;
-        transform: rotate(-15deg);
+        transform: rotate(-15deg) scale(1);
       }
     }
   }
@@ -54,7 +54,8 @@
     font-family: $font-btn;
     font-size: 48px;
     opacity: 0;
-    transform: rotate(-7deg);
-    transition: all .3s ease-in-out;
+    //transform: rotate(-7deg);
+    transform: rotate(-7deg) scale(.5);
+    transition: all .3s ease-out;
   }
 </style>

@@ -16,7 +16,6 @@ export default class {
   constructor(canvas) {
     console.log('init world');
     this.canvas = canvas;
-
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     //this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -67,7 +66,7 @@ export default class {
     //this.debugCamera()
     document.addEventListener('visibilitychange', () => this.handleVisibilityChange(), false);
 
-    this.setPostProcessing(false);
+    // this.setPostProcessing(false);
     this.composer = new EffectComposer(this.renderer);
   }
 

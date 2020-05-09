@@ -6,10 +6,10 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     canvasRef: null,
-    quality: null,
     pseudo: null,
     isLoading: true,
-    isPlaying: false,
+    quality: null, // Set default quality
+    isPlaying: false, // Skip settings intro
   },
   mutations: {
     initScene(state, canvas) {

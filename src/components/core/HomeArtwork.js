@@ -21,6 +21,7 @@ export default class {
     this.scene.background = new THREE.Color( 0x060708 );
     this.camera = new THREE.PerspectiveCamera( 27, window.innerWidth / window.innerHeight, 1, 10000 );
     this.camera.position.z = 1200;
+    this.camera.position.y = 200;
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.outputEncoding = THREE.sRGBEncoding;
