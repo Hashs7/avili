@@ -3,16 +3,19 @@
       @enter="enter"
       @leave="leave"
   >
-    <div v-show="isPlaying && isLoading || !completeTime" class="modal">
-      <div class="loader">
-        <div class="loader__container">
-          <span ref="progress" class="loader__progress"></span>
+    <div v-show="isPlaying && isLoading || !completeTime">
+      <IntroLayout>
+        <div class="loader">
+          <div class="loader__container">
+            <span ref="progress" class="loader__progress"></span>
+          </div>
+          <span class="loader__percent">{{percent}}%</span>
         </div>
-        <span class="loader__percent">{{percent}}%</span>
-      </div>
-      <div class="advertising">
-        <span ref="advertising">L'usage d'un casque audio est vivement recommandé</span>
-      </div>
+        <div class="advertising">
+          <img ref="img" src="@/assets/img/headset.png" alt="headset icon" draggable="false" class="advertising__headset">
+          <span ref="advertising">L'usage d'un casque audio est vivement recommandé</span>
+        </div>
+      </IntroLayout>
     </div>
   </transition>
 </template>
@@ -20,9 +23,13 @@
 <script>
   import gsap from 'gsap';
   import LoadManager from "../core/LoadManager";
+  import IntroLayout from '@/components/UI/IntroLayout';
 
   export default {
     name: 'Loader',
+    components: {
+      IntroLayout,
+    },
     data() {
       return {
         percent: 0,
@@ -50,6 +57,7 @@
     mounted() {
       if (!this.isPlaying) return;
       this.initLoader();
+      console.log('init loader ', this.isPlaying && this.isLoading || !this.completeTime);
     },
     methods: {
       initLoader() {
@@ -57,7 +65,12 @@
         setTimeout(() => this.completeTime = true, this.minTime);
         gsap.from(this.$refs.advertising, {
           opacity: 0,
-          y: 40,
+          y: 20,
+          delay: 1,
+          duration: 3,
+        });
+        gsap.from(this.$refs.img, {
+          opacity: 0,
           delay: 1,
           duration: 3,
         });
@@ -67,10 +80,13 @@
         console.log('hide loader');
         gsap.to(this.$refs.advertising, {
           opacity: 0,
-          y: -40,
+          y: -20,
           onComplete: () => {
             done()
           },
+        });
+        gsap.to(this.$refs.img, {
+          opacity: 0,
         });
       },
       progressHandler(percent) {
@@ -97,20 +113,12 @@
   }
 </script>
 
-<style scoped>
-  .modal {
-    z-index: 400;
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: black;
-  }
+<style lang="scss" scoped>
   .advertising {
     position: fixed;
     display: flex;
-    align-items: center;
+    justify-content: center;
+    flex-direction: column;
     max-width: 300px;
     text-align: center;
     color: white;
@@ -119,6 +127,14 @@
     left: 0;
     right: 0;
     margin: auto;
+    font-size: 22px;
+    line-height: 34px;
+    font-family: $font-body;
+  }
+  .advertising__headset {
+    display: block;
+    width: 172px;
+    margin: 0 auto 32px auto;
   }
   .loader {
     position: fixed;
@@ -134,6 +150,9 @@
     text-align: center;
     color: white;
     margin-left: 16px;
+    font-size: 30px;
+    font-family: $font-pseudo;
+    font-weight: bold;
   }
   .loader__container {
     display: inline-block;
