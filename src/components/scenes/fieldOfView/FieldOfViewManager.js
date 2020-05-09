@@ -72,6 +72,8 @@ export default class FieldOfViewManager {
     }
     if(this.alreadyHit && !this.isMoving) return;
     this.detectFieldOfView(this.lastPosition);
+    if(!this.proj) return;
+    this.proj.detectLandingArea(this.lastPosition, this.world);
   }
 
   addFieldOfView(x, z, index) {
@@ -131,9 +133,10 @@ export default class FieldOfViewManager {
       ], {
         opacity: 0,
         duration: 0.5,
+        ease: 'power2.in',
         onComplete: () => {
           this.armor().setVisibility(false)
-        }
+        },
       })
 
       CameraOperator.zoom(() => {
