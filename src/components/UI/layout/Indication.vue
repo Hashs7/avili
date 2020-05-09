@@ -3,13 +3,16 @@
       @enter="enter"
       @leave="leave"
   >
-    <div class="indication" v-show="show">
+    <div class="indication" v-show="title">
       <div class="indication__content">
         <div>
           <h2 class="indication__title" ref="title">{{ title }}</h2>
           <Chevron class="indication__chevron" ref="chevron" />
         </div>
-        <p class="indication__txt" ref="txt">{{ text }}</p>
+        <div class="indication__txt" ref="txt">
+          <p v-if="title === 'Déplacement'">Appuyez sur la touche <span class="indication__key"><Key /></span> pour avancer et utilisez votre souris pour vous orienter</p>
+          <p v-else>{{ text }}</p>
+        </div>
       </div>
       <div class="indication__background" ref="bg" :style="{ backgroundImage: `url(${background})` }" />
     </div>
@@ -20,23 +23,24 @@
   import gsap from 'gsap';
   import background from '@/assets/img/tuto-background.png'
   import Chevron from '@/assets/icons/chevron-medium.svg';
+  import Key from '@/assets/icons/z-key.svg';
 
   export default {
     name: "Indication",
     components: {
       Chevron,
+      Key,
     },
     data() {
       return {
         background,
         show: false,
         tl: null,
-        title: "Déplacement",
-        text: "Appuyez sur la touche z pour avancer et utilisez votre souris pour vous orienter",
+        title: null,
+        text: null,
       }
     },
     mounted() {
-      setInterval(() => this.show = !this.show, 3000);
       this.tl = gsap.timeline({ paused: true });
       this.tl.from(this.$refs.bg, {
         y: -15,
@@ -97,6 +101,13 @@
     margin: auto;
   }
 
+  .indication__key {
+    display: inline-block;
+    width: 30px;
+    margin: 0 3px;
+    vertical-align: middle;
+  }
+
   .indication__content {
     position: fixed;
     z-index: 300;
@@ -104,7 +115,7 @@
     left: 0;
     right: 0;
     margin: auto;
-    max-width: 480px;
+    max-width: 450px;
     padding: 0 16px;
     color: $white;
     text-align: center;
@@ -114,6 +125,10 @@
     margin-top: 20px;
     font-weight: bold;
     font-size: 20px;
+    p {
+      display: inline-block;
+      vertical-align: middle;
+    }
   }
 
 </style>

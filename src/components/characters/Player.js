@@ -2,6 +2,7 @@ import * as THREE from 'three'
 import InputManager from "../core/InputManager";
 import AudioManager from "../core/AudioManager";
 import Character, { ACTIONS } from "./Character";
+import { makeTextSprite } from "../../utils";
 
 export default class extends Character {
   constructor(gltf, world, camera, sceneManager, name) {
@@ -79,7 +80,7 @@ export default class extends Character {
     this.inputManager.setInputReceiver(null);
   }
 
-  groupCamera() {
+  async groupCamera() {
     this.group.position.set(0, 0, 0);
     this.spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, Math.PI/10, 1);
     this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(this.group.position));
@@ -91,6 +92,10 @@ export default class extends Character {
     this.camera.position.set(-9, 6.5, 5.8);
     this.camera.lookAt(this.character.position);
     this.group.add(this.camera);
+
+    const playerName = await makeTextSprite( 'JeanMicheldududzqdzq', { fontsize: 26, fontface: "Roboto Slab" });
+    playerName.position.set(0, 1.6, 0);
+    this.group.add(playerName);
   }
 
   mouseMoveHandler(event) {

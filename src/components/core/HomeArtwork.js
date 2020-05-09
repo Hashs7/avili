@@ -1,12 +1,13 @@
 import * as THREE from "three";
 import Stats from 'stats.js'
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
+import { toRadian } from "../../utils";
 
 export default class {
   constructor(canvas, quality) {
     this.mesh;
     this.statsEnabled = true;
-    this.spotLight = new THREE.SpotLight( 0xffffbb, 2 );
+    this.spotLight = new THREE.SpotLight( new THREE.Color(113, 113, 255), 0.01, 0, Math.PI/10);
     this.mouseX = 0;
     this.mouseY = 0;
 
@@ -20,13 +21,15 @@ export default class {
     this.quality = quality;
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color( 0x060708 );
-    this.camera = new THREE.PerspectiveCamera( 27, window.innerWidth / window.innerHeight, 1, 10000 );
-    this.camera.position.z = 1200;
-    this.camera.position.y = 200;
+
+    this.camera = new THREE.PerspectiveCamera( 35, window.innerWidth / window.innerHeight, 1, 100 );
+    this.camera.position.set(1.925, -0.52, 6.932);
+    this.camera.rotation.y = toRadian(33);
+
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.outputEncoding = THREE.sRGBEncoding;
-    this.renderer.shadowMap.enabled = true;
+    this.renderer.shadows = true;
 
     this.mouseListener = window.addEventListener( 'mousemove', (e) => this.onDocumentMouseMove(e), false );
     this.resizeListener = window.addEventListener('resize', () => this.resize(), { passive: true });
@@ -36,19 +39,14 @@ export default class {
 
   init() {
     // LIGHTS
-    this.scene.add( new THREE.HemisphereLight( 0x443333, 0x111122 ) );
-    this.spotLight.position.set( 0.5, 0, 1 );
-    this.spotLight.position.multiplyScalar( 700 );
-    this.spotLight.castShadow = true;
-    this.spotLight.shadow.mapSize.width = 2048;
-    this.spotLight.shadow.mapSize.height = 2048;
-    this.spotLight.shadow.camera.near = 200;
-    this.spotLight.shadow.camera.far = 1500;
-    this.spotLight.shadow.camera.fov = 40;
-    this.spotLight.shadow.bias = - 0.005;
+    this.scene.add( new THREE.AmbientLight( 0xfefefe, .1));
+    this.spotLight.position.set( 5, 10, 7.5 );
+    // this.spotLight.castShadow = true;
+    this.spotLight.penumbra = 1;
+    this.spotLight.decay = 1;
     this.scene.add( this.spotLight );
 
-    const mapHeight = new THREE.TextureLoader().load( "./assets/models/characters/Infinite-Level_02_Disp_NoSmoothUV-4096.jpg" );
+    /*const mapHeight = new THREE.TextureLoader().load( "./assets/models/characters/Infinite-Level_02_Disp_NoSmoothUV-4096.jpg" );
 
     const material = new THREE.MeshPhongMaterial( {
       color: 0x552811,
@@ -56,10 +54,10 @@ export default class {
       shininess: 25,
       bumpMap: mapHeight,
       bumpScale: 12
-    } );
+    } );*/
 
-    new GLTFLoader().load( "./assets/models/characters/LeePerrySmith.glb", ( gltf ) => {
-      this.createScene( gltf.scene.children[ 0 ].geometry, 100, material );
+    new GLTFLoader().load( "./assets/models/characters/artwork.glb", ( gltf ) => {
+      this.createScene(gltf.scene);
     });
 
 
@@ -74,13 +72,17 @@ export default class {
 
   }
 
-  createScene( geometry, scale, material ) {
+  createScene( scene ) {
+    /*
     this.mesh = new THREE.Mesh( geometry, material );
     this.mesh.position.y = - 50;
     this.mesh.scale.set( scale, scale, scale );
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
     this.scene.add( this.mesh );
+    */
+    // this.spotLight.lookAt(scene);
+    this.scene.add(scene);
   }
 
   onDocumentMouseMove( event ) {
@@ -91,12 +93,13 @@ export default class {
   render() {
     this.stats.begin();
 
-    this.targetX = this.mouseX * .001;
-    this.targetY = this.mouseY * .001;
+    this.targetX = this.mouseX * .0001;
+    this.targetY = this.mouseY * .0001;
 
-    if ( this.mesh ) {
-      this.mesh.rotation.y += 0.05 * ( this.targetX - this.mesh.rotation.y );
-      this.mesh.rotation.x += 0.05 * ( this.targetY - this.mesh.rotation.x );
+    if ( this.scene ) {
+      this.scene.rotation.y += 0.05 * ( this.targetX - this.scene.rotation.y );
+      this.scene.rotation.x += 0.05 * ( this.targetY - this.scene.rotation.x );
+      // console.log(this.scene.rotation);
     }
 
     this.renderer.render( this.scene, this.camera );

@@ -183,7 +183,7 @@ export default class {
         this.renderer.antialias = false;
         this.renderer.powerPreference  = 'default';
         break;
-      case 'Haute':
+      case 'Élevé':
         this.renderer.antialias = true;
         this.renderer.powerPreference = 'high-performance';
         break;

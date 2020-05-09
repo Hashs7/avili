@@ -1,12 +1,18 @@
 <template>
-    <div class="follower" ref="follower"></div>
+  <div class="follower" ref="follower" >
+    <CursorIcon />
+  </div>
 </template>
 
 <script>
   import gsap from 'gsap';
+  import CursorIcon from '@/assets/icons/cursor.svg';
 
   export default {
     name: 'Follower',
+    components: {
+      CursorIcon,
+    },
     data() {
       return {
         enable: true,
@@ -129,12 +135,12 @@
   position: absolute;
   top: 0;
   z-index: 1500;
-  border-radius: 50%;
+  /*border-radius: 50%;*/
   width: 50px;
   height: 50px;
   /*border: 1px solid antiquewhite;*/
-  background-color: antiquewhite;
-  opacity: 0.8;
+  /*background-color: antiquewhite;*/
+  /*opacity: 0.8;*/
   /*background-color: #f6f6f6;*/
   pointer-events: none;
 }
