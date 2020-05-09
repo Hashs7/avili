@@ -27,16 +27,11 @@ export const makeTextSprite = async ( message, parameters ) => {
   // const spriteAlignment = THREE.SpriteAlignment.topLeft;
 
   const canvas = document.createElement('canvas');
-  document.body.appendChild(canvas);
-  canvas.style.position = 'absolute';
-  canvas.style.top = '100px';
-
   const context = canvas.getContext('2d');
   context.font = "Bold " + fontsize + "px " + fontface;
 
   // get size data (height depends only on font size)
   const metrics = context.measureText( message );
-  const textWidth = metrics.width;
 
   // background color
   context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
@@ -47,15 +42,13 @@ export const makeTextSprite = async ( message, parameters ) => {
 
   context.lineWidth = borderThickness;
   const image = await imageLoader('./assets/img/pseudo-background.png');
-  const x = (canvas.width  - image.width ) * 0.5,   // this = image loaded
-        y = (canvas.height - image.height) * 0.5;
-  console.log(x);
+  const x = (canvas.width  - image.width ) * 0.5;   // this = image loaded
   context.drawImage(image, x, -5);
   // context.drawImage(image, 0,0, 167, 65);
 
   context.shadowColor = "rgba(0, 0, 0, 1.0)";
-  context.shadowOffsetX = -2;
-  context.shadowOffsetY = 2;
+  context.shadowOffsetX = -3;
+  context.shadowOffsetY = 3;
   console.log(metrics);
   console.log(canvas.width);
   context.textAlign =  "center";

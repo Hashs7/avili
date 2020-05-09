@@ -92,8 +92,8 @@ export default class extends Character {
     this.camera.position.set(-9, 6.5, 5.8);
     this.camera.lookAt(this.character.position);
     this.group.add(this.camera);
-
-    const playerName = await makeTextSprite( 'JeanMichelduTreizeFrr', { fontsize: 26, fontface: "Roboto Slab" });
+    console.log(this.sceneManager.world.pseudo);
+    const playerName = await makeTextSprite(this.sceneManager.world.pseudo, { fontsize: 26, fontface: "Roboto Slab" });
     playerName.position.set(0, 1.6, 0);
     this.group.add(playerName);
   }

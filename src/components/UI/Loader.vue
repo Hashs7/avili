@@ -33,7 +33,7 @@
     data() {
       return {
         percent: 0,
-        minTime: 4000,
+        minTime: 5000,
         completeTime: false
       }
     },
@@ -62,17 +62,17 @@
       initLoader() {
         LoadManager.setReceiver(this);
         setTimeout(() => this.completeTime = true, this.minTime);
-        gsap.from(this.$refs.advertising, {
+        /*gsap.from(this.$refs.advertising, {
           opacity: 0,
           y: 20,
-          delay: 1,
+          delay: 2,
           duration: 3,
         });
         gsap.from(this.$refs.img, {
           opacity: 0,
-          delay: 1,
+          delay: 2,
           duration: 3,
-        });
+        });*/
       },
       enter(el, done) {},
       leave(el, done) {
