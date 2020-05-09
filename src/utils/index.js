@@ -18,7 +18,6 @@ const imageLoader = (url) => {
 export const makeTextSprite = async ( message, parameters ) => {
   if ( parameters === undefined ) parameters = {};
 
-
   const fontface = parameters.fontface ? parameters.fontface : "Roboto Slab";
   const fontsize = parameters.fontsize ? parameters.fontsize : '26';
   const borderThickness = parameters.borderThickness ? parameters.borderThickness : 0;
@@ -47,19 +46,20 @@ export const makeTextSprite = async ( message, parameters ) => {
     + borderColor.b + "," + borderColor.a + ")";
 
   context.lineWidth = borderThickness;
-  // roundRect(context, borderThickness/2, borderThickness/2, textWidth + borderThickness, fontsize * 1.4 + borderThickness, 0);
-  // 1.4 is extra height factor for text below baseline: g,j,p,q.
-
-  // text color
-  // context.fillStyle = "rgba(255, 255, 255, 1.0)";
   const image = await imageLoader('./assets/img/pseudo-background.png');
-  context.drawImage(image, 0,0, 167, 65);
+  const x = (canvas.width  - image.width ) * 0.5,   // this = image loaded
+        y = (canvas.height - image.height) * 0.5;
+  console.log(x);
+  context.drawImage(image, x, -5);
+  // context.drawImage(image, 0,0, 167, 65);
 
   context.shadowColor = "rgba(0, 0, 0, 1.0)";
   context.shadowOffsetX = -2;
   context.shadowOffsetY = 2;
   console.log(metrics);
-  context.fillText( message, 30, fontsize + 15);
+  console.log(canvas.width);
+  context.textAlign =  "center";
+  context.fillText( message, canvas.width/2, fontsize + 15);
 
 
   const texture = new THREE.Texture(canvas);
