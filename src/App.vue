@@ -3,8 +3,12 @@
     <Loader/>
     <Follower ref="follower"/>
     <Testimony ref="testimony"/>
+    <Indication ref="indication"/>
+
     <router-view/>
+
     <canvas class="webgl-render" ref="canvas"/>
+
     <div v-if="notSupported" class="not-supported">
       <p>L'expérience n'a pas été prévu pour cet appareil</p>
     </div>
@@ -16,6 +20,7 @@
   import Loader from '@/components/UI/Loader';
   import Follower from '@/components/UI/Follower';
   import Testimony from '@/components/UI/layout/Testimony';
+  import Indication from '@/components/UI/layout/Indication';
 
   export default {
     name: 'App',
@@ -23,6 +28,7 @@
       Loader,
       Follower,
       Testimony,
+      Indication,
     },
     data() {
       return {
@@ -69,6 +75,7 @@
         this.world = new World(this.$refs.canvas);
         this.world.setQuality(this.qualitySet);
         this.world.setTestimony(this.$refs.testimony, this.$t);
+        // this.world.setIndication(this.$refs.indication, this.$t);
         this.world.setFollower(this.$refs.follower);
         this.resize();
         window.addEventListener('resize', this.resize);

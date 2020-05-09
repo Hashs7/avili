@@ -1,4 +1,5 @@
 export default {
+  // Testimony subtitles
   black_screen: {
     0: {
       sentence: "Ce que je préfère c'est les jeux multijoueurs.",
@@ -111,5 +112,13 @@ export default {
       time: '1000',
       last: 'true',
     },
+  },
+
+  // Indications helper
+  indications: {
+    start: {
+      title: 'Déplacement',
+      text: 'Appuyez sur la touche z pour avancer et utilisez votre souris pour vous orienter',
+    }
   }
 };
