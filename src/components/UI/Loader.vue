@@ -57,7 +57,6 @@
     mounted() {
       if (!this.isPlaying) return;
       this.initLoader();
-      console.log('init loader ', this.isPlaying && this.isLoading || !this.completeTime);
     },
     methods: {
       initLoader() {
@@ -77,7 +76,6 @@
       },
       enter(el, done) {},
       leave(el, done) {
-        console.log('hide loader');
         gsap.to(this.$refs.advertising, {
           opacity: 0,
           y: -20,

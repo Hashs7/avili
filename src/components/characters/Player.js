@@ -72,9 +72,7 @@ export default class extends Character {
     this.hitbox = new THREE.Mesh( geometry, material );
     this.hitbox.position.set(0, size.y / 2, 0);
     this.hitbox.name = 'hitbox';
-
     this.group.add(this.hitbox);
-    //sceneManager.mainSceneAddObject(this.hitbox);
   }
 
   destroy() {
@@ -82,7 +80,7 @@ export default class extends Character {
   }
 
   groupCamera() {
-    this.group.position.set(66.05, 0, 0.76);
+    this.group.position.set(0, 0, 0);
     this.spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, Math.PI/10, 1);
     this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(this.group.position));
     this.spotLight.castShadow = true;

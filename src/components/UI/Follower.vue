@@ -31,7 +31,6 @@
       document.addEventListener('mouseleave',  () => this.boundLeaveFollower ());
     },
     beforeDestroy() {
-      //console.log('destroy');
       document.removeEventListener('keydown', this.boundOnKeyDown);
       window.addEventListener('mousemove', this.boundMouseMove);
       window.removeEventListener('mousedown', this.boundPressIn);
@@ -46,11 +45,12 @@
       },
       enterFollower() {
         this.state = 'initial';
-        gsap.to(this.$refs.follower, 0.3, { scale: 1, opacity: 1 });
+        gsap.killTweensOf(this.$refs.follower, 'scale');
+        gsap.to(this.$refs.follower, 0.2, { scale: 1, opacity: 1 });
       },
       leaveFollower() {
         this.state = 'leave';
-        gsap.to(this.$refs.follower, 0.5, { scale: 0, opacity: 0 });
+        gsap.to(this.$refs.follower, 0.2, { scale: 0, opacity: 0 });
       },
       pressIn(){
         this.pressed = true;

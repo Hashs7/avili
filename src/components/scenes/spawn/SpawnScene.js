@@ -31,31 +31,24 @@ export default class extends Scene {
 
 
     // Mettre a false pour jouer la première partie
-    let isPlaying = false;
-    document.body.addEventListener('click', () => {
-      if(isPlaying) return;
-      isPlaying = true;
-      //TODO Lorsqu'on appuie sur joueur
-      setTimeout(() => {
-        TestimonyManager.speak('black_screen.mp3', 'black_screen');
-      }, 2000)
+    //TODO Lorsqu'on appuie sur joueur
+    setTimeout(() => {
+      TestimonyManager.speak('black_screen.mp3', 'black_screen');
+    }, 2000)
+    //TODO Pendant le travelling
+    setTimeout(() => {
+      TestimonyManager.speak('travelling.mp3', 'travelling');
+    }, 6000)
 
-      //TODO Pendant le travelling
-      setTimeout(() => {
-        TestimonyManager.speak('travelling.mp3', 'travelling');
-      }, 6000)
+    //TODO Lorsque les coéquipiers apparaissent
+    /*setTimeout(() => {
+      TestimonyManager.speak('spawn_mates.mp3', 'spawn_mates');
+    }, 28000)
 
-      //TODO Lorsque les coéquipiers apparaissent
-      setTimeout(() => {
-        TestimonyManager.speak('spawn_mates.mp3', 'spawn_mates');
-      }, 28000)
-
-      //TODO Lorsque la joueuse apparait
-      setTimeout(() => {
-        TestimonyManager.speak('spawn_player.mp3', 'spawn_player');
-      }, 65000)
-    });
-
+    //TODO Lorsque la joueuse apparait
+    setTimeout(() => {
+      TestimonyManager.speak('spawn_player.mp3', 'spawn_player');
+    }, 65000)*/
 
     return {
       instance: this,

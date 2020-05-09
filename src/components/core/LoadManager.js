@@ -104,7 +104,6 @@ class LoadManager {
    * All elements are loaded
    */
   loadedHandler() {
-    console.log('full loaded');
     if (!this.loadedCallback) return;
     this.loadedCallback();
     this.loadedCallback = null;

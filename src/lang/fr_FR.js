@@ -35,24 +35,24 @@ export default {
       last: 'false',
     },
     2: {
-      sentence: "Mais pour une femme c'est différent tout de suite c'est mon genre qui va porter préjudice je vais avoir le droit à des insultes sexiste, mysogynes",
+      sentence: "Mais pour une femme c'est différent tout de suite c'est mon genre qui va porter préjudice je vais avoir le droit à des insultes sexiste, mysogynes...",
       time: '10000',
       last: 'false',
     },
     3: {
-      sentence: "Du coup je parle hyper rarement dans les parties en ligne même si à certain moment ça pourrait me sorti de situation compliquée en faite",
+      sentence: "Du coup je parle hyper rarement dans les parties en ligne même si à certain moment ça pourrait me sortir de situation compliquée en faite",
       time: '8000',
       last: 'false',
     },
     4: {
-      sentence: "Je préfère m'abstenir parce que ma voix elle risquerai d'enclencher une vague de haine",
+      sentence: "Je préfère m'abstenir parce que ma voix elle risquerait d'enclencher une vague de haine",
       time: '8000',
       last: 'true',
     }
   },
   spawn_player: {
     0: {
-      sentence: "Bah c'est triste à dire mais je dois me faire discrète même auprès de mes coéquipiers et puis ...",
+      sentence: "Bah c'est triste à dire mais je dois me faire discrète même auprès de mes coéquipiers et puis...",
       time: '7000',
       last: 'true',
     },
