@@ -82,7 +82,7 @@ export default class extends Character {
   }
 
   groupCamera() {
-    this.group.position.set(19.17, 0, 0.58);
+    this.group.position.set(66.05, 0, 0.76);
     this.spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, Math.PI/10, 1);
     this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(this.group.position));
     this.spotLight.castShadow = true;
@@ -232,9 +232,10 @@ export default class extends Character {
     this.playerControls();
   }
 
-  teleport(position) {
+  teleport(position, callback) {
     this.group.position.copy(position);
     this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(position));
+    callback();
   }
 
   setWalking() {

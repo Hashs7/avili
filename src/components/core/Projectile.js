@@ -171,11 +171,7 @@ export default class Projectile {
     objs.forEach(obj => {
       if (obj.object.name === this.landingAreaName && obj.object.userData.isDetectable) {
         const player = world.getPlayer();
-        player.setWalkable(false);
-        CameraOperator.zoom(() => {
-          player.teleport(world.lastCheckpointCoord)
-          player.setWalkable(true);
-        });
+        player.teleport(world.lastCheckpointCoord)
       }
     });
   }
