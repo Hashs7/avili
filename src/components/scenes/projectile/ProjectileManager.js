@@ -8,6 +8,7 @@ export default class ProjectileManager {
     this.world = world;
     this.proj;
     this.towerElements = towerEls;
+    this.playerPosition = new THREE.Vector3();
 
     document.addEventListener('stateUpdate', e => {
       if (e.detail !== 'projectile_sequence_start') return;
@@ -17,9 +18,14 @@ export default class ProjectileManager {
     });
 
     document.addEventListener('playerMoved', e => {
-      const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
+      this.playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
       if(!this.proj) return
-      this.proj.detectLandingArea(playerPosition, this.world);
+      this.proj.detectLandingArea(this.playerPosition, this.world);
     });
+  }
+
+  update() {
+    if(!this.proj) return
+    this.proj.detectLandingArea(this.playerPosition, this.world);
   }
 }

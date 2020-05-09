@@ -207,7 +207,7 @@ export default class {
   }
 
   async addTowers(){
-    const t1Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v1.glb');
+    const t1Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v2.glb');
     t1Gltf.scene.position.x = this.towers[0].position.x;
     t1Gltf.scene.position.y = this.towers[0].position.y - 10;
     t1Gltf.scene.position.z = this.towers[0].position.z;
@@ -222,7 +222,7 @@ export default class {
     this.mainSceneAddObject(t1Gltf.scene);
     this.towerEls.push(t1);
 
-    const t2Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v1.glb');
+    const t2Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v2.glb');
     t2Gltf.scene.position.x = this.towers[1].position.x;
     t2Gltf.scene.position.y = this.towers[1].position.y - 10;
     t2Gltf.scene.position.z = this.towers[1].position.z;
