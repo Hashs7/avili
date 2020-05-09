@@ -235,9 +235,10 @@ export default class extends Character {
     this.playerControls();
   }
 
-  teleport(position, callback) {
+  teleport(position, callback = null) {
     this.group.position.copy(position);
     this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(position));
+    if(!callback) return;
     callback();
   }
 

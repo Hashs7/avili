@@ -30,8 +30,6 @@ export default class Projectile {
     this.startTimeline();
   }
 
-
-
   startTimeline() {
     const tl = gsap.timeline({ onComplete: () => {
       this.startTimeline();
@@ -78,7 +76,6 @@ export default class Projectile {
         this.index = this.index === this.landingAreas.length - 1 ? 0 : this.index + 1;
       },
       onComplete: () => {
-        //this.currentLandingPoint.material.color.set(0xff0000);
         this.currentLandingPoint.userData.isDetectable = true;
       },
       value: 6.0,
@@ -171,7 +168,9 @@ export default class Projectile {
     objs.forEach(obj => {
       if (obj.object.name === this.landingAreaName && obj.object.userData.isDetectable) {
         const player = world.getPlayer();
-        player.teleport(world.lastCheckpointCoord)
+        player.teleport(world.lastCheckpointCoord, () => {
+          position = new THREE.Vector3();
+        })
       }
     });
   }
