@@ -65,7 +65,6 @@
     },
     methods: {
       initWorld() {
-        console.log('init');
         this.world = new World(this.$refs.canvas);
         this.world.setQuality(this.qualitySet);
         this.world.setTestimony(this.$refs.testimony, this.$t);

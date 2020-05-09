@@ -15,6 +15,12 @@
     components: {
       CircleIcon,
     },
+    props: {
+      show: {
+        type: Boolean,
+        default: true,
+      },
+    },
     data() {
       return {
         background,
@@ -26,6 +32,13 @@
       isPlaying() {
         return this.$store.state.isPlaying;
       }
+    },
+    watch: {
+      show(newVal) {
+        if (!newVal) return;
+        console.log('remove event mousemove');
+        window.removeEventListener('mousemove', this.mouseMove);
+      },
     },
     mounted() {
       if (!this.$refs.circle) return;

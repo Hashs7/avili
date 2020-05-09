@@ -66,7 +66,7 @@ export default class {
     //this.debugCamera()
     document.addEventListener('visibilitychange', () => this.handleVisibilityChange(), false);
 
-    this.setPostProcessing(false);
+    // this.setPostProcessing(false);
     this.composer = new EffectComposer(this.renderer);
   }
 

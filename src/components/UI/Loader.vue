@@ -4,7 +4,7 @@
       @leave="leave"
   >
     <div v-show="isPlaying && isLoading || !completeTime">
-      <IntroLayout>
+      <IntroLayout :show="isPlaying && isLoading || !completeTime">
         <div class="loader">
           <div class="loader__container">
             <span ref="progress" class="loader__progress"></span>
