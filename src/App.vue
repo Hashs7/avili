@@ -58,6 +58,7 @@
       }
     },
     mounted() {
+      document.addEventListener("contextmenu", (e) => e.preventDefault(), false);
       if (!this.isPlaying && !this.world) return;
       this.$nextTick(() => {
         this.initWorld();

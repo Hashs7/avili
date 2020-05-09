@@ -26,7 +26,7 @@
 
       window.addEventListener('mousemove',  (e) => this.boundMouseMove(e));
       window.addEventListener('mousedown',  () => this.boundPressIn());
-      window.addEventListener('mouseup',  () => this.boundPressOut());
+      window.addEventListener('mouseup',  (e) => this.boundPressOut(e));
       document.addEventListener('mouseenter',  () => this.boundEnterFollower());
       document.addEventListener('mouseleave',  () => this.boundLeaveFollower ());
     },
@@ -53,25 +53,32 @@
         gsap.to(this.$refs.follower, 0.5, { scale: 0, opacity: 0 });
       },
       pressIn(){
-        this.isAnimating = true;
         this.pressed = true;
+        this.isAnimating = true;
         gsap.killTweensOf(this.$refs.follower, 'scale');
         gsap.to(this.$refs.follower, 0.5, {
           scale: .5,
-          onComplete: () => this.isAnimating = false
+          onComplete: () => {
+            this.isAnimating = false;
+          },
         });
       },
-      pressOut(){
+      pressOut(e) {
         this.pressed = false;
         this.isAnimating = true;
+        if (e.target.dataset.click === 'disapear') {
+          // this.scale = 1;
+        }
         gsap.killTweensOf(this.$refs.follower, 'scale');
-
-        gsap.to(this.$refs.follower, 1.2, {
+        gsap.to(this.$refs.follower, 1, {
           scale: this.scale,
-          // ease: 'elastic.out(1.8, 0.5)',
           ease: 'elastic.out(1.8, 0.5)',
-          onComplete: () => this.isAnimating = false
+          onComplete: () => {
+            // this.isAnimating = false;
+          },
         });
+        //Fake complete
+        gsap.delayedCall(.3, () => this.isAnimating = false)
       },
       mouseMove(e) {
         if (this.state === 'none') this.enterFollower();
@@ -84,13 +91,13 @@
         this.applyAnimation(e.target.dataset.hover)
       },
       applyAnimation(name) {
-        if (this.isAnimating || this.pressed) return;
         const { follower } = this.$refs;
         switch(name) {
           case "big":
-            this.state = 'big';
             follower.style.mixBlendMode = "difference";
             this.scale = 2;
+            if (this.pressed || this.isAnimating) return;
+            this.state = 'big';
             gsap.to(follower, { scale: 2, duration: 0.5 });
             break;
           case "none":
@@ -98,14 +105,16 @@
             follower.style.mixBlendMode = "normal";
             this.state = 'none';
             this.scale = 0;
+            // if (this.pressed) return;
             gsap.to(follower, { scale: 0, duration: 0.5 });
             break;
           default:
             if (this.state === 'normal') return;
-            this.state = 'normal';
             follower.style.mixBlendMode = "normal";
-            gsap.killTweensOf(this.$refs.follower, 'scale');
             this.scale = 1;
+            if (this.pressed || this.isAnimating) return;
+            this.state = 'normal';
+            gsap.killTweensOf(this.$refs.follower, 'scale');
             gsap.to(follower, { scale: 1, duration: 0.3 });
             break;
         }

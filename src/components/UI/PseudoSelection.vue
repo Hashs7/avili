@@ -11,7 +11,7 @@
       </div>
     </div>
 
-    <button class="btn-validate" @click="validatePseudo" data-hover="big">
+    <button class="btn-validate" @click="validatePseudo" data-hover="big" data-click="disapear">
       <span>Valider</span>
       <Arrow class="btn-validate__arrow"/>
     </button>

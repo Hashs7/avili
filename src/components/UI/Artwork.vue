@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="ui-container">
-      <button class="btn-play" data-hover="big" @click="play">Jouer</button>
+      <button class="btn-play" data-hover="big" data-click="disapear" @click="play">Jouer</button>
     </div>
     <canvas ref="homeCanvas" class="home-canvas webgl-render" />
   </div>
@@ -12,13 +12,17 @@
 
   export default {
     name: "Artwork",
+    computed: {
+      qualitySet() {
+        return this.$store.state.quality;
+      },
+    },
     mounted() {
-      this.artwork = new HomeArtwork(this.$refs.homeCanvas);
+      this.artwork = new HomeArtwork(this.$refs.homeCanvas, this.qualitySet);
     },
     methods: {
       play() {
         this.artwork.destroy();
-        console.log('play');
         this.$store.commit('setPlaying', true);
       }
     },

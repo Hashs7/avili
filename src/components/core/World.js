@@ -150,8 +150,6 @@ export default class {
     this.stats.begin();
     this.renderDelta = this.clock.getDelta();
     let timeStep = this.renderDelta + this.logicDelta;
-    // console.log('render', timeStep);
-
     // let timeStep = (this.renderDelta + this.logicDelta) * this.params.Time_Scale;
     this.update(timeStep);
     this.logicDelta = this.clock.getDelta();

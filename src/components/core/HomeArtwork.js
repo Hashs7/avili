@@ -3,7 +3,7 @@ import Stats from 'stats.js'
 import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 export default class {
-  constructor(canvas) {
+  constructor(canvas, quality) {
     this.mesh;
     this.statsEnabled = true;
     this.spotLight = new THREE.SpotLight( 0xffffbb, 2 );
@@ -17,6 +17,7 @@ export default class {
     this.windowHalfY = window.innerHeight / 2;
 
     this.canvas = canvas;
+    this.quality = quality;
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color( 0x060708 );
     this.camera = new THREE.PerspectiveCamera( 27, window.innerWidth / window.innerHeight, 1, 10000 );
@@ -30,6 +31,7 @@ export default class {
     this.mouseListener = window.addEventListener( 'mousemove', (e) => this.onDocumentMouseMove(e), false );
     this.resizeListener = window.addEventListener('resize', () => this.resize(), { passive: true });
     this.init();
+    this.setQuality();
   }
 
   init() {
@@ -66,6 +68,10 @@ export default class {
       document.body.appendChild( this.stats.dom );
     }
     this.render()
+  }
+
+  setQuality() {
+
   }
 
   createScene( geometry, scale, material ) {
