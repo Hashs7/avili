@@ -27,6 +27,8 @@ export default class ProjectileManager {
   }
 
   update() {
+    this.towerElements[0].crystal.rotation.y += 0.01;
+
     if(!this.proj) return
     this.proj.detectLandingArea(this.playerPosition, this.world);
   }
