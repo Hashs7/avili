@@ -91,14 +91,17 @@ export default class extends Character {
     this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
     const obj = this.raycaster.intersectObjects( this.sceneManager.mainScene.children );
     if (!obj.length) return;
-    obj.forEach(el => {
-      if (el.object.name !== 'Floor') return;
+    for (let i = 0; i < obj.length; i++) {
+      if (obj[i].object.name !== 'Floor') continue;
       const position = {
-        x: el.point.x - this.group.position.x,
-        z: el.point.z - this.group.position.z
+        x: obj[i].point.x - this.group.position.x,
+        z: obj[i].point.z - this.group.position.z
       };
-      if (Math.sqrt(position.x * position.x + position.z * position.z) < 0.1) return;
+      if (Math.sqrt(position.x * position.x + position.z * position.z) < 0.1) continue;
       this.character.rotation.y = Math.atan2(position.x, position.z);
+    }
+    obj.forEach(el => {
+
     });
   }
 
@@ -247,6 +250,7 @@ export default class extends Character {
   }
 
   setWalkable(value) {
+    this.isWalking = false;
     this.walkable = value;
     this.prepareCrossFade(this.idleAction);
   }

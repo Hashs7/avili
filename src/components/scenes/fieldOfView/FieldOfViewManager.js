@@ -78,6 +78,12 @@ export default class FieldOfViewManager {
     this.proj.detectLandingArea(this.lastPosition, this.world);
   }
 
+  /**
+   * Create new field of view
+   * @param x
+   * @param z
+   * @param index
+   */
   addFieldOfView(x, z, index) {
     let geometry = new THREE.CircleGeometry(
       3,
@@ -104,6 +110,10 @@ export default class FieldOfViewManager {
     this.scene.add(this.fieldOfView);
   }
 
+  /**
+   * Detect if player is in field
+   * @param position
+   */
   detectFieldOfView(position){
     const ray = new Raycaster(
       position,
