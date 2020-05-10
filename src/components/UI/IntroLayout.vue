@@ -1,6 +1,6 @@
 <template>
   <div class="intro-layout" :style="{ backgroundImage: `url(${background})` }">
-    <CircleIcon class="circle-background" ref="circle" />
+    <CircleIcon class="circle-background" ref="circle" v-show="!(qualitySet && pseudo) || isLoading"/>
     <slot></slot>
   </div>
 </template>
@@ -29,6 +29,15 @@
       }
     },
     computed: {
+      qualitySet() {
+        return this.$store.state.quality;
+      },
+      pseudo() {
+        return this.$store.state.pseudo;
+      },
+      isLoading() {
+        return this.$store.state.isLoading;
+      },
       isPlaying() {
         return this.$store.state.isPlaying;
       }
@@ -36,13 +45,11 @@
     watch: {
       show(newVal) {
         if (!newVal) return;
-        console.log('remove event mousemove');
         window.removeEventListener('mousemove', this.mouseMove);
       },
     },
     mounted() {
       if (!this.$refs.circle) return;
-      console.log('event mousemove');
       this.rect = this.$refs.circle.getBoundingClientRect();
       window.addEventListener('mousemove', this.mouseMove, { passive: true });
       this.$on('hook:beforeDestroy', () => {

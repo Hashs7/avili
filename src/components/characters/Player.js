@@ -50,23 +50,7 @@ export default class extends Character {
     };
 
     // const cylinderShape = new Cylinder(mesh.size.y/2, mesh.size.y/2,  mesh.size.x/2, 8);
-    /*const boxShape = new Box(new Vec3(size.x/2, size.y/2, size.x/2));
-
-    this.character.body = new Body({
-      mass: 5,
-      shape: boxShape,
-      position: new Vec3(this.character.position.x, 2, this.character.position.z),
-      // position: new Vec3().copy(this.character.position),
-      collisionFilterGroup: 1,
-      // collisionFilterMask:  GROUP1 // It can only collide with group 1 (the sphere)
-    });
-    this.character.body.addEventListener("collide", (e) => {
-      // console.log("The character just collided with ", e.name);
-      // console.log("Collided with body:",e.body);
-      // console.log("Contact between bodies:",e.contact);
-    });
-
-    this.world.addBody(this.character.body);*/
+    // const boxShape = new Box(new Vec3(size.x/2, size.y/2, size.x/2));
 
     const geometry = new THREE.CylinderGeometry( size.x, size.x, size.y, 3 );
     // const geometry = new THREE.BoxGeometry( mesh.size.y, mesh.size.z, mesh.size.y, 4);
@@ -107,14 +91,17 @@ export default class extends Character {
     this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
     const obj = this.raycaster.intersectObjects( this.sceneManager.mainScene.children );
     if (!obj.length) return;
-    obj.forEach(el => {
-      if (el.object.name !== 'Floor') return;
+    for (let i = 0; i < obj.length; i++) {
+      if (obj[i].object.name !== 'Floor') continue;
       const position = {
-        x: el.point.x - this.group.position.x,
-        z: el.point.z - this.group.position.z
+        x: obj[i].point.x - this.group.position.x,
+        z: obj[i].point.z - this.group.position.z
       };
-      if (Math.sqrt(position.x * position.x + position.z * position.z) < 0.1) return;
+      if (Math.sqrt(position.x * position.x + position.z * position.z) < 0.1) continue;
       this.character.rotation.y = Math.atan2(position.x, position.z);
+    }
+    obj.forEach(el => {
+
     });
   }
 
@@ -148,16 +135,16 @@ export default class extends Character {
 
   handleKeyboardEvent(event, code, pressed, moving) {
     if (!this.walkable) return;
-    this.isWalking = moving;
-    if (!moving && this.action !== ACTIONS.IDLE) {
+    if (!moving && this.action !== ACTIONS.IDLE && !this.inputManager.controls.up) {
+      console.log('crossfade');
+      this.isWalking = moving;
       this.prepareCrossFade(this.idleAction);
-      return;
     }
 
-    this.crossActions(moving).forEach((ac) => {
+    /*this.crossActions(moving).forEach((ac) => {
       if (!ac.condition) return;
       this.prepareCrossFade(ac.action);
-    });
+    });*/
   }
 
   detectWallCollision(nextPosition){
@@ -170,10 +157,8 @@ export default class extends Character {
     const originPoint = new THREE.Vector3().setFromMatrixPosition(hitbox.matrixWorld);
     originPoint.x += nextPosition.x;
     originPoint.z += nextPosition.z;
-    //console.log(hitbox.geometry.vertices.length);
 
     for (let vertexIndex = 0; vertexIndex < hitbox.geometry.vertices.length; vertexIndex++) {
-
       const localVertex = hitbox.geometry.vertices[vertexIndex].clone();
       const globalVertex = localVertex.applyMatrix4( hitbox.matrix );
       const directionVector = globalVertex.sub( hitbox.position );
@@ -216,12 +201,14 @@ export default class extends Character {
     // const speed = isStrafing ? this.speed / 2 : this.speed;
     // this.character.body.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
     // this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
-    //console.log(this.group.position);
+    // console.log(this.group.position);
     // get nextPosition
     if(!this.walkable) return;
     this.nextPosition = {
       x: Math.sin(this.character.rotation.y + decay) * this.speed,
-      z: Math.cos(this.character.rotation.y + decay) * this.speed};
+      z: Math.cos(this.character.rotation.y + decay) * this.speed
+    };
+
     if (this.detectWallCollision(this.nextPosition)) {
       this.setWalking(false);
       return;
@@ -250,20 +237,20 @@ export default class extends Character {
   }
 
   setWalking(walk) {
-    if (this.isWalking === walk) return;
-    this.isWalking = walk;
-    console.log('setWalking');
     if (walk) {
       const playerMovedEvent = new CustomEvent('playerMoved', {
         detail: this.character,
       });
       document.dispatchEvent(playerMovedEvent);
     }
-    // this.prepareCrossFade(this.runAction);
+
+    if (this.isWalking === walk) return;
+    this.isWalking = walk;
     this.prepareCrossFade(walk ? this.runAction : this.idleAction);
   }
 
   setWalkable(value) {
+    this.isWalking = false;
     this.walkable = value;
     this.prepareCrossFade(this.idleAction);
   }

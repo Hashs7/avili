@@ -13,8 +13,9 @@ import {EffectComposer} from "three/examples/jsm/postprocessing/EffectComposer";
 import {RenderPass} from "three/examples/jsm/postprocessing/RenderPass";
 
 export default class {
-  constructor(canvas, pseudo) {
+  constructor(canvas, store, pseudo) {
     this.canvas = canvas;
+    this.store = store;
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     //this.renderer.setPixelRatio(window.devicePixelRatio);
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -28,6 +29,8 @@ export default class {
     this.sinceLastFrame = 0;
 
     this.audioManager = AudioManager;
+
+    console.log(this.store);
 
     this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.01, 1000);
     this.camera.name = 'MainCamera';
@@ -171,7 +174,7 @@ export default class {
 
   setFollower(el) {
     this.follower = el;
-    LoadManager.setFollowerRef(el);
+    LoadManager.setUIRefs(el, this.store);
   }
 
   setQuality(name) {

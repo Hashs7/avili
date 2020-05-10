@@ -7,9 +7,11 @@ import LoadManager from "../../core/LoadManager";
 import State from "../../core/State";
 import TestimonyManager from "../../core/TestimonyManager";
 import { GAME_STATES } from "../../../constantes";
+import {toRadian} from "../../../utils";
+import gsap from 'gsap';
 
 export default class extends Scene {
-  constructor(world, spline, sections, finishCallback) {
+  constructor(world, spline, sections, finishCallback, spawnCrystal) {
     super();
     this.scene.name = 'SpawnScene';
     this.world = world;
@@ -28,7 +30,10 @@ export default class extends Scene {
       this.initTravelling();
     }, 5000);*/
     this.detectSectionPassed();
+    this.spawnCrystal = spawnCrystal;
+    this.upAndDownCrystalAnimation();
 
+    this.addPortal();
 
     // Mettre a false pour jouer la première partie
     //TODO Lorsqu'on appuie sur joueur
@@ -54,6 +59,19 @@ export default class extends Scene {
       instance: this,
       scene: this.scene,
     };
+  }
+
+  update() {
+    if(!this.spawnCrystal) return;
+    this.spawnCrystal.rotation.y += 0.01;
+  }
+
+  normalize(value, min, max) {
+    return (value - min) / (max - min);
+  }
+
+  easeInOutCubic(x) {
+    return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
   }
 
   initTravelling() {
@@ -123,6 +141,7 @@ export default class extends Scene {
       const state = new State();
 
       if (objs[0].object.name === "sectionTuto") {
+        console.log('sectionTutopassed');
         state.goToState("projectile_sequence_start");
       }
 
@@ -136,6 +155,27 @@ export default class extends Scene {
       objs[0].object.name += 'Passed';
 
       //AudioManager.playSound(audio);
+    });
+  }
+
+  addPortal() {
+    const geometry = new THREE.PlaneBufferGeometry( 1.8, 2.5, 1 );
+    const material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.BackSide} );
+    const plane = new THREE.Mesh( geometry, material );
+    plane.position.set(11.61, 1.25, 0.18);
+    plane.rotation.y = toRadian(90);
+
+    //TODO : Add animated texture
+
+    this.scene.add( plane );
+  }
+
+  upAndDownCrystalAnimation() {
+    const tl = gsap.timeline({repeat: -1, yoyo: true});
+    tl.to(this.spawnCrystal.position, {
+      y: 1.65,
+      ease: 'sine.inOut',
+      duration: 0.8,
     });
   }
 }

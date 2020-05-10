@@ -1,30 +1,35 @@
 <template>
-  <div>
-    <div class="quality-selection__box">
-      <div class="quality-selection__header">
-        <h1 class="quality-selection__title">Quel est votre pseudo ?</h1>
-        <Chevron class="quality-selection__chevron" />
+  <transition
+      @enter="enter"
+  >
+    <div @keyup.enter="validatePseudo" v-if="qualitySet && !storePseudo" class="pseudo-selection" ref="container">
+      <div class="quality-selection__box">
+        <div class="quality-selection__header">
+          <h1 class="quality-selection__title">Quel est votre pseudo ?</h1>
+          <Chevron class="quality-selection__chevron" />
+        </div>
+        <div class="pseudo-selection__container" ref="pseudo">
+          <input class="pseudo-selection__input" type="text" v-model="pseudo" placeholder="Pseudo" data-hover="big">
+          <Outline class="pseudo-selection__outline" />
+        </div>
       </div>
-      <div class="pseudo-selection__container">
-        <input class="pseudo-selection__input" type="text" v-model="pseudo" placeholder="Pseudo" data-hover="big">
-        <Outline class="pseudo-selection__outline"/>
-      </div>
-    </div>
 
-    <button class="btn-validate" @click="validatePseudo" data-hover="big" data-click="disapear">
-      <span>Valider</span>
-      <Arrow class="btn-validate__arrow"/>
-    </button>
-  </div>
+      <button class="btn-validate" @click="validatePseudo" data-hover="big" data-click="disapear">
+        <span>Valider</span>
+        <Arrow class="btn-validate__arrow"/>
+      </button>
+    </div>
+  </transition>
 </template>
 
 <script>
   import Chevron from '@/assets/icons/chevron.svg';
   import Arrow from '@/assets/icons/arrow.svg';
   import Outline from '@/assets/icons/pseudo.svg';
+  import gsap from 'gsap';
 
   export default {
-    name: "PseudoSelection",
+    name: 'PseudoSelection',
     components: {
       Chevron,
       Arrow,
@@ -35,6 +40,17 @@
         pseudo: null,
       }
     },
+    computed: {
+      qualitySet() {
+        return this.$store.state.quality;
+      },
+      storePseudo() {
+        return this.$store.state.pseudo;
+      },
+      isPlaying() {
+        return this.$store.state.isPlaying;
+      }
+    },
     watch: {
       pseudo(newValue, oldValue) {
         if (newValue.length < 10) return;
@@ -42,18 +58,51 @@
       }
     },
     methods: {
+      enter(el, done) {
+        console.log('enter');
+        gsap.to(this.$refs.container, {
+          opacity: 1,
+          duration: .5,
+          onComplete: () => {
+            done()
+          },
+        });
+      },
+      leave(el, done) {
+        gsap.to(this.$refs.container, {
+          opacity: 0,
+          duration: .5,
+          onComplete: () => {
+            done()
+          },
+        });
+      },
       validatePseudo() {
         this.$store.commit('setPseudo', this.pseudo);
+        if (this.pseudo) return;
+        const tl = gsap.timeline({ yoyo: true, repeat: 3 });
+        tl.to(this.$refs.pseudo, {
+          x: 10,
+          duration: .1,
+        });
+        tl.to(this.$refs.pseudo, {
+          x: -10,
+          duration: .1,
+        });
       }
     },
   }
 </script>
 
 <style lang="scss" scoped>
+  .pseudo-selection {
+    opacity: 0;
+  }
+
   .btn-validate {
     position: absolute;
-    bottom: 60px;
-    right: 80px;
+    bottom: 80px;
+    right: 120px;
     color: $white;
     font-size: 30px;
     font-family: $font-primary;

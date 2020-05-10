@@ -11,7 +11,9 @@ export default class ProjectileManager {
     this.playerPosition = new THREE.Vector3();
 
     document.addEventListener('stateUpdate', e => {
+      console.log('stateUpdate');
       if (e.detail !== 'projectile_sequence_start') return;
+      console.log('launchprojkectile');
       const arr = landingAreas.slice(0, 4);
       this.proj = new Projectile(towers[0], arr, this.scene, this.towerElements[0]);
       this.proj.launchSequence();
@@ -25,6 +27,8 @@ export default class ProjectileManager {
   }
 
   update() {
+    this.towerElements[0].crystal.rotation.y += 0.01;
+
     if(!this.proj) return
     this.proj.detectLandingArea(this.playerPosition, this.world);
   }

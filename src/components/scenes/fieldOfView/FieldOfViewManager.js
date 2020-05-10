@@ -65,6 +65,8 @@ export default class FieldOfViewManager {
 
   update() {
     this.isMoving = false;
+    this.towerElements[1].crystal.rotation.y += 0.01;
+
     if(this.fieldOfViews.length === 0) return;
     const movingFov = this.fieldOfViews.filter(fieldOfView => fieldOfView.anime);
     for (let i = 0; i < movingFov.length; i++) {
@@ -76,6 +78,12 @@ export default class FieldOfViewManager {
     this.proj.detectLandingArea(this.lastPosition, this.world);
   }
 
+  /**
+   * Create new field of view
+   * @param x
+   * @param z
+   * @param index
+   */
   addFieldOfView(x, z, index) {
     let geometry = new THREE.CircleGeometry(
       3,
@@ -102,6 +110,10 @@ export default class FieldOfViewManager {
     this.scene.add(this.fieldOfView);
   }
 
+  /**
+   * Detect if player is in field
+   * @param position
+   */
   detectFieldOfView(position){
     const ray = new Raycaster(
       position,

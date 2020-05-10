@@ -54,6 +54,7 @@ export default class {
     this.landingAreas = [];
     this.walls = new THREE.Mesh();
     this.crystals = [];
+    this.spawnCrystal = new THREE.Object3D();
 
     document.addEventListener('stateUpdate', (e) => {
       if (e.detail !== GAME_STATES.infiltration_sequence_start) return;
@@ -154,9 +155,10 @@ export default class {
   }
 
   async addMap() {
-    const gltf = await LoadManager.loadGLTF('./assets/models/map/map09-05.glb');
+    const gltf = await LoadManager.loadGLTF('./assets/models/map/Map7.glb');
     let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
     gltf.scene.traverse((child) => {
+      // console.log(child.name);
       if (child.name.startsWith('section')) {
         child.material.transparent = true;
         child.material.opacity = 0;
@@ -176,7 +178,6 @@ export default class {
         this.spline = child;
       }
       if (sectionName.includes(child.name)) {
-        //console.log(child.name)
         this.sections.push(child);
       }
       if (['m1', 'm2', 'm3'].includes(child.name)) {
@@ -191,6 +192,9 @@ export default class {
       }
       if(child.name.startsWith('z')) {
         this.landingAreas.push(child);
+      }
+      if(child.name === 'Crystal'){
+        this.spawnCrystal = child;
       }
     });
 
@@ -285,7 +289,7 @@ export default class {
   }
 
   setSpawn() {
-    this.addScene(new SpawnScene(this.world, this.spline, this.sections, () => this.moveNPC()));
+    this.addScene(new SpawnScene(this.world, this.spline, this.sections, () => this.moveNPC(), this.spawnCrystal));
   }
 
   setFov() {
