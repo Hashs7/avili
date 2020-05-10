@@ -7,6 +7,7 @@ import LoadManager from "../../core/LoadManager";
 import State from "../../core/State";
 import TestimonyManager from "../../core/TestimonyManager";
 import { GAME_STATES } from "../../../constantes";
+import {toRadian} from "../../../utils";
 
 export default class extends Scene {
   constructor(world, spline, sections, finishCallback, spawnCrystal) {
@@ -30,6 +31,8 @@ export default class extends Scene {
     this.detectSectionPassed();
     this.spawnCrystal = spawnCrystal;
     this.crystalStep = 0.001;
+
+    this.addPortal();
 
     // Mettre a false pour jouer la première partie
     //TODO Lorsqu'on appuie sur joueur
@@ -148,5 +151,17 @@ export default class extends Scene {
 
       //AudioManager.playSound(audio);
     });
+  }
+
+  addPortal() {
+    const geometry = new THREE.PlaneBufferGeometry( 1.8, 2.5, 1 );
+    const material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.BackSide} );
+    const plane = new THREE.Mesh( geometry, material );
+    plane.position.set(11.61, 1.25, 0.18);
+    plane.rotation.y = toRadian(90);
+
+    //TODO : Add animated texture
+
+    this.scene.add( plane );
   }
 }

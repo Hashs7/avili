@@ -216,7 +216,7 @@ export default class extends Character {
     // const speed = isStrafing ? this.speed / 2 : this.speed;
     // this.character.body.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
     // this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
-    //console.log(this.group.position);
+    // console.log(this.group.position);
     // get nextPosition
     if(!this.walkable) return;
     this.nextPosition = {

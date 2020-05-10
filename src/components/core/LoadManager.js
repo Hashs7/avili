@@ -94,7 +94,7 @@ class LoadManager {
       this.follower.enable = false;
     }
     if (!this.store) return;
-    console.log('store', this.store);
+    //console.log('store', this.store);
     this.store.commit('setLoading', true);
     //console.log('start ', url, itemsLoaded, itemsTotal);
   }
