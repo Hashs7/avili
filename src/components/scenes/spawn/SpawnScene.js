@@ -29,7 +29,6 @@ export default class extends Scene {
     }, 5000);*/
     this.detectSectionPassed();
     this.spawnCrystal = spawnCrystal;
-    console.log(this.spawnCrystal);
     this.crystalStep = 0.001;
 
     // Mettre a false pour jouer la première partie
@@ -149,14 +148,5 @@ export default class extends Scene {
 
       //AudioManager.playSound(audio);
     });
-  }
-
-  extractCrystalElements() {
-    const crystalElements = {mainCrystal: null, smallCrystals: []}
-    this.spawnCrystal.traverse(child => {
-      if(child.name === "crystal") crystalElements.mainCrystal = child;
-      else if(child.name.startsWith("crystalMini")) crystalElements.smallCrystals.push(child);
-    });
-    return crystalElements;
   }
 }
