@@ -8,6 +8,7 @@ import State from "../../core/State";
 import TestimonyManager from "../../core/TestimonyManager";
 import { GAME_STATES } from "../../../constantes";
 import {toRadian} from "../../../utils";
+import gsap from 'gsap';
 
 export default class extends Scene {
   constructor(world, spline, sections, finishCallback, spawnCrystal) {
@@ -30,7 +31,7 @@ export default class extends Scene {
     }, 5000);*/
     this.detectSectionPassed();
     this.spawnCrystal = spawnCrystal;
-    this.crystalStep = 0.001;
+    this.upAndDownCrystalAnimation();
 
     this.addPortal();
 
@@ -63,10 +64,14 @@ export default class extends Scene {
   update() {
     if(!this.spawnCrystal) return;
     this.spawnCrystal.rotation.y += 0.01;
-    let crystalPos = this.spawnCrystal.position.y;
-    if(crystalPos > 1.8 || crystalPos < 1.4) this.crystalStep = -this.crystalStep;
-    //console.log(crystalPos);
-    this.spawnCrystal.position.y += this.crystalStep;
+  }
+
+  normalize(value, min, max) {
+    return (value - min) / (max - min);
+  }
+
+  easeInOutCubic(x) {
+    return x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2;
   }
 
   initTravelling() {
@@ -163,5 +168,14 @@ export default class extends Scene {
     //TODO : Add animated texture
 
     this.scene.add( plane );
+  }
+
+  upAndDownCrystalAnimation() {
+    const tl = gsap.timeline({repeat: -1, yoyo: true});
+    tl.to(this.spawnCrystal.position, {
+      y: 1.65,
+      ease: 'sine.inOut',
+      duration: 0.8,
+    });
   }
 }
