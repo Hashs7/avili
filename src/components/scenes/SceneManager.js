@@ -154,9 +154,10 @@ export default class {
   }
 
   async addMap() {
-    const gltf = await LoadManager.loadGLTF('./assets/models/map/map09-05.glb');
+    const gltf = await LoadManager.loadGLTF('./assets/models/map/map10.glb');
     let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
     gltf.scene.traverse((child) => {
+      // console.log(child.name);
       if (child.name.startsWith('section')) {
         child.material.transparent = true;
         child.material.opacity = 0;
@@ -176,7 +177,6 @@ export default class {
         this.spline = child;
       }
       if (sectionName.includes(child.name)) {
-        //console.log(child.name)
         this.sections.push(child);
       }
       if (['m1', 'm2', 'm3'].includes(child.name)) {

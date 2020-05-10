@@ -222,6 +222,7 @@ export default class extends Character {
     this.nextPosition = {
       x: Math.sin(this.character.rotation.y + decay) * this.speed,
       z: Math.cos(this.character.rotation.y + decay) * this.speed};
+
     if (this.detectWallCollision(this.nextPosition)) {
       this.setWalking(false);
       return;
@@ -250,16 +251,19 @@ export default class extends Character {
   }
 
   setWalking(walk) {
-    if (this.isWalking === walk) return;
-    this.isWalking = walk;
-    console.log('setWalking');
+    console.log(walk);
     if (walk) {
       const playerMovedEvent = new CustomEvent('playerMoved', {
         detail: this.character,
       });
       document.dispatchEvent(playerMovedEvent);
     }
+    console.log(this.isWalking === walk);
+
+    if (this.isWalking === walk) return;
+    this.isWalking = walk;
     // this.prepareCrossFade(this.runAction);
+    console.log('crossfade', walk ? this.runAction : this.idleAction);
     this.prepareCrossFade(walk ? this.runAction : this.idleAction);
   }
 

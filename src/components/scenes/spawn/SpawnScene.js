@@ -123,6 +123,7 @@ export default class extends Scene {
       const state = new State();
 
       if (objs[0].object.name === "sectionTuto") {
+        console.log('sectionTutopassed');
         state.goToState("projectile_sequence_start");
       }
 
