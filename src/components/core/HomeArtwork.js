@@ -55,8 +55,21 @@ export default class {
     this.render()
   }
 
-  setQuality() {
-
+  setQuality(name) {
+    switch (name) {
+      case 'Basse':
+        this.renderer.antialias = false;
+        this.renderer.powerPreference  = 'low-power';
+        break;
+      case 'Moyenne':
+        this.renderer.antialias = false;
+        this.renderer.powerPreference  = 'default';
+        break;
+      case 'Élevé':
+        this.renderer.antialias = true;
+        this.renderer.powerPreference = 'high-performance';
+        break;
+    }
   }
 
   createScene( scene ) {
