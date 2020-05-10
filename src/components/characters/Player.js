@@ -148,7 +148,7 @@ export default class extends Character {
 
   handleKeyboardEvent(event, code, pressed, moving) {
     if (!this.walkable) return;
-    this.isWalking = moving;
+    // this.isWalking = moving;
     if (!moving && this.action !== ACTIONS.IDLE) {
       this.prepareCrossFade(this.idleAction);
       return;
@@ -156,7 +156,7 @@ export default class extends Character {
 
     this.crossActions(moving).forEach((ac) => {
       if (!ac.condition) return;
-      this.prepareCrossFade(ac.action);
+      // this.prepareCrossFade(ac.action);
     });
   }
 
@@ -170,7 +170,6 @@ export default class extends Character {
     const originPoint = new THREE.Vector3().setFromMatrixPosition(hitbox.matrixWorld);
     originPoint.x += nextPosition.x;
     originPoint.z += nextPosition.z;
-    //console.log(hitbox.geometry.vertices.length);
 
     for (let vertexIndex = 0; vertexIndex < hitbox.geometry.vertices.length; vertexIndex++) {
 
@@ -251,19 +250,15 @@ export default class extends Character {
   }
 
   setWalking(walk) {
-    console.log(walk);
     if (walk) {
       const playerMovedEvent = new CustomEvent('playerMoved', {
         detail: this.character,
       });
       document.dispatchEvent(playerMovedEvent);
     }
-    console.log(this.isWalking === walk);
 
     if (this.isWalking === walk) return;
     this.isWalking = walk;
-    // this.prepareCrossFade(this.runAction);
-    console.log('crossfade', walk ? this.runAction : this.idleAction);
     this.prepareCrossFade(walk ? this.runAction : this.idleAction);
   }
 
