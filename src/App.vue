@@ -4,6 +4,7 @@
     <Follower ref="follower"/>
     <Testimony ref="testimony"/>
     <Indication ref="indication"/>
+    <Communication ref="communication"/>
 
     <router-view/>
 
@@ -21,6 +22,7 @@
   import Follower from '@/components/UI/Follower';
   import Testimony from '@/components/UI/layout/Testimony';
   import Indication from '@/components/UI/layout/Indication';
+  import Communication from '@/components/UI/layout/Communication';
 
   export default {
     name: 'App',
@@ -29,6 +31,7 @@
       Follower,
       Testimony,
       Indication,
+      Communication,
     },
     data() {
       return {
