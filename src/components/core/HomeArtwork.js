@@ -38,28 +38,15 @@ export default class {
   }
 
   init() {
-    // LIGHTS
     this.scene.add( new THREE.AmbientLight( 0xfefefe, .1));
     this.spotLight.position.set( 5, 10, 7.5 );
-    // this.spotLight.castShadow = true;
     this.spotLight.penumbra = 1;
     this.spotLight.decay = 1;
     this.scene.add( this.spotLight );
 
-    /*const mapHeight = new THREE.TextureLoader().load( "./assets/models/characters/Infinite-Level_02_Disp_NoSmoothUV-4096.jpg" );
-
-    const material = new THREE.MeshPhongMaterial( {
-      color: 0x552811,
-      specular: 0x222222,
-      shininess: 25,
-      bumpMap: mapHeight,
-      bumpScale: 12
-    } );*/
-
     new GLTFLoader().load( "./assets/models/characters/artwork.glb", ( gltf ) => {
       this.createScene(gltf.scene);
     });
-
 
     if ( this.statsEnabled ) {
       this.stats = new Stats();
@@ -113,11 +100,13 @@ export default class {
     this.spotLight = null;
     this.camera = null;
     this.canvas.remove();
+    // TODO remove listeners
     // window.removeListener('mousemove', this.mouseListener, { passive: true });
     // window.removeListener('resize', this.resizeListener, { passive: true });
   }
 
   resize() {
+    if (!this.camera) return;
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight, false);

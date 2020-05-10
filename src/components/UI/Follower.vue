@@ -47,14 +47,16 @@
     methods: {
       setState(newState) {
         if (this.state === newState) return;
-        this.applyAnimation(newState)
+        this.applyAnimation(newState);
       },
       enterFollower() {
+        if (!this.enable) return;
         this.state = 'initial';
         gsap.killTweensOf(this.$refs.follower, 'scale');
         gsap.to(this.$refs.follower, 0.2, { scale: 1, opacity: 1 });
       },
       leaveFollower() {
+        if (!this.enable) return;
         this.state = 'leave';
         gsap.to(this.$refs.follower, 0.2, { scale: 0, opacity: 0 });
       },

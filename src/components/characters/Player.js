@@ -222,13 +222,16 @@ export default class extends Character {
     this.nextPosition = {
       x: Math.sin(this.character.rotation.y + decay) * this.speed,
       z: Math.cos(this.character.rotation.y + decay) * this.speed};
-    if(this.detectWallCollision(this.nextPosition)) return;
+    if (this.detectWallCollision(this.nextPosition)) {
+      this.setWalking(false);
+      return;
+    }
 
     this.group.position.x += this.nextPosition.x;
     this.group.position.z += this.nextPosition.z;
     this.spotLight.position.x += this.nextPosition.x;
     this.spotLight.position.z += this.nextPosition.z;
-    this.setWalking();
+    this.setWalking(true);
   }
 
   update(timeStep) {
@@ -246,14 +249,18 @@ export default class extends Character {
     callback();
   }
 
-  setWalking() {
-    const playerMovedEvent = new CustomEvent('playerMoved', {
-      detail: this.character,
-    });
-    document.dispatchEvent(playerMovedEvent);
-    if (this.isWalking) return;
-    this.prepareCrossFade(this.runAction);
-    this.isWalking = true;
+  setWalking(walk) {
+    if (this.isWalking === walk) return;
+    this.isWalking = walk;
+    console.log('setWalking');
+    if (walk) {
+      const playerMovedEvent = new CustomEvent('playerMoved', {
+        detail: this.character,
+      });
+      document.dispatchEvent(playerMovedEvent);
+    }
+    // this.prepareCrossFade(this.runAction);
+    this.prepareCrossFade(walk ? this.runAction : this.idleAction);
   }
 
   setWalkable(value) {

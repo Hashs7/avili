@@ -171,6 +171,7 @@ export default class {
 
   setFollower(el) {
     this.follower = el;
+    LoadManager.setFollowerRef(el);
   }
 
   setQuality(name) {
