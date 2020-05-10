@@ -89,7 +89,18 @@ class LoadManager {
    * @param itemsTotal
    */
   startHandler(url, itemsLoaded, itemsTotal) {
+    if (!this.follower) return;
+    this.follower.leaveFollower();
+    this.follower.enable = false;
     //console.log('start ', url, itemsLoaded, itemsTotal);
+  }
+
+  /**
+   *
+   * @param el
+   */
+  setFollowerRef(el) {
+    this.follower = el;
   }
 
   /**
@@ -104,6 +115,9 @@ class LoadManager {
    * All elements are loaded
    */
   loadedHandler() {
+    if (!this.follower) return;
+    this.follower.enable = true;
+    this.follower.enterFollower();
     if (!this.loadedCallback) return;
     this.loadedCallback();
     this.loadedCallback = null;

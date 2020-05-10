@@ -48,11 +48,13 @@ export default class extends Scene {
       near: 0,
       duration: 2,
     }, 'fadeOut');
+
     tl.add(gsap.delayedCall(5, () => {
       player.teleport(new THREE.Vector3(0, 0, 0));
+      player.addPseudo();
       this.manager.mainScene.fog.near = 45;
-      console.log('fadein');
     }));
+
     const color = new THREE.Color(0x96e1ff);
 
     tl.to(this.manager.mainScene.fog.color, {
