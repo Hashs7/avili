@@ -10,7 +10,7 @@ export default new Vuex.Store({
     loadEnable: true,
     isLoading: false,
     quality: null, // Set default quality
-    isPlaying: true, // Skip settings intro
+    isPlaying: false, // Skip settings intro
   },
   mutations: {
     initScene(state, canvas) {
@@ -33,7 +33,6 @@ export default new Vuex.Store({
       state.pseudo = value;
     },
     setPlaying(state, value) {
-      console.log('isPlaying', value);
       state.isPlaying = value;
     }
   },
