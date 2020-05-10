@@ -251,14 +251,14 @@ export default class extends Character {
   }
 
   setWalking(walk) {
-    console.log(walk);
+    //console.log(walk);
     if (walk) {
       const playerMovedEvent = new CustomEvent('playerMoved', {
         detail: this.character,
       });
       document.dispatchEvent(playerMovedEvent);
     }
-    console.log(this.isWalking === walk);
+    //console.log(this.isWalking === walk);
 
     if (this.isWalking === walk) return;
     this.isWalking = walk;
