@@ -65,6 +65,8 @@ export default class FieldOfViewManager {
 
   update() {
     this.isMoving = false;
+    this.towerElements[1].crystal.rotation.y += 0.01;
+
     if(this.fieldOfViews.length === 0) return;
     const movingFov = this.fieldOfViews.filter(fieldOfView => fieldOfView.anime);
     for (let i = 0; i < movingFov.length; i++) {

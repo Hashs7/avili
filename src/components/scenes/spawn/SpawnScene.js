@@ -9,7 +9,7 @@ import TestimonyManager from "../../core/TestimonyManager";
 import { GAME_STATES } from "../../../constantes";
 
 export default class extends Scene {
-  constructor(world, spline, sections, finishCallback) {
+  constructor(world, spline, sections, finishCallback, spawnCrystal) {
     super();
     this.scene.name = 'SpawnScene';
     this.world = world;
@@ -28,7 +28,8 @@ export default class extends Scene {
       this.initTravelling();
     }, 5000);*/
     this.detectSectionPassed();
-
+    this.spawnCrystal = spawnCrystal;
+    this.crystalStep = 0.001;
 
     // Mettre a false pour jouer la première partie
     //TODO Lorsqu'on appuie sur joueur
@@ -54,6 +55,15 @@ export default class extends Scene {
       instance: this,
       scene: this.scene,
     };
+  }
+
+  update() {
+    if(!this.spawnCrystal) return;
+    this.spawnCrystal.rotation.y += 0.01;
+    let crystalPos = this.spawnCrystal.position.y;
+    if(crystalPos > 1.8 || crystalPos < 1.4) this.crystalStep = -this.crystalStep;
+    //console.log(crystalPos);
+    this.spawnCrystal.position.y += this.crystalStep;
   }
 
   initTravelling() {
