@@ -1,6 +1,6 @@
 <template>
   <div class="intro-layout" :style="{ backgroundImage: `url(${background})` }">
-    <CircleIcon class="circle-background" ref="circle" />
+    <CircleIcon class="circle-background" ref="circle" v-show="!(qualitySet && pseudo)"/>
     <slot></slot>
   </div>
 </template>
@@ -29,6 +29,15 @@
       }
     },
     computed: {
+      qualitySet() {
+        return this.$store.state.quality;
+      },
+      pseudo() {
+        return this.$store.state.pseudo;
+      },
+      isLoading() {
+        return this.$store.state.isLoading;
+      },
       isPlaying() {
         return this.$store.state.isPlaying;
       }

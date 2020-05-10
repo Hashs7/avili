@@ -52,8 +52,8 @@
 <style lang="scss" scoped>
   .btn-validate {
     position: absolute;
-    bottom: 60px;
-    right: 80px;
+    bottom: 80px;
+    right: 120px;
     color: $white;
     font-size: 30px;
     font-family: $font-primary;

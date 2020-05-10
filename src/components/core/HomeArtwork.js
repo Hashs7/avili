@@ -55,8 +55,8 @@ export default class {
     this.render()
   }
 
-  setQuality(name) {
-    switch (name) {
+  setQuality() {
+    switch (this.quality) {
       case 'Basse':
         this.renderer.antialias = false;
         this.renderer.powerPreference  = 'low-power';

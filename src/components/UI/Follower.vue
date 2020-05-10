@@ -1,5 +1,5 @@
 <template>
-  <div class="follower" ref="follower" >
+  <div class="follower" ref="follower" v-show="!isLoading">
     <CursorIcon />
   </div>
 </template>
@@ -19,6 +19,11 @@
         state: 'normal',
         isAnimating: false,
         pressed: false,
+      }
+    },
+    computed: {
+      isLoading() {
+        return this.$store.state.isLoading;
       }
     },
     mounted() {
@@ -94,7 +99,6 @@
         if (!follower) return;
         const relX = e.pageX  - (follower.offsetWidth / 2) ;
         const relY = e.pageY - (follower.offsetHeight / 2);
-
         gsap.to(follower, { x: relX, y: relY, duration: 0.3 });
         this.applyAnimation(e.target.dataset.hover)
       },

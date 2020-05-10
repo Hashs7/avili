@@ -89,9 +89,13 @@ class LoadManager {
    * @param itemsTotal
    */
   startHandler(url, itemsLoaded, itemsTotal) {
-    if (!this.follower) return;
-    this.follower.leaveFollower();
-    this.follower.enable = false;
+    if (this.follower) {
+      this.follower.leaveFollower();
+      this.follower.enable = false;
+    }
+    if (!this.store) return;
+    console.log('store', this.store);
+    this.store.commit('setLoading', true);
     //console.log('start ', url, itemsLoaded, itemsTotal);
   }
 
@@ -99,8 +103,9 @@ class LoadManager {
    *
    * @param el
    */
-  setFollowerRef(el) {
+  setUIRefs(el, store) {
     this.follower = el;
+    this.store = store;
   }
 
   /**
@@ -115,9 +120,14 @@ class LoadManager {
    * All elements are loaded
    */
   loadedHandler() {
-    if (!this.follower) return;
-    this.follower.enable = true;
-    this.follower.enterFollower();
+    if (this.store) {
+      console.log('store', this.store);
+      this.store.commit('setLoading', false);
+    }
+    if (this.follower) {
+      this.follower.enable = true;
+      this.follower.enterFollower();
+    }
     if (!this.loadedCallback) return;
     this.loadedCallback();
     this.loadedCallback = null;

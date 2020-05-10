@@ -7,7 +7,8 @@ export default new Vuex.Store({
   state: {
     canvasRef: null,
     pseudo: null,
-    isLoading: true,
+    loadEnable: true,
+    isLoading: false,
     quality: null, // Set default quality
     isPlaying: false, // Skip settings intro
   },
@@ -20,6 +21,9 @@ export default new Vuex.Store({
       state.camera = camera;
     },
     setLoader(state, value) {
+      state.loadEnable = value;
+    },
+    setLoading(state, value) {
       state.isLoading = value;
     },
     setQuality(state, value) {

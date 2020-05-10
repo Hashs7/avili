@@ -3,8 +3,8 @@
       @enter="enter"
       @leave="leave"
   >
-    <div v-show="isPlaying && isLoading || !completeTime">
-      <IntroLayout :show="isPlaying && isLoading || !completeTime">
+    <div v-show="isPlaying && loadEnable || !completeTime">
+      <IntroLayout :show="isPlaying && loadEnable || !completeTime">
         <div class="loader">
           <div class="loader__container">
             <span ref="progress" class="loader__progress"></span>
@@ -38,8 +38,8 @@
       }
     },
     computed: {
-      isLoading() {
-        return this.$store.state.isLoading;
+      loadEnable() {
+        return this.$store.state.loadEnable;
       },
       isPlaying() {
         return this.$store.state.isPlaying;
@@ -114,6 +114,7 @@
 <style lang="scss" scoped>
   .advertising {
     position: fixed;
+    z-index: 100;
     display: flex;
     justify-content: center;
     flex-direction: column;

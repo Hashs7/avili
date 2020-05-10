@@ -75,7 +75,7 @@
     },
     methods: {
       initWorld() {
-        this.world = new World(this.$refs.canvas, this.pseudo);
+        this.world = new World(this.$refs.canvas, this.$store, this.pseudo);
         this.world.setQuality(this.qualitySet);
         this.world.setTestimony(this.$refs.testimony, this.$t);
         // this.world.setIndication(this.$refs.indication, this.$t);
