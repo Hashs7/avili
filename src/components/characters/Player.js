@@ -50,23 +50,7 @@ export default class extends Character {
     };
 
     // const cylinderShape = new Cylinder(mesh.size.y/2, mesh.size.y/2,  mesh.size.x/2, 8);
-    /*const boxShape = new Box(new Vec3(size.x/2, size.y/2, size.x/2));
-
-    this.character.body = new Body({
-      mass: 5,
-      shape: boxShape,
-      position: new Vec3(this.character.position.x, 2, this.character.position.z),
-      // position: new Vec3().copy(this.character.position),
-      collisionFilterGroup: 1,
-      // collisionFilterMask:  GROUP1 // It can only collide with group 1 (the sphere)
-    });
-    this.character.body.addEventListener("collide", (e) => {
-      // console.log("The character just collided with ", e.name);
-      // console.log("Collided with body:",e.body);
-      // console.log("Contact between bodies:",e.contact);
-    });
-
-    this.world.addBody(this.character.body);*/
+    // const boxShape = new Box(new Vec3(size.x/2, size.y/2, size.x/2));
 
     const geometry = new THREE.CylinderGeometry( size.x, size.x, size.y, 3 );
     // const geometry = new THREE.BoxGeometry( mesh.size.y, mesh.size.z, mesh.size.y, 4);
@@ -148,10 +132,10 @@ export default class extends Character {
 
   handleKeyboardEvent(event, code, pressed, moving) {
     if (!this.walkable) return;
-    if (!moving && this.action !== ACTIONS.IDLE) {
+    if (!moving && this.action !== ACTIONS.IDLE && !this.inputManager.controls.up) {
+      console.log('crossfade');
       this.isWalking = moving;
       this.prepareCrossFade(this.idleAction);
-      // return;
     }
 
     /*this.crossActions(moving).forEach((ac) => {
@@ -172,7 +156,6 @@ export default class extends Character {
     originPoint.z += nextPosition.z;
 
     for (let vertexIndex = 0; vertexIndex < hitbox.geometry.vertices.length; vertexIndex++) {
-
       const localVertex = hitbox.geometry.vertices[vertexIndex].clone();
       const globalVertex = localVertex.applyMatrix4( hitbox.matrix );
       const directionVector = globalVertex.sub( hitbox.position );
@@ -220,7 +203,8 @@ export default class extends Character {
     if(!this.walkable) return;
     this.nextPosition = {
       x: Math.sin(this.character.rotation.y + decay) * this.speed,
-      z: Math.cos(this.character.rotation.y + decay) * this.speed};
+      z: Math.cos(this.character.rotation.y + decay) * this.speed
+    };
 
     if (this.detectWallCollision(this.nextPosition)) {
       this.setWalking(false);

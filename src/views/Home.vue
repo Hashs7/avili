@@ -2,7 +2,7 @@
   <div class="home">
     <IntroLayout v-if="!isPlaying" >
       <QualitySelection v-if="!qualitySet"/>
-      <PseudoSelection v-if="qualitySet && !pseudo" />
+      <PseudoSelection />
       <Artwork v-show="qualitySet && pseudo" />
     </IntroLayout>
   </div>

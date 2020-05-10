@@ -50,6 +50,7 @@
         gsap.to(this.$refs.testimony, {
           opacity: 0,
           y: 5,
+          delay: .1,
           duration: .5,
         });
       },

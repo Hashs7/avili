@@ -1,6 +1,6 @@
 <template>
   <div class="intro-layout" :style="{ backgroundImage: `url(${background})` }">
-    <CircleIcon class="circle-background" ref="circle" v-show="!(qualitySet && pseudo)"/>
+    <CircleIcon class="circle-background" ref="circle" v-show="!(qualitySet && pseudo) || isLoading"/>
     <slot></slot>
   </div>
 </template>

@@ -3,7 +3,7 @@
       @enter="enter"
       @leave="leave"
   >
-    <div v-show="isPlaying && loadEnable || !completeTime">
+    <div v-show="isPlaying && loadEnable || !completeTime" :class="{show: isPlaying && loadEnable || !completeTime}" class="loader-wrap" ref="loader">
       <IntroLayout :show="isPlaying && loadEnable || !completeTime">
         <div class="loader">
           <div class="loader__container">
@@ -74,7 +74,15 @@
           duration: 3,
         });*/
       },
-      enter(el, done) {},
+      enter(el, done) {
+        gsap.to(this.$refs.loader, {
+          opacity: 1,
+          duration: 0.1,
+          onComplete: () => {
+            done()
+          },
+        });
+      },
       leave(el, done) {
         gsap.to(this.$refs.advertising, {
           opacity: 0,
@@ -112,6 +120,12 @@
 </script>
 
 <style lang="scss" scoped>
+  .loader-wrap {
+    opacity: 0;
+    &.show {
+      opacity: 1;
+    }
+  }
   .advertising {
     position: fixed;
     z-index: 100;

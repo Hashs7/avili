@@ -139,6 +139,7 @@ class LoadManager {
    * @param itemsTotal
    */
   progressHandler( url, itemsLoaded, itemsTotal ) {
+    console.log('item', itemsLoaded, itemsTotal);
     //console.log(`${itemsLoaded / itemsTotal * 100 | 0}%`);
     if(!this.receiver) return;
     this.receiver.progressHandler(itemsLoaded / itemsTotal * 100 | 0)
