@@ -148,16 +148,16 @@ export default class extends Character {
 
   handleKeyboardEvent(event, code, pressed, moving) {
     if (!this.walkable) return;
-    // this.isWalking = moving;
     if (!moving && this.action !== ACTIONS.IDLE) {
+      this.isWalking = moving;
       this.prepareCrossFade(this.idleAction);
-      return;
+      // return;
     }
 
-    this.crossActions(moving).forEach((ac) => {
+    /*this.crossActions(moving).forEach((ac) => {
       if (!ac.condition) return;
-      // this.prepareCrossFade(ac.action);
-    });
+      this.prepareCrossFade(ac.action);
+    });*/
   }
 
   detectWallCollision(nextPosition){
