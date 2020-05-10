@@ -10,6 +10,7 @@ export default class extends Character {
     this.camera = camera;
     // this.speed = 0.1;
     this.speed = 0.05;
+    this.orientable = true;
     this.walkable = true;
     this.inputManager = new InputManager();
     this.inputManager.setInputReceiver(this);
@@ -80,7 +81,7 @@ export default class extends Character {
     this.inputManager.setInputReceiver(null);
   }
 
-  async groupCamera() {
+  groupCamera() {
     this.group.position.set(0, 0, 0);
     this.spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, Math.PI/10, 1);
     this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(this.group.position));
@@ -92,13 +93,16 @@ export default class extends Character {
     this.camera.position.set(-9, 6.5, 5.8);
     this.camera.lookAt(this.character.position);
     this.group.add(this.camera);
-    console.log(this.sceneManager.world.pseudo);
+  }
+
+  async addPseudo() {
     const playerName = await makeTextSprite(this.sceneManager.world.pseudo, { fontsize: 26, fontface: "Roboto Slab" });
     playerName.position.set(0, 1.6, 0);
     this.group.add(playerName);
   }
 
   mouseMoveHandler(event) {
+    if (!this.orientable) return;
     this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
     this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
     const obj = this.raycaster.intersectObjects( this.sceneManager.mainScene.children );
@@ -255,5 +259,9 @@ export default class extends Character {
   setWalkable(value) {
     this.walkable = value;
     this.prepareCrossFade(this.idleAction);
+  }
+
+  setOrientable(value) {
+    this.orientable = value;
   }
 }

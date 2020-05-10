@@ -117,6 +117,7 @@ export default class FieldOfViewManager {
       //TestimonyManager.speak('audio_mot_cuisine.mp3');
       const playerModel = this.player.group.children[0];
       this.player.setWalkable(false);
+      this.player.setOrientable(false);
       const rotation = Math.atan2( ( this.world.camera.position.x - playerModel.position.x ), ( this.world.camera.position.z - playerModel.position.z ) );
       this.armor().mask.material.transparent = true;
       this.armor().cape.material.transparent = true;
@@ -151,6 +152,7 @@ export default class FieldOfViewManager {
           });
         }
         this.player.setWalkable(true);
+        this.player.setOrientable(true);
       });
     }
   }
