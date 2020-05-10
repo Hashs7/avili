@@ -39,6 +39,7 @@ export default class {
 
   init() {
     this.scene.add( new THREE.AmbientLight( 0xfefefe, .1));
+    this.scene.fog = new THREE.Fog( 0x060708, 0.5, 20);
     this.spotLight.position.set( 5, 10, 7.5 );
     this.spotLight.penumbra = 1;
     this.spotLight.decay = 1;
