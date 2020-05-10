@@ -1,13 +1,13 @@
 <template>
-  <div>
+  <div @keyup.enter="validatePseudo">
     <div class="quality-selection__box">
       <div class="quality-selection__header">
         <h1 class="quality-selection__title">Quel est votre pseudo ?</h1>
         <Chevron class="quality-selection__chevron" />
       </div>
-      <div class="pseudo-selection__container">
+      <div class="pseudo-selection__container" ref="container">
         <input class="pseudo-selection__input" type="text" v-model="pseudo" placeholder="Pseudo" data-hover="big">
-        <Outline class="pseudo-selection__outline"/>
+        <Outline class="pseudo-selection__outline" />
       </div>
     </div>
 
@@ -22,9 +22,10 @@
   import Chevron from '@/assets/icons/chevron.svg';
   import Arrow from '@/assets/icons/arrow.svg';
   import Outline from '@/assets/icons/pseudo.svg';
+  import gsap from 'gsap';
 
   export default {
-    name: "PseudoSelection",
+    name: 'PseudoSelection',
     components: {
       Chevron,
       Arrow,
@@ -44,6 +45,16 @@
     methods: {
       validatePseudo() {
         this.$store.commit('setPseudo', this.pseudo);
+        if (this.pseudo) return;
+        const tl = gsap.timeline({ yoyo: true, repeat: 3 });
+        tl.to(this.$refs.container, {
+          x: 10,
+          duration: .1,
+        });
+        tl.to(this.$refs.container, {
+          x: -10,
+          duration: .1,
+        });
       }
     },
   }

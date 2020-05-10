@@ -45,13 +45,11 @@
     watch: {
       show(newVal) {
         if (!newVal) return;
-        console.log('remove event mousemove');
         window.removeEventListener('mousemove', this.mouseMove);
       },
     },
     mounted() {
       if (!this.$refs.circle) return;
-      console.log('event mousemove');
       this.rect = this.$refs.circle.getBoundingClientRect();
       window.addEventListener('mousemove', this.mouseMove, { passive: true });
       this.$on('hook:beforeDestroy', () => {
