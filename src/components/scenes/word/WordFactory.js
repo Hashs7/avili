@@ -1,6 +1,5 @@
 import * as THREE from "three/src/Three";
 import { Body, Box, PointToPointConstraint, Sphere, Vec3 } from "cannon-es/dist/index";
-import LoadManager from "../../core/LoadManager";
 import { toRadian } from "../../../utils";
 import { Quaternion } from "cannon-es";
 import Stats from 'stats.js'
@@ -193,7 +192,6 @@ export default class WordFactory {
     const pos = entity.point;
 
     if (pos && entity.object && entity.object.movable) {
-      console.log('inside');
       this.constraintDown = true;
       // Set marker on contact point
       this.setClickMarker(pos.x,pos.y,pos.z, this.scene);
@@ -213,7 +211,7 @@ export default class WordFactory {
   }
 
   // This function creates a virtual movement plane for the mouseJoint to move in
-  setScreenPerpCenter(point, camera) {
+  setScreenPerpCenter(point) {
     if(!this.gplane) {
       const planeGeo = new THREE.PlaneGeometry(100,100);
       const material = new THREE.MeshBasicMaterial( { transparent: true, opacity: 0 } );
@@ -275,7 +273,7 @@ export default class WordFactory {
   }
 
   // This functions moves the transparent joint body to a new postion in space
-  moveJointToPoint(x,y,z) {
+  moveJointToPoint(x, y) {
     // Move the joint body to a new position
     // this.jointBody.position.set(x,y,z);
     this.jointBody.position.y = y;

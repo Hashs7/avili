@@ -59,7 +59,6 @@
     },
     methods: {
       enter(el, done) {
-        console.log('enter');
         gsap.to(this.$refs.container, {
           opacity: 1,
           duration: .5,

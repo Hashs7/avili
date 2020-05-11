@@ -23,7 +23,6 @@ export default class extends Scene {
   blackFade() {
     const player = this.manager.world.getPlayer();
     const tl = gsap.timeline({ repeat: 0 });
-    console.log(this.manager.mainScene);
     tl.to(this.manager.globalLight, {
       intensity: 0,
       duration: 1,
