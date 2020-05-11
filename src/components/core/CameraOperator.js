@@ -26,7 +26,7 @@ class CameraOperator{
   setup(world, camera) {
     this.world = world;
     this.camera = camera;
-    this.parent = world.gameManager.sceneManager.mainScene;
+    this.parent = world.sceneManager.mainScene;
   }
 
   /**

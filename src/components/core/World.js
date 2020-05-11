@@ -2,7 +2,6 @@ import * as THREE from "three";
 import Stats from 'stats.js'
 import Konami from 'konami'
 import CameraOperator from "./CameraOperator";
-import { GameManager } from "./GameManager";
 import Player from "../characters/Player";
 import LoadManager from './LoadManager';
 import { NaiveBroadphase, World } from "cannon-es";
@@ -10,6 +9,7 @@ import AudioManager from "./AudioManager";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import TestimonyManager from "./TestimonyManager";
 import {EffectComposer} from "three/examples/jsm/postprocessing/EffectComposer";
+import SceneManager from "../scenes/SceneManager";
 
 export default class {
   constructor(canvas, store, pseudo) {
@@ -46,7 +46,7 @@ export default class {
     this.player = null;
     this.lastCheckpointCoord = new THREE.Vector3();
 
-    this.gameManager = new GameManager(this, this.world, this.camera);
+    this.sceneManager = new SceneManager(this, this.world, this.camera);
     this.cameraOperator = CameraOperator;
     CameraOperator.setup(this, this.camera);
 
@@ -112,7 +112,7 @@ export default class {
   async loadAssets() {
     const gltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v10.glb');
     this.audioManager.loadAudio();
-    this.player = new Player(gltf, this.world, this.camera, this.gameManager.sceneManager, 'Emilie');
+    this.player = new Player(gltf, this.world, this.camera, this.sceneManager, 'Emilie');
     // this.player.groupCamera();
   }
 
@@ -129,7 +129,7 @@ export default class {
     if(this.player) {
       this.player.update(timeStep)
     }
-    this.gameManager.sceneManager.update();
+    this.sceneManager.update();
     this.cameraOperator.renderFollowCamera();
     this.updatePhysics(timeStep);
   }
@@ -152,7 +152,7 @@ export default class {
     // let timeStep = (this.renderDelta + this.logicDelta) * this.params.Time_Scale;
     this.update(timeStep);
     this.logicDelta = this.clock.getDelta();
-    this.renderer.render(this.gameManager.sceneManager.mainScene, this.camera);
+    this.renderer.render(this.sceneManager.mainScene, this.camera);
     requestAnimationFrame(() => this.render());
     this.stats.end();
   }
@@ -211,5 +211,17 @@ export default class {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight, false);
+  }
+
+  /**
+   * Destroy all world objects
+   */
+  destroy() {
+    cancelAnimationFrame(this.loop);
+    this.scene = null;
+    this.spotLight = null;
+    this.camera = null;
+    this.sceneManager.destroy();
+    this.player.destroy();
   }
 }
