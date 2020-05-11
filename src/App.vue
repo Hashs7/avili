@@ -8,7 +8,11 @@
 
     <router-view/>
 
-    <canvas class="webgl-render" ref="canvas"/>
+    <canvas v-if="!isFinal" class="webgl-render" ref="canvas"/>
+    <div v-else>
+      <h1>Fin du jeu</h1>
+    </div>
+
 
     <div v-if="notSupported" class="not-supported">
       <p>L'expérience n'a pas été prévu pour cet appareil</p>
@@ -58,6 +62,9 @@
       },
       pseudo() {
         return this.$store.state.pseudo;
+      },
+      isFinal() {
+        return this.$store.state.isFinal;
       }
     },
     watch: {

@@ -66,7 +66,7 @@ export default class extends Character {
   }
 
   groupCamera() {
-    this.group.position.set(70, 0, 0);
+    this.group.position.set(110, 0, 0);
     this.spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, Math.PI/10, 1);
     this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(this.group.position));
     this.spotLight.castShadow = true;
@@ -82,6 +82,7 @@ export default class extends Character {
   async addPseudo() {
     const playerName = await makeTextSprite(this.sceneManager.world.pseudo, { fontsize: 26, fontface: "Roboto Slab" });
     playerName.position.set(0, 1.6, 0);
+    playerName.name = "pseudo";
     this.group.add(playerName);
   }
 
