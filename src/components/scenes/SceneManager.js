@@ -70,7 +70,6 @@ export default class {
     // new Skybox(this.mainScene, 'afterrain');
     this.globalLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.7);
     this.addFloor();
-    this.addMap();
     this.mainScene.add(this.globalLight);
     this.mainScene.fog = new THREE.Fog(0x96e1ff, 45, 50);
     // this.mainScene.fog = new THREE.Fog( 0x96e1ff, 7, 50);
@@ -153,8 +152,7 @@ export default class {
     this.mainSceneAddObject(plane);
   }
 
-  async addMap() {
-    const gltf = await LoadManager.loadGLTF('./assets/models/map/Map7.glb');
+  async addMap(gltf) {
     let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
     gltf.scene.traverse((child) => {
       // console.log(child.name);
@@ -368,5 +366,9 @@ export default class {
     for (let i = 0; i < this.npc.length; i++) {
       this.npc[i].update(this.world.clock.getDelta());
     }
+  }
+
+  destroy() {
+    // Dispose all objects
   }
 }

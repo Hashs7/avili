@@ -110,16 +110,17 @@ export default class {
    * Load all environement props
    */
   async loadAssets() {
-    const gltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v10.glb');
+    const mapGltf = await LoadManager.loadGLTF('./assets/models/map/Map7.glb');
+    this.sceneManager.addMap(mapGltf);
+    const playerGltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v10.glb');
     this.audioManager.loadAudio();
-    this.player = new Player(gltf, this.world, this.camera, this.sceneManager, 'Emilie');
+    this.player = new Player(playerGltf, this.world, this.camera, this.sceneManager, 'Emilie');
     // this.player.groupCamera();
   }
 
   getPlayer() {
     return this.player;
   }
-
 
   /**
    * Handle logic to update each frame
@@ -217,10 +218,8 @@ export default class {
    * Destroy all world objects
    */
   destroy() {
+    this.clock.stop()
     cancelAnimationFrame(this.loop);
-    this.scene = null;
-    this.spotLight = null;
-    this.camera = null;
     this.sceneManager.destroy();
     this.player.destroy();
   }
