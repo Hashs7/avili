@@ -1,4 +1,5 @@
 export default {
+  // Testimony subtitles
   black_screen: {
     0: {
       sentence: "EN Ce que je préfère c'est les jeux multijoueurs.",
@@ -18,41 +19,41 @@ export default {
       last: 'false',
     },
     2: {
-      sentence: "EN C’est vraiment plus excitant que de jouer toute seule.",
+      sentence: "C’est vraiment plus excitant que de jouer toute seule.",
       time: '3000',
       last: 'true',
     }
   },
   spawn_mates: {
     0: {
-      sentence: "EN Mais voilà je suis une femme alors je n'ai pas les même expérience de jeu qu'un homme",
+      sentence: "Mais voilà je suis une femme alors je n'ai pas les même expérience de jeu qu'un homme",
       time: '5000',
       last: 'false',
     },
     1: {
-      sentence: "EN Genre si un homme fait des erreurs on va l'insulter sur ses skills,",
+      sentence: "Genre si un homme fait des erreurs on va l'insulter sur ses skills,",
       time: '3000',
       last: 'false',
     },
     2: {
-      sentence: "EN Mais pour une femme c'est différent tout de suite c'est mon genre qui va porter préjudice je vais avoir le droit à des insultes sexiste, mysogynes",
+      sentence: "Mais pour une femme c'est différent tout de suite c'est mon genre qui va porter préjudice je vais avoir le droit à des insultes sexiste, mysogynes...",
       time: '10000',
       last: 'false',
     },
     3: {
-      sentence: "Du coup je parle hyper rarement dans les parties en ligne même si à certain moment ça pourrait me sorti de situation compliquée en faite",
+      sentence: "Du coup je parle hyper rarement dans les parties en ligne même si à certain moment ça pourrait me sortir de situation compliquée en faite",
       time: '8000',
       last: 'false',
     },
     4: {
-      sentence: "Je préfère m'abstenir parce que ma voix elle risquerai d'enclencher une vague de haine",
+      sentence: "Je préfère m'abstenir parce que ma voix elle risquerait d'enclencher une vague de haine",
       time: '8000',
       last: 'true',
     }
   },
   spawn_player: {
     0: {
-      sentence: "Bah c'est triste à dire mais je dois me faire discrète même auprès de mes coéquipiers et puis ...",
+      sentence: "Bah c'est triste à dire mais je dois me faire discrète même auprès de mes coéquipiers et puis...",
       time: '7000',
       last: 'true',
     },
@@ -111,5 +112,18 @@ export default {
       time: '1000',
       last: 'true',
     },
+  },
+
+  // Indications helper
+  indications: {
+    start: {
+      title: 'Movements',
+      text: 'Appuyez sur la touche z pour avancer et utilisez votre souris pour vous orienter',
+    }
+  },
+
+  // UI
+  ui: {
+    play: 'Play'
   }
 };
