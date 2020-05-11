@@ -108,7 +108,6 @@ export default class {
   }
 
   ambianceWordsTransition() {
-    console.log('ambianceWordsTransition');
     const { spotLight } = this.world.getPlayer();
 
     // const nextColor = new THREE.Color(0x05052b);

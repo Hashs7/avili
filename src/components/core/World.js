@@ -10,7 +10,6 @@ import AudioManager from "./AudioManager";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import TestimonyManager from "./TestimonyManager";
 import {EffectComposer} from "three/examples/jsm/postprocessing/EffectComposer";
-import {RenderPass} from "three/examples/jsm/postprocessing/RenderPass";
 
 export default class {
   constructor(canvas, store, pseudo) {
@@ -81,7 +80,6 @@ export default class {
   }
 
   setPostProcessing(enable) {
-    console.log('setPostProcessing', enable);
     cancelAnimationFrame(this.loop);
     if (enable) {
       this.renderPostProcessing();
@@ -97,8 +95,8 @@ export default class {
       some_data: 'foo',
       some_more_data: 'bar'
     });
-    this.worker.addEventListener('onmessage', (e) => {
-      console.log('worker result', e);
+    this.worker.addEventListener('onmessage', () => {
+      // console.log('worker result', e);
     })
   }
 

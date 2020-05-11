@@ -64,13 +64,11 @@
       }
     },
     mounted() {
-      console.log(this.isPlaying, this.loadEnable, !this.completeTime);
       if (!this.isPlaying) return;
       this.initLoader();
     },
     methods: {
       initLoader() {
-        console.log('initLoader');
         this.completeTime = false;
         LoadManager.setReceiver(this);
         setTimeout(() => this.completeTime = true, this.minTime);
@@ -87,7 +85,6 @@
         });*/
       },
       enter(el, done) {
-        console.log('enter loader');
         gsap.to(this.$refs.loader, {
           opacity: 1,
           duration: 0.1,

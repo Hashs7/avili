@@ -100,9 +100,6 @@ export default class extends Character {
       if (Math.sqrt(position.x * position.x + position.z * position.z) < 0.1) continue;
       this.character.rotation.y = Math.atan2(position.x, position.z);
     }
-    obj.forEach(el => {
-
-    });
   }
 
   /**
@@ -136,7 +133,6 @@ export default class extends Character {
   handleKeyboardEvent(event, code, pressed, moving) {
     if (!this.walkable) return;
     if (!moving && this.action !== ACTIONS.IDLE && !this.inputManager.controls.up) {
-      console.log('crossfade');
       this.isWalking = moving;
       this.prepareCrossFade(this.idleAction);
     }

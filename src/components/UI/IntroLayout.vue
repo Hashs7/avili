@@ -53,7 +53,6 @@
       this.rect = this.$refs.circle.getBoundingClientRect();
       window.addEventListener('mousemove', this.mouseMove, { passive: true });
       this.$on('hook:beforeDestroy', () => {
-        console.log('remove event mousemove');
         window.removeEventListener('mousemove', this.mouseMove);
       });
     },
@@ -61,23 +60,6 @@
       mouseMove(e) {
         const detectDistance = 1000;
         const movingDistance = 30;
-
-        /*
-         // detect if cursor is too far
-         if (!this.isNear(e, detectDistance)) {
-         gsap.to(this.$refs.highlightContainer, {
-         x: -this.delta,
-         y: this.delta,
-         duration: 0.8,
-         });
-         gsap.to(this.$refs.highlight, {
-         x: this.delta,
-         y: -this.delta,
-         duration: 0.8,
-         });
-         return;
-         }
-         */
 
         const center = {
           x: this.rect.left + this.rect.width / 2,

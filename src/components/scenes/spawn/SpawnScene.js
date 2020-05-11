@@ -1,9 +1,6 @@
 import Scene from '../Scene';
-import { Curves } from "three/examples/jsm/curves/CurveExtras";
 import * as THREE from "three";
 import {Raycaster} from "three";
-import AudioManager from "../../core/AudioManager";
-import LoadManager from "../../core/LoadManager";
 import State from "../../core/State";
 import TestimonyManager from "../../core/TestimonyManager";
 import { GAME_STATES } from "../../../constantes";
@@ -75,9 +72,9 @@ export default class extends Scene {
   }
 
   initTravelling() {
-    const geometry = new THREE.TubeGeometry(this.spline);
+    /*const geometry = new THREE.TubeGeometry(this.spline);
     const material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
-    const splineObject = new THREE.Line( geometry, material );
+    const splineObject = new THREE.Line( geometry, material );*/
     // this.world.cameraOperator.addTube(this.spline);
     /*this.world.cameraOperator.addTube(
       new Curves.GrannyKnot(),
@@ -141,7 +138,6 @@ export default class extends Scene {
       const state = new State();
 
       if (objs[0].object.name === "sectionTuto") {
-        console.log('sectionTutopassed');
         state.goToState("projectile_sequence_start");
       }
 

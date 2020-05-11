@@ -88,6 +88,7 @@ class LoadManager {
    * @param itemsLoaded
    * @param itemsTotal
    */
+  // eslint-disable-next-line
   startHandler(url, itemsLoaded, itemsTotal) {
     if (this.follower) {
       this.follower.leaveFollower();
@@ -120,7 +121,6 @@ class LoadManager {
    */
   loadedHandler() {
     if (this.store) {
-      console.log('store', this.store);
       this.store.commit('setLoading', false);
     }
     if (this.follower) {
@@ -139,7 +139,6 @@ class LoadManager {
    * @param itemsTotal
    */
   progressHandler( url, itemsLoaded, itemsTotal ) {
-    console.log('item', itemsLoaded, itemsTotal);
     //console.log(`${itemsLoaded / itemsTotal * 100 | 0}%`);
     if(!this.receiver) return;
     this.receiver.progressHandler(itemsLoaded / itemsTotal * 100 | 0)
@@ -150,6 +149,7 @@ class LoadManager {
    * @param url
    */
   errorHandler(url) {
+    // eslint-disable-next-line
     console.error( 'There was an error loading ' + url );
   }
 }

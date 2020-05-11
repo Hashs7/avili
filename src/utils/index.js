@@ -31,7 +31,7 @@ export const makeTextSprite = async ( message, parameters ) => {
   context.font = "Bold " + fontsize + "px " + fontface;
 
   // get size data (height depends only on font size)
-  const metrics = context.measureText( message );
+  // const metrics = context.measureText( message );
 
   // background color
   context.fillStyle   = "rgba(" + backgroundColor.r + "," + backgroundColor.g + ","
@@ -49,8 +49,6 @@ export const makeTextSprite = async ( message, parameters ) => {
   context.shadowColor = "rgba(0, 0, 0, 1.0)";
   context.shadowOffsetX = -3;
   context.shadowOffsetY = 3;
-  console.log(metrics);
-  console.log(canvas.width);
   context.textAlign =  "center";
   context.fillText( message, canvas.width/2, fontsize + 15);
 
@@ -64,7 +62,16 @@ export const makeTextSprite = async ( message, parameters ) => {
   return sprite;
 };
 
-// function for drawing rounded rectangles
+/**
+ * function for drawing rounded rectangles
+ * @param ctx
+ * @param x
+ * @param y
+ * @param w
+ * @param h
+ * @param r
+ */
+/*
 const roundRect = (ctx, x, y, w, h, r) => {
   ctx.beginPath();
   ctx.moveTo(x+r, y);
@@ -80,6 +87,7 @@ const roundRect = (ctx, x, y, w, h, r) => {
   ctx.fill();
   ctx.stroke();
 };
+*/
 
 export const drawRay = (pointA, pointB) => {
   const geometry = new THREE.BufferGeometry().setFromPoints([pointA, pointB]);
