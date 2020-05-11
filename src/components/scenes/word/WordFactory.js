@@ -107,7 +107,7 @@ export default class WordFactory {
       const hitGeometry = new THREE.BoxGeometry( mesh.size.x, mesh.size.y, mesh.size.z );
       const hitbox = new THREE.Mesh(hitGeometry, new THREE.MeshBasicMaterial({ wireframe: true }));
       hitbox.name = 'hitbox-' + text;
-      hitbox.position.add(new THREE.Vector3(mesh.size.x/2,mesh.size.y/2, 0));
+      hitbox.position.add(new THREE.Vector3(0,mesh.size.y/2, 0));
       mesh.add(hitbox);
       this.manager.addCollider(hitbox);
     }
@@ -115,7 +115,7 @@ export default class WordFactory {
       mass,
       position,
       material: this.material,
-      quaternion: new Quaternion().setFromAxisAngle(new Vec3(0, 1, 0), toRadian(-90)),
+      // quaternion: new Quaternion().setFromAxisAngle(new Vec3(0, 1, 0), toRadian(-90)),
       velocity: new Vec3(0, 0, 0),
       fixedRotation: true,
       // collisionFilterGroup: 1,

@@ -124,6 +124,7 @@ export default {
 
   // UI
   ui: {
-    play: 'Play'
+    play: 'Play',
+    heaset: "The use of headphones is strongly recommended",
   }
 };

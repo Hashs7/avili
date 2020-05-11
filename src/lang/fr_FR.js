@@ -124,6 +124,7 @@ export default {
 
   // UI
   ui: {
-    play: 'Jouer'
+    play: 'Jouer',
+    headset: "L'usage d'un casque audio est vivement recommandé",
   }
 };
