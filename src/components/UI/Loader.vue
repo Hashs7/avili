@@ -4,7 +4,7 @@
       @leave="leave"
   >
     <div v-show="isPlaying && loadEnable || !completeTime" :class="{show: isPlaying && loadEnable || !completeTime}" class="loader-wrap" ref="loader">
-      <IntroLayout :show="isPlaying && loadEnable || !completeTime">
+      <IntroLayout>
         <div class="loader">
           <div class="loader__container">
             <span ref="progress" class="loader__progress"></span>
@@ -34,7 +34,7 @@
       return {
         percent: 0,
         minTime: 5000,
-        completeTime: false
+        completeTime: true,
       }
     },
     computed: {
@@ -43,6 +43,15 @@
       },
       isPlaying() {
         return this.$store.state.isPlaying;
+      },
+      isLoading() {
+        return this.$store.state.isLoading;
+      },
+      pseudo() {
+        return this.$store.state.pseudo;
+      },
+      qualitySet() {
+        return this.$store.state.quality;
       }
     },
     watch: {
@@ -55,11 +64,14 @@
       }
     },
     mounted() {
+      console.log(this.isPlaying, this.loadEnable, !this.completeTime);
       if (!this.isPlaying) return;
       this.initLoader();
     },
     methods: {
       initLoader() {
+        console.log('initLoader');
+        this.completeTime = false;
         LoadManager.setReceiver(this);
         setTimeout(() => this.completeTime = true, this.minTime);
         /*gsap.from(this.$refs.advertising, {
@@ -75,6 +87,7 @@
         });*/
       },
       enter(el, done) {
+        console.log('enter loader');
         gsap.to(this.$refs.loader, {
           opacity: 1,
           duration: 0.1,

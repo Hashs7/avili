@@ -45,9 +45,9 @@ export default class {
     this.spotLight.decay = 1;
     this.scene.add( this.spotLight );
 
-    new GLTFLoader().load( "./assets/models/characters/artwork.glb", ( gltf ) => {
+    /*new GLTFLoader().load( "./assets/models/characters/artwork.glb", ( gltf ) => {
       this.createScene(gltf.scene);
-    });
+    });*/
 
     if ( this.statsEnabled ) {
       this.stats = new Stats();

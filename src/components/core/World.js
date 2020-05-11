@@ -29,8 +29,7 @@ export default class {
     this.sinceLastFrame = 0;
 
     this.audioManager = AudioManager;
-
-    console.log(this.store);
+    this.audioManager.loadAudio();
 
     this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.01, 1000);
     this.camera.name = 'MainCamera';
