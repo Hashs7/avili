@@ -122,12 +122,13 @@ export default class extends Scene {
       sectionTuto: 'audio_npc_bougezvous.mp3',
       sectionInfiltration: 'audio_info_infiltration.mp3',
       sectionHarcelement: 'audio_intro_insulte.mp3',
+      sectionSharing: 'audio_npc_bougezvous.mp3',
     };
     document.addEventListener('playerMoved', e => {
       const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
       const direction = new THREE.Vector3( 0, 0, -1 ).applyQuaternion( e.detail.quaternion );
       ray.set(playerPosition, direction);
-      const objs = ray.intersectObjects(this.sections, false);
+      const objs = ray.intersectObjects(this.sections, true);
       if(objs.length === 0) return;
       const audio = sectionsAudio[objs[0].object.name];
       if (!audio) return;
@@ -148,6 +149,13 @@ export default class extends Scene {
       if (objs[0].object.name === "sectionHarcelement") {
         state.goToState(GAME_STATES.words_sequence_start);
       }
+
+      if (objs[0].object.name === "sectionSharing") {
+        console.log("sharing");
+        state.goToState(GAME_STATES.final_teleportation);
+        this.addWhiteScreen();
+      }
+
       objs[0].object.name += 'Passed';
 
       //AudioManager.playSound(audio);
@@ -156,14 +164,35 @@ export default class extends Scene {
 
   addPortal() {
     const geometry = new THREE.PlaneBufferGeometry( 1.8, 2.5, 1 );
-    const material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.BackSide} );
+    const material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.DoubleSide} );
     const plane = new THREE.Mesh( geometry, material );
     plane.position.set(11.61, 1.25, 0.18);
     plane.rotation.y = toRadian(90);
+    plane.name = "sectionSharing";
 
     //TODO : Add animated texture
+    this.sections.push(plane);
+    this.scene.add(plane);
+  }
 
-    this.scene.add( plane );
+  addWhiteScreen() {
+    const geometry = new THREE.PlaneBufferGeometry( window.innerWidth, window.innerHeight, 1 );
+    const material = new THREE.MeshBasicMaterial( {
+      color: 0xffffff,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 0,
+    });
+    const plane = new THREE.Mesh( geometry, material );
+
+    gsap.to(plane.material, {
+      opacity: 1,
+      duration: 2,
+    })
+
+    console.log(this.world.player.group);
+    this.world.player.group.children[3].add(plane);
+    plane.position.set(0, 0, -1);
   }
 
   upAndDownCrystalAnimation() {
