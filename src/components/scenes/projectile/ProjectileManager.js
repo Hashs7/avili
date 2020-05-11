@@ -19,8 +19,6 @@ export default class ProjectileManager {
 
     document.addEventListener('playerMoved', e => {
       this.playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
-      if(!this.proj) return
-      this.proj.detectLandingArea(this.playerPosition, this.world);
     });
   }
 

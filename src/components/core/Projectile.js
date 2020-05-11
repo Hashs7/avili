@@ -133,7 +133,7 @@ export default class Projectile {
   }
 
   createLandingPoint(coord){
-    const geometry = new THREE.CircleGeometry( 3, 20);
+    const geometry = new THREE.CircleGeometry( 3, 30);
     const customMaterial = new THREE.ShaderMaterial({
       uniforms: this.circleUniforms,
       vertexShader: CircleOutlineShader.vertexShader,

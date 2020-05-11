@@ -15,10 +15,10 @@ export let CircleOutlineShader = {
     vec2 center = vec2(0.5);
     float distanceFromCenter = length(vUv - center);
     if(distanceFromCenter > 0.48) {
-      gl_FragColor = vec4(1., 0., 0., 1.);
+      gl_FragColor = vec4(1., 0., 0., 0.5);
     } else {
       if(distanceFromCenter < uCircleSize){
-        gl_FragColor = vec4(0., 0., 1., 1.);
+        gl_FragColor = vec4(0., 0., 0., 0.3);
       }
     }
   }
