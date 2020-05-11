@@ -28,7 +28,6 @@ export default class {
     this.sinceLastFrame = 0;
 
     this.audioManager = AudioManager;
-    this.audioManager.loadAudio();
 
     this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.01, 1000);
     this.camera.name = 'MainCamera';
@@ -46,7 +45,6 @@ export default class {
 
     this.player = null;
     this.lastCheckpointCoord = new THREE.Vector3();
-    this.loadProps();
 
     this.gameManager = new GameManager(this, this.world, this.camera);
     this.cameraOperator = CameraOperator;
@@ -59,6 +57,7 @@ export default class {
 
     LoadManager.setLoadedCallback(() => this.render());
 
+    this.loadAssets();
     this.resize();
     // this.setWorker();
     // this.render();
@@ -110,8 +109,9 @@ export default class {
   /**
    * Load all environement props
    */
-  async loadProps() {
+  async loadAssets() {
     const gltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v10.glb');
+    this.audioManager.loadAudio();
     this.player = new Player(gltf, this.world, this.camera, this.gameManager.sceneManager, 'Emilie');
     // this.player.groupCamera();
   }
