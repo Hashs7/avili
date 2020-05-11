@@ -107,7 +107,7 @@ export default class WordFactory {
       const hitGeometry = new THREE.BoxGeometry( mesh.size.x, mesh.size.y, mesh.size.z );
       const hitbox = new THREE.Mesh(hitGeometry, new THREE.MeshBasicMaterial({ wireframe: true }));
       hitbox.name = 'hitbox-' + text;
-      hitbox.position.add(new THREE.Vector3(0,mesh.size.y/2, 0));
+      hitbox.position.add(new THREE.Vector3(mesh.size.x/2,mesh.size.y/2, mesh.size.z/2));
       mesh.add(hitbox);
       this.manager.addCollider(hitbox);
     }
