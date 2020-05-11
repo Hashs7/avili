@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <IntroLayout v-if="!isPlaying" >
+    <IntroLayout v-if="!isPlaying" :show="!(qualitySet && pseudo) || isLoading">
       <QualitySelection v-if="!qualitySet"/>
       <PseudoSelection />
       <Artwork v-show="qualitySet && pseudo" />
@@ -39,6 +39,9 @@ export default {
     },
     isPlaying() {
       return this.$store.state.isPlaying;
+    },
+    isLoading() {
+      return this.$store.state.isLoading;
     }
   },
 }

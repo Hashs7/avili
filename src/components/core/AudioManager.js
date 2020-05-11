@@ -3,6 +3,11 @@ import LoadManager from './LoadManager'
 
 class AudioManager {
   constructor() {
+    this.listener = new THREE.AudioListener();
+    this.audios = [];
+  }
+
+  loadAudio() {
     const prefix ='./assets/audio/';
     const audioPaths = [
       'black_screen.mp3',
@@ -16,11 +21,9 @@ class AudioManager {
       'travelling.mp3',
       'audio_mot_cuisine.mp3',
     ];
-    this.listener = new THREE.AudioListener();
-    this.audios = [];
     audioPaths.forEach(file => {
       LoadManager.loadAudio(prefix + file, (buffer) => {
-        const audio = new THREE.Audio( this.listener ).setBuffer( buffer )
+        const audio = new THREE.Audio( this.listener ).setBuffer( buffer );
         audio.name = file;
         this.audios.push(audio);
       })
