@@ -152,7 +152,7 @@ export default class {
     this.mainSceneAddObject(plane);
   }
 
-  async addMap(gltf) {
+  addMap(gltf) {
     let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
     gltf.scene.traverse((child) => {
       // console.log(child.name);
@@ -198,7 +198,6 @@ export default class {
     gltf.scene.children.filter(el => el.name !== 'map');
 
     this.mainSceneAddObject(gltf.scene);
-    await this.addTowers();
     this.setSpawn();
     this.setMap();
     this.setFov();
@@ -207,8 +206,7 @@ export default class {
     this.setFinal();
   }
 
-  async addTowers(){
-    const t1Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v2.glb');
+  addTowers(t1Gltf, t2Gltf){
     t1Gltf.scene.position.x = this.towers[0].position.x;
     t1Gltf.scene.position.y = this.towers[0].position.y - 10;
     t1Gltf.scene.position.z = this.towers[0].position.z;
@@ -223,7 +221,6 @@ export default class {
     this.mainSceneAddObject(t1Gltf.scene);
     this.towerEls.push(t1);
 
-    const t2Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v2.glb');
     t2Gltf.scene.position.x = this.towers[1].position.x;
     t2Gltf.scene.position.y = this.towers[1].position.y - 10;
     t2Gltf.scene.position.z = this.towers[1].position.z;

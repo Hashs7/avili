@@ -111,8 +111,12 @@ export default class {
    */
   async loadAssets() {
     const mapGltf = await LoadManager.loadGLTF('./assets/models/map/Map7.glb');
-    this.sceneManager.addMap(mapGltf);
+    const t1Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v2.glb');
+    const t2Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v2.glb');
     const playerGltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v10.glb');
+    this.sceneManager.addMap(mapGltf);
+    this.sceneManager.addTowers(t1Gltf, t2Gltf);
+
     this.audioManager.loadAudio();
     this.player = new Player(playerGltf, this.world, this.camera, this.sceneManager, 'Emilie');
     // this.player.groupCamera();
