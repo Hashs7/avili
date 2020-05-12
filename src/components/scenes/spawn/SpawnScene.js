@@ -30,10 +30,11 @@ export default class extends Scene {
     setTimeout(() => {
       TestimonyManager.speak('black_screen.mp3', 'black_screen');
     }, 2000)
+    /*
     //TODO Pendant le travelling
     setTimeout(() => {
       TestimonyManager.speak('travelling.mp3', 'travelling');
-    }, 6000)
+    }, 6000)*/
 
     //TODO Lorsque les coéquipiers apparaissent
     /*setTimeout(() => {
