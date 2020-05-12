@@ -94,7 +94,7 @@ export default class extends Scene {
     // TODO refacto
     if (objs[0].object.name === "m1") {
       this.dropWord();
-      setTimeout(() => this.dropWord(), 1000)
+      setTimeout(() => this.dropWord(), 1000);
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm1');
       TestimonyManager.speak('first_badword.mp3', 'first_badword');
