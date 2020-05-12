@@ -8,7 +8,7 @@ import CameraOperator from "../../core/CameraOperator";
 import gsap from 'gsap';
 
 export default class FieldOfViewManager {
-  constructor(world, scene, npcPositions, towers, landingAreas, towerElements) {
+  constructor(world, scene, towers, landingAreas, towerElements, npc) {
     this.scene = scene;
     this.world = world;
     this.fieldOfView = new THREE.Object3D();
@@ -20,6 +20,8 @@ export default class FieldOfViewManager {
     this.index = 0;
     this.towerElements = towerElements;
     this.alreadyHit = false;
+
+    this.npc = npc;
 
     this.player = this.world.getPlayer();
     this.armor = () => {
@@ -41,7 +43,7 @@ export default class FieldOfViewManager {
       return armor;
     }
 
-    npcPositions.forEach(({x, z}, index) => this.addFieldOfView(x, z, index));
+    this.npc.forEach(({group}) => this.addFieldOfView(group));
 
     document.addEventListener('stateUpdate', e => {
       if (e.detail !== 'infiltration_sequence_start') return;
@@ -60,12 +62,6 @@ export default class FieldOfViewManager {
   update() {
     this.towerElements[1].crystal.rotation.y += 0.01;
 
-    if(this.fieldOfViews.length === 0) return;
-    const movingFov = this.fieldOfViews.filter(fieldOfView => fieldOfView.anime);
-    for (let i = 0; i < movingFov.length; i++) {
-      movingFov[i].obj.rotateZ(toRadian(1));
-    }
-
     if(this.alreadyHit) return;
     this.detectFieldOfView(this.lastPosition);
     if(!this.proj) return;
@@ -78,7 +74,7 @@ export default class FieldOfViewManager {
    * @param z
    * @param index
    */
-  addFieldOfView(x, z, index) {
+  addFieldOfView(group) {
     let geometry = new THREE.CircleGeometry(
       3,
       20,
@@ -92,16 +88,18 @@ export default class FieldOfViewManager {
       transparent: true,
     })
 
+    const npc = group.children.find(e => e.name = "npc");
+
     this.fieldOfView = new THREE.Mesh(geometry, customMaterial);
-    this.fieldOfView.name = `${this.fieldOfViewName}-${index}`;
-    this.fieldOfView.position.set(x,0.1, z);
     this.fieldOfView.rotateX(toRadian(90))
 
-    this.index++;
-    const anime = this.index <= 2;
-    this.fieldOfViews.push({obj : this.fieldOfView, anime});
+    this.fieldOfView.position.y += 0.1;
+    this.fieldOfView.rotation.z = this.fieldOfView.geometry.parameters.thetaLength/2;
 
-    this.scene.add(this.fieldOfView);
+    this.fieldOfView.name = this.fieldOfViewName;
+    this.fieldOfViews.push(this.fieldOfView);
+
+    group.add(this.fieldOfView);
   }
 
   /**
@@ -115,7 +113,7 @@ export default class FieldOfViewManager {
       0,
       300,
     );
-    let objs = ray.intersectObjects(this.scene.children, false);
+    let objs = ray.intersectObjects(this.fieldOfViews, false);
     for (let i = 0; i < objs.length; i++) {
       if(!objs[i].object.name.startsWith(this.fieldOfViewName)) return;
       this.alreadyHit = true;
