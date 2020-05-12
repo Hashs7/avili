@@ -2,11 +2,16 @@ export default {
   // Testimony subtitles
   black_screen: {
     0: {
-      sentence: "Ce que je préfère c'est les jeux multijoueurs.",
+      sentence: "Ce que je préfère c'est les jeux multijoueurs en équipe.",
+      time: '2000',
+      last: 'false',
+    },
+    1: {
+      sentence: "C'est bien plus existant que de jouer toute seule.",
       time: '2000',
       last: 'true',
     },
-  },
+  },/*
   travelling: {
     0: {
       sentence: "On peut collaborer avec des personnes du monde entier pour pouvoir arriver aux fins désirées",
@@ -23,7 +28,7 @@ export default {
       time: '3000',
       last: 'true',
     }
-  },
+  },*/
   spawn_mates: {
     0: {
       sentence: "Mais voilà je suis une femme alors je n'ai pas les même expérience de jeu qu'un homme",
