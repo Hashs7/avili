@@ -28,6 +28,9 @@ module.exports = {
       .use('vue-svg-loader')
       .loader('vue-svg-loader');
   },
+  configureWebpack: (config) => {
+    config.devtool = 'source-map'
+  },
   /*configureWebpack: {
     plugins: [
       threeMinifier,

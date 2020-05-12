@@ -86,26 +86,9 @@ export default class extends Character {
     this.isWalking = walk;
   }
 
-  /**
-   * Add npc pseudo
-   * @param name
-   */
-  addPseudo(name) {
-    /*
-    const mesh = this.character.children.find(el => el.name === 'unamed');
-    mesh.geometry.computeBoundingBox();
-    mesh.material.color = new THREE.Color(0x0e0e7c);
-    mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
-    */
-    const mesh = {
-      size: {
-        x: 0.3,
-        y: 1.64,
-        z: 1.11
-      }
-    };
-    const playerName = makeTextSprite( ` ${name} `, { fontsize: 20, fontface: "Arial" });
-    playerName.position.set(mesh.size.x, mesh.size.y, mesh.size.z);
-    this.group.add( playerName );
+  async addPseudo(name) {
+    const playerName = await makeTextSprite(name, { fontsize: 26, fontface: "Roboto Slab" });
+    playerName.position.set(0, 1.7, 0);
+    this.group.add(playerName);
   }
 }

@@ -114,6 +114,7 @@ export default class {
     const t1Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v2.glb');
     const t2Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v2.glb');
     const playerGltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v10.glb');
+    await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
     this.audioManager.loadAudio();
 
     this.player = new Player(playerGltf, this.world, this.camera, this.sceneManager, 'Emilie');
