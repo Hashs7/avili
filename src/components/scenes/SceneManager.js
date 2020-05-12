@@ -274,8 +274,9 @@ export default class {
 
   setNPC(map, positions) {
     npcsDefinition(positions).forEach(async (n) => {
-      const gltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v9.glb');
-      const npc = new NPC(gltf, this.world, this, 'Emilie', n.position, map.geometry, n.name);
+      const gltf = await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
+      console.log(gltf);
+      const npc = new NPC(gltf, this.world, this, 'npc', n.position, map.geometry, n.name);
       this.npc.push(npc);
     });
   }
@@ -291,7 +292,7 @@ export default class {
   }
 
   setFov() {
-    //this.setNPC(this.map, this.matesPos);
+    this.setNPC(this.map, this.matesPos);
     this.addScene(new FieldOfViewScene(this.world, this, this.matesPos, this.towers, this.landingAreas, this.towerEls));
   }
 

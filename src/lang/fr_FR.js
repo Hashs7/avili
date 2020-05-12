@@ -120,5 +120,11 @@ export default {
       title: 'Déplacement',
       text: 'Appuyez sur la touche z pour avancer et utilisez votre souris pour vous orienter',
     }
+  },
+
+  // UI
+  ui: {
+    play: 'Jouer',
+    headset: "L'usage d'un casque audio est vivement recommandé",
   }
 };

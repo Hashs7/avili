@@ -62,7 +62,7 @@ export default class {
     // this.setWorker();
     // this.render();
     this.wow();
-    //this.debugCamera()
+    //this.debugCamera();
     document.addEventListener('visibilitychange', () => this.handleVisibilityChange(), false);
 
     // this.setPostProcessing(false);
@@ -114,6 +114,7 @@ export default class {
     const t1Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v2.glb');
     const t2Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v2.glb');
     const playerGltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v10.glb');
+    await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
     this.audioManager.loadAudio();
 
     this.player = new Player(playerGltf, this.world, this.camera, this.sceneManager, 'Emilie');
@@ -185,10 +186,12 @@ export default class {
         this.renderer.antialias = false;
         this.renderer.powerPreference  = 'low-power';
         break;
+
       case 'Moyenne':
         this.renderer.antialias = false;
         this.renderer.powerPreference  = 'default';
         break;
+
       case 'Élevé':
         this.renderer.antialias = true;
         this.renderer.powerPreference = 'high-performance';
@@ -204,9 +207,7 @@ export default class {
    * Wow such a function
    */
   wow() {
-    new Konami(() => {
-      AudioManager.playSound('KO.m4a');
-    });
+    new Konami(() => AudioManager.playSound('KO.m4a'));
   }
 
   /**
@@ -222,7 +223,7 @@ export default class {
    * Destroy all world objects
    */
   destroy() {
-    this.clock.stop()
+    this.clock.stop();
     cancelAnimationFrame(this.loop);
     this.sceneManager.destroy();
     this.player.destroy();
