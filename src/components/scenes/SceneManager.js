@@ -279,6 +279,7 @@ export default class {
       const npc = new NPC(gltf, this.world, this, 'npc', n.position, map.geometry, n.name);
       this.npc.push(npc);
     });
+    this.moveNPC()
   }
 
   moveNPC() {
