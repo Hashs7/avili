@@ -272,14 +272,13 @@ export default class {
     this.mainScene.add(this.map);
   }
 
-  setNPC(map, positions) {
-    npcsDefinition(positions).forEach(async (n) => {
+  async setNPC(map, positions) {
+    return await Promise.all(npcsDefinition(positions).map(async (n) => {
       const gltf = await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
-      console.log(gltf);
+      //console.log(gltf);
       const npc = new NPC(gltf, this.world, this, 'npc', n.position, map.geometry, n.name);
       this.npc.push(npc);
-    });
-    this.teleportNPC()
+    }));
   }
 
   moveNPC() {
@@ -298,9 +297,10 @@ export default class {
     this.addScene(new SpawnScene(this.world, this.spline, this.sections, () => this.moveNPC(), this.spawnCrystal));
   }
 
-  setFov() {
-    this.setNPC(this.map, this.matesPos);
-    this.addScene(new FieldOfViewScene(this.world, this, this.matesPos, this.towers, this.landingAreas, this.towerEls));
+  async setFov() {
+    await this.setNPC(this.map, this.matesPos);
+    this.addScene(new FieldOfViewScene(this.world, this, this.towers, this.landingAreas, this.towerEls, this.npc));
+    this.teleportNPC()
   }
 
   setProjectile() {
