@@ -279,12 +279,18 @@ export default class {
       const npc = new NPC(gltf, this.world, this, 'npc', n.position, map.geometry, n.name);
       this.npc.push(npc);
     });
-    this.moveNPC()
+    this.teleportNPC()
   }
 
   moveNPC() {
     setTimeout(() => {
       this.npc.forEach((n, i) => n.moveTo(npcsDefinition(this.matesPos)[i].target));
+    }, 3000);
+  }
+
+  teleportNPC() {
+    setTimeout(() => {
+      this.npc.forEach((n, i) => n.teleportTo(npcsDefinition(this.matesPos)[i].target));
     }, 3000);
   }
 
@@ -416,12 +422,12 @@ export default class {
     this.colliders.push(object);
   }
 
-  update() {
+  update(timeStep) {
     for (let i = 0; i < this.loadedScenes.length; i++) {
       this.loadedScenes[i].instance.update();
     }
     for (let i = 0; i < this.npc.length; i++) {
-      this.npc[i].update(this.world.clock.getDelta());
+      this.npc[i].update(timeStep);
     }
   }
 

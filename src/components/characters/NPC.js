@@ -6,7 +6,7 @@ import { Pathfinding } from "three-pathfinding";
 export default class extends Character {
   constructor(gltf, world, sceneManager, name, startPosition, mapGeometry, pseudo) {
     super(gltf, world, sceneManager, name);
-    this.speed = 0.25;
+    this.speed = 0.5;
     this.isWalking = false;
     this.target = [];
     this.group.name = 'NPC';
@@ -42,14 +42,16 @@ export default class extends Character {
     this.setOrientation(this.target[0]);
   }
 
+  teleportTo(target) {
+    this.group.position.copy(target);
+  }
+
   /**
    * Update each frame
-   * @param dt
+   * @param timeStep
    */
-  update() {
-    // TODO fix dt
-    // this.mixer.update( dt * 10 );
-    this.mixer.update( 0.01 );
+  update(timeStep) {
+    this.mixer.update( timeStep );
     if (!this.target || !this.target.length) return;
     const velocity = this.target[0].clone().sub( this.group.position );
     if (velocity.lengthSq() > 0.05 * 0.05) {

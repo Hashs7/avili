@@ -135,7 +135,7 @@ export default class {
     if(this.player) {
       this.player.update(timeStep)
     }
-    this.sceneManager.update();
+    this.sceneManager.update(timeStep);
     this.cameraOperator.renderFollowCamera();
     this.updatePhysics(timeStep);
   }
