@@ -12,35 +12,35 @@ import LoadManager from "../../core/LoadManager";
 const wordsDef = [{
   text: 'Inutile',
   mass: 50,
-  position: new Vec3(125, 10, -3),
+  position: new Vec3(125, 10, 0),
   collide: false,
   movable: true,
   path: 'inutile.glb',
 }, {
   text: 'Cuisine',
   mass: 70,
-  position: new Vec3(135, 25, -5),
-  collide: true,
+  position: new Vec3(132, 25, -1),
+  collide: false,
   movable: true,
   path: 'cuisine.glb',
 }, {
   text: 'Moche',
   mass: 100,
-  position: new Vec3(150, 70, -3),
+  position: new Vec3(140, 70, 0),
   collide: true,
-  movable: false,
+  movable: true,
   path: 'moche.glb',
 }, {
   text: 'Pute',
   mass: 100,
-  position: new Vec3(145, 70, -3),
+  position: new Vec3(150, 70, 0),
   collide: true,
   movable: false,
   path: 'pute.glb',
 }, {
   text: 'Salope',
   mass: 100,
-  position: new Vec3(150, 70, -3),
+  position: new Vec3(145, 70, -3),
   collide: true,
   movable: false,
   path: 'salope.glb',
@@ -94,6 +94,7 @@ export default class extends Scene {
     // TODO refacto
     if (objs[0].object.name === "m1") {
       this.dropWord();
+      setTimeout(() => this.dropWord(), 1000)
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm1');
       TestimonyManager.speak('first_badword.mp3', 'first_badword');
