@@ -1,10 +1,6 @@
 import Scene from '../Scene';
 import * as THREE from "three";
-import {Raycaster} from "three";
-import State from "../../core/State";
 import TestimonyManager from "../../core/TestimonyManager";
-import { GAME_STATES } from "../../../constantes";
-import {toRadian} from "../../../utils";
 import gsap from 'gsap';
 
 export default class extends Scene {
@@ -26,11 +22,8 @@ export default class extends Scene {
       // TODO set after load manager finished
       this.initTravelling();
     }, 5000);*/
-    this.detectSectionPassed();
     this.spawnCrystal = spawnCrystal;
     this.upAndDownCrystalAnimation();
-
-    this.addPortal();
 
     // Mettre a false pour jouer la première partie
     //TODO Lorsqu'on appuie sur joueur
@@ -108,62 +101,6 @@ export default class extends Scene {
       }, 1500)
     });
     // this.world.player.groupCamera();
-  }
-
-  detectSectionPassed(){
-    const ray = new Raycaster(
-      new THREE.Vector3(0,0,0),
-      new THREE.Vector3(0,0,0),
-      0,
-      0.5,
-    );
-    ray.firstHitOnly = true;
-    const sectionsAudio = {
-      sectionTuto: 'audio_npc_bougezvous.mp3',
-      sectionInfiltration: 'audio_info_infiltration.mp3',
-      sectionHarcelement: 'audio_intro_insulte.mp3',
-    };
-    document.addEventListener('playerMoved', e => {
-      const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
-      const direction = new THREE.Vector3( 0, 0, -1 ).applyQuaternion( e.detail.quaternion );
-      ray.set(playerPosition, direction);
-      const objs = ray.intersectObjects(this.sections, false);
-      if(objs.length === 0) return;
-      const audio = sectionsAudio[objs[0].object.name];
-      if (!audio) return;
-
-      playerPosition.y = 0;
-      this.world.lastCheckpointCoord = playerPosition;
-
-      const state = new State();
-
-      if (objs[0].object.name === "sectionTuto") {
-        state.goToState("projectile_sequence_start");
-      }
-
-      if (objs[0].object.name === "sectionInfiltration") {
-        state.goToState(GAME_STATES.infiltration_sequence_start)
-      }
-
-      if (objs[0].object.name === "sectionHarcelement") {
-        state.goToState(GAME_STATES.words_sequence_start);
-      }
-      objs[0].object.name += 'Passed';
-
-      //AudioManager.playSound(audio);
-    });
-  }
-
-  addPortal() {
-    const geometry = new THREE.PlaneBufferGeometry( 1.8, 2.5, 1 );
-    const material = new THREE.MeshBasicMaterial( {color: 0xffffff, side: THREE.BackSide} );
-    const plane = new THREE.Mesh( geometry, material );
-    plane.position.set(11.61, 1.25, 0.18);
-    plane.rotation.y = toRadian(90);
-
-    //TODO : Add animated texture
-
-    this.scene.add( plane );
   }
 
   upAndDownCrystalAnimation() {

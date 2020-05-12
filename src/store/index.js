@@ -19,7 +19,8 @@ export default new Vuex.Store({
     loadEnable: true,
     isLoading: false,
     quality: null, // Set default quality
-    isPlaying: false, // Skip settings intro
+    isPlaying: true, // Skip settings intro
+    isFinal: false,
   },
   mutations: {
     initScene(state, canvas) {
@@ -48,6 +49,9 @@ export default new Vuex.Store({
       state.playerTalking.push(name);
       setTimeout(() =>
         state.playerTalking = removeItemOnce(state.playerTalking, name), time)
+    },
+    setFinal(state, value) {
+      state.isFinal = value;
     }
   },
   actions: {

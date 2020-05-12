@@ -10,33 +10,40 @@ import TestimonyManager from "../../core/TestimonyManager";
 import LoadManager from "../../core/LoadManager";
 
 const wordsDef = [{
-  text: 'Kitchen',
+  text: 'Inutile',
   mass: 50,
   position: new Vec3(125, 10, -3),
   collide: false,
   movable: true,
-  path: 'cuisine.glb',
+  path: 'inutile.glb',
 }, {
-  text: 'Sandwich',
+  text: 'Cuisine',
   mass: 70,
   position: new Vec3(135, 25, -5),
   collide: true,
   movable: true,
   path: 'cuisine.glb',
 }, {
-  text: 'Bitch',
+  text: 'Moche',
   mass: 100,
   position: new Vec3(150, 70, -3),
   collide: true,
   movable: false,
-  path: 'cuisine.glb',
+  path: 'moche.glb',
 }, {
-  text: 'Bitch',
+  text: 'Pute',
   mass: 100,
   position: new Vec3(145, 70, -3),
   collide: true,
   movable: false,
-  path: 'cuisine.glb',
+  path: 'pute.glb',
+}, {
+  text: 'Salope',
+  mass: 100,
+  position: new Vec3(150, 70, -3),
+  collide: true,
+  movable: false,
+  path: 'salope.glb',
 }];
 
 export default class extends Scene {

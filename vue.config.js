@@ -1,3 +1,6 @@
+const ThreeMinifierResolver = require('@yushijinhun/three-minifier-webpack');
+
+const threeMinifier = new ThreeMinifierResolver({/* options */});
 module.exports = {
   devServer: {
     overlay: {
@@ -28,4 +31,14 @@ module.exports = {
   configureWebpack: (config) => {
     config.devtool = 'source-map'
   },
+  /*configureWebpack: {
+    plugins: [
+      threeMinifier,
+    ]
+  },
+  resolveWebpackConfig: {
+    plugins: [
+      threeMinifier.resolver, // <=== (2) Add resolver on the FIRST line
+    ]
+  }*/
 };

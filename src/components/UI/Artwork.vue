@@ -1,7 +1,9 @@
 <template>
   <div>
     <div class="ui-container">
-      <button class="btn-play" data-hover="big" data-click="disapear" @click="play">Jouer</button>
+      <button class="btn-play" data-hover="big" data-click="disapear" @click="play">{{ $t('ui.play') }}</button>
+      <button class="btn-lang fr" data-hover="big" @click="setLang('fr')">Français</button>
+      <button class="btn-lang en" data-hover="big" @click="setLang('en')">English</button>
     </div>
     <canvas ref="homeCanvas" class="home-canvas webgl-render" />
   </div>
@@ -24,6 +26,9 @@
       play() {
         this.artwork.destroy();
         this.$store.commit('setPlaying', true);
+      },
+      setLang(lang) {
+        this.$i18n.set(lang)
       }
     },
   }
@@ -53,5 +58,22 @@
   .btn-play2 {
     @extend .btn-play;
     top: 60%;
+  }
+  .btn-lang {
+    position: absolute;
+    top: 60%;
+    padding: 16px 32px;
+    font-size: 30px;
+    font-family: $font-primary;
+    text-transform: uppercase;
+    color: $primary;
+    background-color: #fff;
+
+    &.fr {
+      left: 20px;
+    }
+    &.en {
+      left: 320px;
+    }
   }
 </style>

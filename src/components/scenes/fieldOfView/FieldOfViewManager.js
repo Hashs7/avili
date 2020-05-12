@@ -20,7 +20,6 @@ export default class FieldOfViewManager {
     this.index = 0;
     this.towerElements = towerElements;
     this.alreadyHit = false;
-    this.isMoving = false;
 
     this.player = this.world.getPlayer();
     this.armor = () => {
@@ -53,17 +52,12 @@ export default class FieldOfViewManager {
     });
 
     document.addEventListener('playerMoved', e => {
-      this.isMoving = true;
       const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
       this.lastPosition = playerPosition;
-      this.detectFieldOfView(playerPosition);
-      if(!this.proj) return;
-      this.proj.detectLandingArea(playerPosition, this.world);
     });
   }
 
   update() {
-    this.isMoving = false;
     this.towerElements[1].crystal.rotation.y += 0.01;
 
     if(this.fieldOfViews.length === 0) return;
@@ -71,7 +65,8 @@ export default class FieldOfViewManager {
     for (let i = 0; i < movingFov.length; i++) {
       movingFov[i].obj.rotateZ(toRadian(1));
     }
-    if(this.alreadyHit && !this.isMoving) return;
+
+    if(this.alreadyHit) return;
     this.detectFieldOfView(this.lastPosition);
     if(!this.proj) return;
     this.proj.detectLandingArea(this.lastPosition, this.world);
@@ -160,6 +155,7 @@ export default class FieldOfViewManager {
           this.player.teleport(this.world.lastCheckpointCoord, () => {
             this.armor().setOpacity(1);
             this.armor().setVisibility(true)
+            this.alreadyHit = false;
           });
         }
         this.player.setWalkable(true);

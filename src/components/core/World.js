@@ -2,7 +2,6 @@ import * as THREE from "three";
 import Stats from 'stats.js'
 import Konami from 'konami'
 import CameraOperator from "./CameraOperator";
-import { GameManager } from "./GameManager";
 import Player from "../characters/Player";
 import LoadManager from './LoadManager';
 import { NaiveBroadphase, World } from "cannon-es";
@@ -10,6 +9,7 @@ import AudioManager from "./AudioManager";
 import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import TestimonyManager from "./TestimonyManager";
 import {EffectComposer} from "three/examples/jsm/postprocessing/EffectComposer";
+import SceneManager from "../scenes/SceneManager";
 
 export default class {
   constructor(canvas, store, pseudo) {
@@ -28,7 +28,6 @@ export default class {
     this.sinceLastFrame = 0;
 
     this.audioManager = AudioManager;
-    this.audioManager.loadAudio();
 
     this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.01, 1000);
     this.camera.name = 'MainCamera';
@@ -46,9 +45,8 @@ export default class {
 
     this.player = null;
     this.lastCheckpointCoord = new THREE.Vector3();
-    this.loadProps();
 
-    this.gameManager = new GameManager(this, this.world, this.camera);
+    this.sceneManager = new SceneManager(this, this.world, this.camera);
     this.cameraOperator = CameraOperator;
     CameraOperator.setup(this, this.camera);
 
@@ -59,11 +57,12 @@ export default class {
 
     LoadManager.setLoadedCallback(() => this.render());
 
+    this.loadAssets();
     this.resize();
     // this.setWorker();
     // this.render();
     this.wow();
-    //this.debugCamera()
+    //this.debugCamera();
     document.addEventListener('visibilitychange', () => this.handleVisibilityChange(), false);
 
     // this.setPostProcessing(false);
@@ -110,16 +109,23 @@ export default class {
   /**
    * Load all environement props
    */
-  async loadProps() {
-    const gltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v10.glb');
-    this.player = new Player(gltf, this.world, this.camera, this.gameManager.sceneManager, 'Emilie');
+  async loadAssets() {
+    const mapGltf = await LoadManager.loadGLTF('./assets/models/map/Map7.glb');
+    const t1Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v2.glb');
+    const t2Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v2.glb');
+    const playerGltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v10.glb');
+    await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
+    this.audioManager.loadAudio();
+
+    this.player = new Player(playerGltf, this.world, this.camera, this.sceneManager, 'Emilie');
     // this.player.groupCamera();
+    this.sceneManager.addMap(mapGltf);
+    this.sceneManager.addTowers(t1Gltf, t2Gltf);
   }
 
   getPlayer() {
     return this.player;
   }
-
 
   /**
    * Handle logic to update each frame
@@ -129,7 +135,7 @@ export default class {
     if(this.player) {
       this.player.update(timeStep)
     }
-    this.gameManager.sceneManager.update();
+    this.sceneManager.update();
     this.cameraOperator.renderFollowCamera();
     this.updatePhysics(timeStep);
   }
@@ -152,7 +158,7 @@ export default class {
     // let timeStep = (this.renderDelta + this.logicDelta) * this.params.Time_Scale;
     this.update(timeStep);
     this.logicDelta = this.clock.getDelta();
-    this.renderer.render(this.gameManager.sceneManager.mainScene, this.camera);
+    this.renderer.render(this.sceneManager.mainScene, this.camera);
     requestAnimationFrame(() => this.render());
     this.stats.end();
   }
@@ -180,10 +186,12 @@ export default class {
         this.renderer.antialias = false;
         this.renderer.powerPreference  = 'low-power';
         break;
+
       case 'Moyenne':
         this.renderer.antialias = false;
         this.renderer.powerPreference  = 'default';
         break;
+
       case 'Élevé':
         this.renderer.antialias = true;
         this.renderer.powerPreference = 'high-performance';
@@ -199,9 +207,7 @@ export default class {
    * Wow such a function
    */
   wow() {
-    new Konami(() => {
-      AudioManager.playSound('KO.m4a');
-    });
+    new Konami(() => AudioManager.playSound('KO.m4a'));
   }
 
   /**
@@ -211,5 +217,15 @@ export default class {
     this.camera.aspect = window.innerWidth / window.innerHeight;
     this.camera.updateProjectionMatrix();
     this.renderer.setSize(window.innerWidth, window.innerHeight, false);
+  }
+
+  /**
+   * Destroy all world objects
+   */
+  destroy() {
+    this.clock.stop();
+    cancelAnimationFrame(this.loop);
+    this.sceneManager.destroy();
+    this.player.destroy();
   }
 }

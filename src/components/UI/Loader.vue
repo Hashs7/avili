@@ -13,7 +13,7 @@
         </div>
         <div class="advertising">
           <img ref="img" src="@/assets/img/headset.png" alt="headset icon" draggable="false" class="advertising__headset">
-          <span ref="advertising">L'usage d'un casque audio est vivement recommandé</span>
+          <span ref="advertising">{{ $t('ui.headset') }}</span>
         </div>
       </IntroLayout>
     </div>

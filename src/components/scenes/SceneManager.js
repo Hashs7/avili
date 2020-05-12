@@ -14,6 +14,8 @@ import {GammaCorrectionShader} from "three/examples/jsm/shaders/GammaCorrectionS
 import {FXAAShader} from "three/examples/jsm/shaders/FXAAShader";
 import FinalScene from "./final/FinalScene";
 import { GAME_STATES } from "../../constantes";
+import {Raycaster} from "three";
+import State from "../core/State";
 
 const npcsDefinition = (positions) => [{
   name: 'Daesu',
@@ -56,6 +58,8 @@ export default class {
     this.crystals = [];
     this.spawnCrystal = new THREE.Object3D();
 
+    this.detectSectionPassed();
+
     document.addEventListener('stateUpdate', (e) => {
       if (e.detail !== GAME_STATES.infiltration_sequence_start) return;
       this.ambianceInfiltrationTransition();
@@ -70,7 +74,6 @@ export default class {
     // new Skybox(this.mainScene, 'afterrain');
     this.globalLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.7);
     this.addFloor();
-    this.addMap();
     this.mainScene.add(this.globalLight);
     this.mainScene.fog = new THREE.Fog(0x96e1ff, 45, 50);
     // this.mainScene.fog = new THREE.Fog( 0x96e1ff, 7, 50);
@@ -153,8 +156,7 @@ export default class {
     this.mainSceneAddObject(plane);
   }
 
-  async addMap() {
-    const gltf = await LoadManager.loadGLTF('./assets/models/map/Map7.glb');
+  addMap(gltf) {
     let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
     gltf.scene.traverse((child) => {
       // console.log(child.name);
@@ -200,7 +202,6 @@ export default class {
     gltf.scene.children.filter(el => el.name !== 'map');
 
     this.mainSceneAddObject(gltf.scene);
-    await this.addTowers();
     this.setSpawn();
     this.setMap();
     this.setFov();
@@ -209,8 +210,7 @@ export default class {
     this.setFinal();
   }
 
-  async addTowers(){
-    const t1Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v2.glb');
+  addTowers(t1Gltf, t2Gltf){
     t1Gltf.scene.position.x = this.towers[0].position.x;
     t1Gltf.scene.position.y = this.towers[0].position.y - 10;
     t1Gltf.scene.position.z = this.towers[0].position.z;
@@ -225,7 +225,6 @@ export default class {
     this.mainSceneAddObject(t1Gltf.scene);
     this.towerEls.push(t1);
 
-    const t2Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v2.glb');
     t2Gltf.scene.position.x = this.towers[1].position.x;
     t2Gltf.scene.position.y = this.towers[1].position.y - 10;
     t2Gltf.scene.position.z = this.towers[1].position.z;
@@ -275,8 +274,9 @@ export default class {
 
   setNPC(map, positions) {
     npcsDefinition(positions).forEach(async (n) => {
-      const gltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v9.glb');
-      const npc = new NPC(gltf, this.world, this, 'Emilie', n.position, map.geometry, n.name);
+      const gltf = await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
+      console.log(gltf);
+      const npc = new NPC(gltf, this.world, this, 'npc', n.position, map.geometry, n.name);
       this.npc.push(npc);
     });
   }
@@ -292,7 +292,7 @@ export default class {
   }
 
   setFov() {
-    //this.setNPC(this.map, this.matesPos);
+    this.setNPC(this.map, this.matesPos);
     this.addScene(new FieldOfViewScene(this.world, this, this.matesPos, this.towers, this.landingAreas, this.towerEls));
   }
 
@@ -348,6 +348,60 @@ export default class {
     this.worldPhysic.addBody(walls);*!/
   }*/
 
+  detectSectionPassed(){
+    const ray = new Raycaster(
+      new THREE.Vector3(0,0,0),
+      new THREE.Vector3(0,0,0),
+      0,
+      0.5,
+    );
+    ray.firstHitOnly = true;
+    const sectionsAudio = {
+      sectionTuto: 'audio_npc_bougezvous.mp3',
+      sectionInfiltration: 'audio_info_infiltration.mp3',
+      sectionHarcelement: 'audio_intro_insulte.mp3',
+      sectionSharing: 'audio_npc_bougezvous.mp3',
+    };
+    document.addEventListener('playerMoved', e => {
+      const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
+      const direction = new THREE.Vector3( 0, 0, -1 ).applyQuaternion( e.detail.quaternion );
+      ray.set(playerPosition, direction);
+      const objs = ray.intersectObjects(this.sections, true);
+      if(objs.length === 0) return;
+      const audio = sectionsAudio[objs[0].object.name];
+      if (!audio) return;
+
+      playerPosition.y = 0;
+      this.world.lastCheckpointCoord = playerPosition;
+
+      const state = new State();
+
+      if (objs[0].object.name === "sectionTuto") {
+        state.goToState("projectile_sequence_start");
+      }
+
+      if (objs[0].object.name === "sectionInfiltration") {
+        state.goToState(GAME_STATES.infiltration_sequence_start)
+      }
+
+      if (objs[0].object.name === "sectionHarcelement") {
+        state.goToState(GAME_STATES.words_sequence_start);
+      }
+
+      if (objs[0].object.name === "sectionSharing") {
+        state.goToState(GAME_STATES.final_teleportation);
+      }
+
+      objs[0].object.name += 'Passed';
+
+      //AudioManager.playSound(audio);
+    });
+  }
+
+  addToSection(section) {
+    this.sections.push(section);
+  }
+
   mainSceneAddObject(mesh) {
     this.mainScene.add(mesh);
   }
@@ -368,5 +422,9 @@ export default class {
     for (let i = 0; i < this.npc.length; i++) {
       this.npc[i].update(this.world.clock.getDelta());
     }
+  }
+
+  destroy() {
+    // Dispose all objects
   }
 }

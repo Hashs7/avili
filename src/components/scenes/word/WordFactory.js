@@ -115,7 +115,7 @@ export default class WordFactory {
       mass,
       position,
       material: this.material,
-      quaternion: new Quaternion().setFromAxisAngle(new Vec3(0, 1, 0), toRadian(-90)),
+      // quaternion: new Quaternion().setFromAxisAngle(new Vec3(0, 1, 0), toRadian(-90)),
       velocity: new Vec3(0, 0, 0),
       fixedRotation: true,
       // collisionFilterGroup: 1,
