@@ -275,11 +275,10 @@ export default class {
   setNPC(map, positions) {
     npcsDefinition(positions).forEach(async (n) => {
       const gltf = await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
-      console.log(gltf);
       const npc = new NPC(gltf, this.world, this, 'npc', n.position, map.geometry, n.name);
       this.npc.push(npc);
     });
-    this.teleportNPC()
+    // this.teleportNPC()
   }
 
   moveNPC() {
