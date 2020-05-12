@@ -16,8 +16,9 @@ export default class {
     this.canvas = canvas;
     this.store = store;
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    //this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.localClippingEnabled = true;
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    //this.renderer.setPixelRatio(window.devicePixelRatio);
     //this.renderer.toneMapping = THREE.ReinhardToneMapping;
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.pseudo = pseudo;
