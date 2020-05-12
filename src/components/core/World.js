@@ -110,13 +110,35 @@ export default class {
    * Load all environement props
    */
   async loadAssets() {
-    const mapGltf = await LoadManager.loadGLTF('./assets/models/map/Map7.glb');
-    const t1Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v2.glb');
-    const t2Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v2.glb');
-    const playerGltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v10.glb');
-    await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
-    this.audioManager.loadAudio();
+    const assetsDef = [{
+      name: 'mapGltf',
+      path: './assets/models/map/Map7.glb',
+    },{
+      name: 't1Gltf',
+      path: './assets/models/environment/environment_tower_v2.glb',
+    },{
+      name: 't2Gltf',
+      path: './assets/models/environment/environment_tower_v2.glb',
+    },{
+      name: 'playerGltf',
+      path: './assets/models/characters/personnage_emilie_v10.glb',
+    },{
+      name: 'npc',
+      path: './assets/models/characters/npc.glb'
+    }];
+    const assets = await Promise.all(assetsDef.map(async ({ name, path }) => {
+      const gltf = await LoadManager.loadGLTF(path);
+      return { name, gltf };
+    }));
+    this.appendAssets(assets);
+  }
 
+  appendAssets(assets) {
+    this.audioManager.loadAudio();
+    const playerGltf = assets.find(el => el.name === 'playerGltf').gltf;
+    const mapGltf = assets.find(el => el.name === 'mapGltf').gltf;
+    const t1Gltf = assets.find(el => el.name === 't1Gltf').gltf;
+    const t2Gltf = assets.find(el => el.name === 't2Gltf').gltf;
     this.player = new Player(playerGltf, this.world, this.camera, this.sceneManager, 'Emilie');
     // this.player.groupCamera();
     this.sceneManager.addMap(mapGltf);
