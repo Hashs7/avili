@@ -4,12 +4,11 @@ import TestimonyManager from "../../core/TestimonyManager";
 import gsap from 'gsap';
 
 export default class extends Scene {
-  constructor(world, spline, sections, finishCallback, spawnCrystal) {
+  constructor(world, spline, sceneManager, spawnCrystal) {
     super();
     this.scene.name = 'SpawnScene';
     this.world = world;
-    this.sections = sections;
-    this.finishCallback = finishCallback;
+    this.sceneManager = sceneManager;
     this.spline = new THREE.SplineCurve([
       new THREE.Vector3(289.76843686945404, 452.51481137238443, 56.10018915737797),
       new THREE.Vector3(16.577771319586702, 240.23374531404815, -280.3833052451697),
@@ -23,28 +22,37 @@ export default class extends Scene {
       this.initTravelling();
     }, 5000);*/
     this.spawnCrystal = spawnCrystal;
+    console.log(spawnCrystal);
     this.upAndDownCrystalAnimation();
 
     // Mettre a false pour jouer la première partie
-    //TODO Lorsqu'on appuie sur joueur
+    // Lorsqu'on appuie sur jouer
     setTimeout(() => {
       TestimonyManager.speak('black_screen.mp3', 'black_screen');
-    }, 2000)
+    }, 2000);
+
     /*
-    //TODO Pendant le travelling
+     * Pendant le travelling
+     *
     setTimeout(() => {
       TestimonyManager.speak('travelling.mp3', 'travelling');
-    }, 6000)*/
+    }, 6000)
+     */
 
-    //TODO Lorsque les coéquipiers apparaissent
-    /*setTimeout(() => {
+    /**
+     * Lorsque les coéquipiers apparaissent
+     */
+    setTimeout(() => {
+      this.sceneManager.npcManager.moveNPC();
       TestimonyManager.speak('spawn_mates.mp3', 'spawn_mates');
-    }, 28000)
+    }, 28000);
 
-    //TODO Lorsque la joueuse apparait
+    /**
+     * Lorsque la joueuse apparait
+     */
     setTimeout(() => {
       TestimonyManager.speak('spawn_player.mp3', 'spawn_player');
-    }, 65000)*/
+    }, 65000);
 
     return {
       instance: this,
@@ -98,7 +106,7 @@ export default class extends Scene {
       setTimeout(() => {
         this.world.cameraOperator.setTravelling(false);
         this.world.player.groupCamera();
-        this.finishCallback();
+        this.sceneManager.npcManager.moveNPC();
       }, 1500)
     });
     // this.world.player.groupCamera();

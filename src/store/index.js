@@ -19,7 +19,7 @@ export default new Vuex.Store({
     loadEnable: true,
     isLoading: false,
     quality: null, // Set default quality
-    isPlaying: true, // Skip settings intro
+    isPlaying: false, // Skip settings intro
     isFinal: false,
   },
   mutations: {
