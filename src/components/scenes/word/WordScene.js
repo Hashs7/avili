@@ -79,8 +79,6 @@ export default class extends Scene {
       let word = this.detectWord(e);
       if(word) {
         this.wordFadeIn(word);
-      } else {
-        this.wordFadeOut();
       }
     });
     this.init()
@@ -151,13 +149,19 @@ export default class extends Scene {
   }
 
   wordFadeIn(word){
-    word.object.material.opacity = normalize(word.distance, 0, 6);
+    const opacity = normalize(word.distance, 0, 6);
+    if(opacity <= 0.2) {
+      this.wordFadeOut(word.object.material)
+    } else {
+      word.object.material.opacity = opacity;
+    }
   }
 
-  wordFadeOut(){
-    gsap.to([this.factory.models[0].material, this.factory.models[1].material], {
+  wordFadeOut(material){
+    gsap.to(material, {
       opacity: 1,
       duration: 0.5,
+      delay: 1,
     })
   }
 
