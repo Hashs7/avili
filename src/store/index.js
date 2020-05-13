@@ -16,10 +16,13 @@ export default new Vuex.Store({
     canvasRef: null,
     pseudo: null,
     playerTalking: [],
+
     loadEnable: true,
     isLoading: false,
+    loaderVisible: false,
+
     quality: null, // Set default quality
-    isPlaying: true, // Skip settings intro
+    isPlaying: false, // Skip settings intro
     isFinal: false,
   },
   mutations: {
@@ -32,6 +35,9 @@ export default new Vuex.Store({
     },
     setLoader(state, value) {
       state.loadEnable = value;
+    },
+    setLoaderVisible(state, value) {
+      state.loaderVisible = value;
     },
     setLoading(state, value) {
       state.isLoading = value;

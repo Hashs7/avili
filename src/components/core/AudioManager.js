@@ -1,15 +1,28 @@
 import * as THREE from "three/src/Three";
 import LoadManager from './LoadManager'
+import gsap from 'gsap';
 
 class AudioManager {
   constructor() {
-    this.listener = new THREE.AudioListener();
+    this.testimonyListener = null;
+    this.ambiantListener = null;
+    this.introAudio = null;
+    this.ambiantVolume = 1;
     this.audios = [];
+
+    this.introAudio = new Audio('./assets/audio/music/ambient-calm.mp3');
+    this.windAudio = new Audio('./assets/audio/music/ambiance-vent.mp3');
+  }
+
+  initAudio() {
+    this.testimonyListener = new THREE.AudioListener();
+    this.ambiantListener = new THREE.AudioListener();
   }
 
   loadAudio() {
-    const prefix ='./assets/audio/';
-    const audioPaths = [
+    if (!this.testimonyListener) return;
+    const prefixTestimony ='./assets/audio/testimony/';
+    const audioTestimony = [
       'black_screen.mp3',
       'ending.mp3',
       'first_badword.mp3',
@@ -18,28 +31,88 @@ class AudioManager {
       'second_badword.mp3',
       'spawn_mates.mp3',
       'spawn_player.mp3',
-      'travelling.mp3',
-      'audio_mot_cuisine.mp3',
     ];
-    audioPaths.forEach(file => {
-      LoadManager.loadAudio(prefix + file, (buffer) => {
-        const audio = new THREE.Audio( this.listener ).setBuffer( buffer );
+    audioTestimony.forEach(file => {
+      LoadManager.loadAudio(prefixTestimony + file, (buffer) => {
+        const audio = new THREE.Audio( this.testimonyListener ).setBuffer( buffer );
+        audio.name = file;
+        this.audios.push(audio);
+      })
+    });
+
+    if (!this.ambiantListener) return;
+    const prefixAmbiant ='./assets/audio/ambiant/';
+    const audioAmbiant = [
+      'ko.mp3',
+      'audio_mot_cuisine.mp3',
+      'laser.mp3',
+      'explosion.mp3',
+      'npc-angoissant.mp3',
+    ];
+    audioAmbiant.forEach(file => {
+      LoadManager.loadAudio(prefixAmbiant + file, (buffer) => {
+        const audio = new THREE.Audio( this.ambiantListener ).setBuffer( buffer );
         audio.name = file;
         this.audios.push(audio);
       })
     })
   }
 
-  groupListener(group) {
-    group.add(this.listener);
+  setIntroLoopAudio() {
+    this.bindIntro = () => {
+      this.currentTime = 0;
+      this.introAudio.play();
+    };
+    this.introAudio.addEventListener('ended', this.bindIntro, false);
+    this.introAudio.play();
   }
 
-  playSound(name) {
+  stopIntroLoopAudio() {
+    this.introAudio.stop();
+    this.introAudio.removeListener('ended', this.bindIntro);
+  }
+
+  setWindLoopAudio() {
+    this.bindWind = () => {
+      this.currentTime = 0;
+      this.windAudio.play();
+    };
+    this.windAudio.addEventListener('ended', this.bindWind, false);
+    this.windAudio.play();
+  }
+
+  stopWindLoopAudio() {
+    this.windAudio.stop();
+    this.windAudio.removeListener('ended', this.bindWind);
+  }
+
+
+  groupListener(group) {
+    group.add(this.testimonyListener);
+    group.add(this.ambiantListener);
+  }
+
+  setAmbiantVolume(value) {
+    gsap.to(this, {
+      ambiantVolume: value,
+      onUpdate: () => this.ambiantListener.setMasterVolume(this.ambiantVolume),
+      duration: 1,
+    });
+    gsap.to(this.introAudio, {
+      volume: value,
+      duration: 1,
+    });
+    gsap.to(this.windAudio, {
+      volume: value,
+      duration: 1,
+    })
+  }
+
+  playSound(name, isTestimony) {
     const audio = this.audios.find(file => file.name === name);
     if (!audio) return;
     audio.play();
   }
-
 }
 
 export default new AudioManager();

@@ -6,9 +6,11 @@ import {toRadian} from "../../../utils";
 import {CircleGradientShader} from "../../shaders/CircleGradientShader";
 import CameraOperator from "../../core/CameraOperator";
 import gsap from 'gsap';
+import AudioManager from "../../core/AudioManager";
+import { GAME_STATES } from "../../../constantes";
 
 export default class FieldOfViewManager {
-  constructor(world, scene, npcPositions, towers, landingAreas, towerElements) {
+  constructor(world, scene, towers, landingAreas, towerElements, npc) {
     this.scene = scene;
     this.world = world;
     this.fieldOfView = new THREE.Object3D();
@@ -20,6 +22,10 @@ export default class FieldOfViewManager {
     this.index = 0;
     this.towerElements = towerElements;
     this.alreadyHit = false;
+
+    this.npc = npc;
+    this.firstNpc = this.npc[0].group
+    this.isFirstTime = true;
 
     this.player = this.world.getPlayer();
     this.armor = () => {
@@ -39,12 +45,10 @@ export default class FieldOfViewManager {
         if(child.name === 'ahat') armor.cape = child;
       });
       return armor;
-    }
-
-    npcPositions.forEach(({x, z}, index) => this.addFieldOfView(x, z, index));
+    };
 
     document.addEventListener('stateUpdate', e => {
-      if (e.detail !== 'infiltration_sequence_start') return;
+      if (e.detail !== GAME_STATES.infiltration_sequence_start) return;
       const arr = landingAreas.slice(4);
       this.proj = new Projectile(towers[1], arr, this.scene, this.towerElements[1]);
       this.proj.launchSequence();
@@ -55,16 +59,15 @@ export default class FieldOfViewManager {
       const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
       this.lastPosition = playerPosition;
     });
+
+    document.addEventListener('showFov', () => {
+      this.npc.forEach(({group}, index) => this.addFieldOfView(group, index));
+      this.initFirstNpc(this.firstNpc);
+    });
   }
 
   update() {
     this.towerElements[1].crystal.rotation.y += 0.01;
-
-    if(this.fieldOfViews.length === 0) return;
-    const movingFov = this.fieldOfViews.filter(fieldOfView => fieldOfView.anime);
-    for (let i = 0; i < movingFov.length; i++) {
-      movingFov[i].obj.rotateZ(toRadian(1));
-    }
 
     if(this.alreadyHit) return;
     this.detectFieldOfView(this.lastPosition);
@@ -78,7 +81,7 @@ export default class FieldOfViewManager {
    * @param z
    * @param index
    */
-  addFieldOfView(x, z, index) {
+  addFieldOfView(group, index) {
     let geometry = new THREE.CircleGeometry(
       3,
       20,
@@ -90,18 +93,27 @@ export default class FieldOfViewManager {
       fragmentShader: CircleGradientShader.fragmentShader,
       side: THREE.DoubleSide,
       transparent: true,
-    })
+      visible: false,
+    });
+
+    const npc = group.children.find(e => e.name = "npc");
 
     this.fieldOfView = new THREE.Mesh(geometry, customMaterial);
+    this.fieldOfView.rotateX(toRadian(90));
+
+    this.fieldOfView.position.y += 0.1;
+    this.fieldOfView.rotation.z = this.fieldOfView.geometry.parameters.thetaLength / 2;
+
     this.fieldOfView.name = `${this.fieldOfViewName}-${index}`;
-    this.fieldOfView.position.set(x,0.1, z);
-    this.fieldOfView.rotateX(toRadian(90))
+    this.fieldOfViews.push(this.fieldOfView);
 
-    this.index++;
-    const anime = this.index <= 2;
-    this.fieldOfViews.push({obj : this.fieldOfView, anime});
+    group.add(this.fieldOfView);
+  }
 
-    this.scene.add(this.fieldOfView);
+  initFirstNpc(firstNpc){
+    firstNpc.rotation.y = toRadian(-90);
+    const fov = firstNpc.children.find(e => e.name.startsWith("FieldOfView"));
+    fov.scale.set(2, 2, 2);
   }
 
   /**
@@ -115,7 +127,7 @@ export default class FieldOfViewManager {
       0,
       300,
     );
-    let objs = ray.intersectObjects(this.scene.children, false);
+    let objs = ray.intersectObjects(this.fieldOfViews, false);
     for (let i = 0; i < objs.length; i++) {
       if(!objs[i].object.name.startsWith(this.fieldOfViewName)) return;
       this.alreadyHit = true;
@@ -127,7 +139,7 @@ export default class FieldOfViewManager {
       const rotation = Math.atan2( ( this.world.camera.position.x - playerModel.position.x ), ( this.world.camera.position.z - playerModel.position.z ) );
       this.armor().mask.material.transparent = true;
       this.armor().cape.material.transparent = true;
-
+      AudioManager.playSound('npc-angoissant.mp3', false);
       // mask, cape and rotation animations
       const tl = gsap.timeline({repeat: 0});
       tl.to(playerModel.rotation, {
@@ -157,6 +169,18 @@ export default class FieldOfViewManager {
             this.armor().setVisibility(true)
             this.alreadyHit = false;
           });
+
+          if(objs[i].object.name === "FieldOfView-0" && this.isFirstTime){
+            gsap.to(this.firstNpc.rotation, {
+              y: `+=${toRadian(90)}`,
+              delay: 2,
+              onComplete: () => {this.isFirstTime = false}
+            })
+            objs[i].object.scale.set(1, 1, 1);
+            this.fieldOfViews.forEach(fov => {
+              fov.material.visible = true;
+            })
+          }
         }
         this.player.setWalkable(true);
         this.player.setOrientable(true);

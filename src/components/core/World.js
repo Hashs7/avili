@@ -16,8 +16,9 @@ export default class {
     this.canvas = canvas;
     this.store = store;
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
-    //this.renderer.setPixelRatio(window.devicePixelRatio);
+    this.renderer.localClippingEnabled = true;
     this.renderer.setSize(window.innerWidth, window.innerHeight);
+    //this.renderer.setPixelRatio(window.devicePixelRatio);
     //this.renderer.toneMapping = THREE.ReinhardToneMapping;
     this.renderer.outputEncoding = THREE.sRGBEncoding;
     this.pseudo = pseudo;
@@ -28,6 +29,7 @@ export default class {
     this.sinceLastFrame = 0;
 
     this.audioManager = AudioManager;
+    this.audioManager.initAudio();
 
     this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.01, 1000);
     this.camera.name = 'MainCamera';
@@ -67,6 +69,10 @@ export default class {
 
     // this.setPostProcessing(false);
     this.composer = new EffectComposer(this.renderer);
+  }
+
+  loaderFinished() {
+    this.sceneManager.spawnScene.instance.playTestimony();
   }
 
 
@@ -110,13 +116,35 @@ export default class {
    * Load all environement props
    */
   async loadAssets() {
-    const mapGltf = await LoadManager.loadGLTF('./assets/models/map/Map7.glb');
-    const t1Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v2.glb');
-    const t2Gltf = await LoadManager.loadGLTF('./assets/models/environment/environment_tower_v2.glb');
-    const playerGltf = await LoadManager.loadGLTF('./assets/models/characters/personnage_emilie_v10.glb');
-    await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
-    this.audioManager.loadAudio();
+    const assetsDef = [{
+      name: 'mapGltf',
+      path: './assets/models/map/Map7.glb',
+    },{
+      name: 't1Gltf',
+      path: './assets/models/environment/environment_tower_v2.glb',
+    },{
+      name: 't2Gltf',
+      path: './assets/models/environment/environment_tower_v2.glb',
+    },{
+      name: 'playerGltf',
+      path: './assets/models/characters/personnage_emilie_v10.glb',
+    },{
+      name: 'npc',
+      path: './assets/models/characters/npc.glb'
+    }];
+    const assets = await Promise.all(assetsDef.map(async ({ name, path }) => {
+      const gltf = await LoadManager.loadGLTF(path);
+      return { name, gltf };
+    }));
+    this.appendAssets(assets);
+  }
 
+  appendAssets(assets) {
+    this.audioManager.loadAudio();
+    const playerGltf = assets.find(el => el.name === 'playerGltf').gltf;
+    const mapGltf = assets.find(el => el.name === 'mapGltf').gltf;
+    const t1Gltf = assets.find(el => el.name === 't1Gltf').gltf;
+    const t2Gltf = assets.find(el => el.name === 't2Gltf').gltf;
     this.player = new Player(playerGltf, this.world, this.camera, this.sceneManager, 'Emilie');
     // this.player.groupCamera();
     this.sceneManager.addMap(mapGltf);
@@ -135,7 +163,7 @@ export default class {
     if(this.player) {
       this.player.update(timeStep)
     }
-    this.sceneManager.update();
+    this.sceneManager.update(timeStep);
     this.cameraOperator.renderFollowCamera();
     this.updatePhysics(timeStep);
   }
@@ -207,7 +235,7 @@ export default class {
    * Wow such a function
    */
   wow() {
-    new Konami(() => AudioManager.playSound('KO.m4a'));
+    new Konami(() => AudioManager.playSound('ko.mp3', false));
   }
 
   /**

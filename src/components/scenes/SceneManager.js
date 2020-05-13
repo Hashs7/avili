@@ -2,9 +2,7 @@ import * as THREE from "three";
 import { Body, Box, ContactMaterial, Quaternion, Material, Plane, Vec3 } from "cannon-es";
 import SpawnScene from "./spawn/SpawnScene";
 import FieldOfViewScene from "./fieldOfView/FieldOfViewScene";
-import LoadManager from '../core/LoadManager';
 import ProjectileScene from "./projectile/ProjectileScene";
-import NPC from "../characters/NPC";
 import WordScene from "./word/WordScene";
 import gsap from 'gsap';
 import {RenderPass} from "three/examples/jsm/postprocessing/RenderPass";
@@ -16,30 +14,16 @@ import FinalScene from "./final/FinalScene";
 import { GAME_STATES } from "../../constantes";
 import {Raycaster} from "three";
 import State from "../core/State";
-
-const npcsDefinition = (positions) => [{
-  name: 'Daesu',
-  position: new THREE.Vector3(-1, 0, 2),
-  target: new THREE.Vector3(positions[0].x, 0, positions[0].z),
-},{
-  name: 'Tardys',
-  position: new THREE.Vector3(2, 0, -2),
-  target: new THREE.Vector3(positions[1].x, 0, positions[1].z),
-},{
-  name: 'Farkana',
-  position: new THREE.Vector3(5, 0, -3),
-  target: new THREE.Vector3(positions[2].x, 0, positions[2].z),
-},{
-  name: 'Schteppe',
-  position: new THREE.Vector3(3, 0, 3),
-  target: new THREE.Vector3(positions[3].x, 0, positions[3].z),
-}];
+import NPCManager from "./NPCManager";
+import AudioManager from '../core/AudioManager';
 
 export default class {
   constructor(world, worldPhysic, camera) {
     this.world = world;
     this.worldPhysic = worldPhysic;
     this.camera = camera;
+    this.npcManager = new NPCManager(world, this);
+
     this.mat1 = new Material();
     this.scenesPath = './assets/models/scenes/';
     this.loadedScenes = [];
@@ -63,6 +47,7 @@ export default class {
     document.addEventListener('stateUpdate', (e) => {
       if (e.detail !== GAME_STATES.infiltration_sequence_start) return;
       this.ambianceInfiltrationTransition();
+      AudioManager.setWindLoopAudio();
     });
     document.addEventListener('stateUpdate', (e) => {
       if (e.detail !== GAME_STATES.words_sequence_start) return;
@@ -165,7 +150,7 @@ export default class {
         child.material.opacity = 0;
       }
       if (child.name.split('mate').length > 1) {
-        this.matesPos.push(child.position)
+        this.npcManager.addMatesPos(child.position);
       }
       if (child.name === 'wall') {
         this.walls = child;
@@ -272,28 +257,15 @@ export default class {
     this.mainScene.add(this.map);
   }
 
-  setNPC(map, positions) {
-    npcsDefinition(positions).forEach(async (n) => {
-      const gltf = await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
-      console.log(gltf);
-      const npc = new NPC(gltf, this.world, this, 'npc', n.position, map.geometry, n.name);
-      this.npc.push(npc);
-    });
-  }
-
-  moveNPC() {
-    setTimeout(() => {
-      this.npc.forEach((n, i) => n.moveTo(npcsDefinition(this.matesPos)[i].target));
-    }, 3000);
-  }
-
   setSpawn() {
-    this.addScene(new SpawnScene(this.world, this.spline, this.sections, () => this.moveNPC(), this.spawnCrystal));
+    this.spawnScene = new SpawnScene(this.world, this.spline, this, this.spawnCrystal)
+    this.addScene(this.spawnScene);
   }
 
-  setFov() {
-    this.setNPC(this.map, this.matesPos);
-    this.addScene(new FieldOfViewScene(this.world, this, this.matesPos, this.towers, this.landingAreas, this.towerEls));
+  async setFov() {
+    await this.npcManager.loadNPC(this.map);
+    this.npcManager.hideNPC();
+    this.addScene(new FieldOfViewScene(this.world, this, this.towers, this.landingAreas, this.towerEls, this.npcManager.npcs));
   }
 
   setProjectile() {
@@ -348,7 +320,7 @@ export default class {
     this.worldPhysic.addBody(walls);*!/
   }*/
 
-  detectSectionPassed(){
+  detectSectionPassed() {
     const ray = new Raycaster(
       new THREE.Vector3(0,0,0),
       new THREE.Vector3(0,0,0),
@@ -415,12 +387,10 @@ export default class {
     this.colliders.push(object);
   }
 
-  update() {
+  update(timeStep) {
+    this.npcManager.update(timeStep);
     for (let i = 0; i < this.loadedScenes.length; i++) {
       this.loadedScenes[i].instance.update();
-    }
-    for (let i = 0; i < this.npc.length; i++) {
-      this.npc[i].update(this.world.clock.getDelta());
     }
   }
 

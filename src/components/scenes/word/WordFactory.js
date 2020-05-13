@@ -39,8 +39,8 @@ export default class WordFactory {
 
   setup() {
     // These options give us a more candy-ish render on the font
-    this.fontOption = {
-      // font: f,
+    /*this.fontOption = {
+      font: f,
       size: 18,
       height: 2,
       curveSegments: 24,
@@ -49,7 +49,7 @@ export default class WordFactory {
       bevelSize: 0.3,
       bevelOffset: 0,
       bevelSegments: 10
-    };
+    };*/
 
     const shape = new Sphere(0.1);
     this.jointBody = new Body({ mass: 0 });
@@ -63,38 +63,7 @@ export default class WordFactory {
     this.models = meshes;
   }
 
-
-  setConstraints() {
-    /*this.words.forEach(word => {
-      for (let i = 0; i < word.children.length; i++) {
-        // We get the current letter and the next letter (if it's not the penultimate)
-        const letter = word.children[i];
-        const nextLetter = i === word.children.length - 1 ? null : word.children[i + 1];
-
-        if (!nextLetter) continue;
-
-        // I choosed ConeTwistConstraint because it's more rigid that other constraints and it goes well for my purpose
-        const c = new ConeTwistConstraint(letter.body, nextLetter.body, {
-          pivotA: new Vec3(letter.size.x, 0, 0),
-          pivotB: new Vec3(0, 0, 0)
-        });
-
-        // Optionnal but it gives us a more realistic render in my opinion
-        c.collideConnected = true;
-
-        this.world.addConstraint(c);
-      }
-    });*/
-  }
-
-
   addWord({ text, position, mass, collide, movable }, index) {
-    /*const material = new THREE.MeshPhongMaterial({ color: 0x97df5e });
-    const geometry = new THREE.TextBufferGeometry(text, this.fontOption);
-    geometry.computeBoundingBox();
-    geometry.computeBoundingSphere();
-
-    const mesh = new THREE.Mesh(geometry, material);*/
     const mesh = this.models[index];
     mesh.movable = movable;
     const scaleFactor = 2;
@@ -103,13 +72,15 @@ export default class WordFactory {
     mesh.name = text;
     mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
 
+    const hitGeometry = new THREE.BoxGeometry( mesh.size.x, mesh.size.y, mesh.size.z );
+    const hitbox = new THREE.Mesh(hitGeometry, new THREE.MeshBasicMaterial({ wireframe: true }));
+    hitbox.name = 'hitbox-' + text;
+    hitbox.position.add(new THREE.Vector3(0,mesh.size.y/2, 0));
+    mesh.add(hitbox);
     if (collide) {
-      const hitGeometry = new THREE.BoxGeometry( mesh.size.x, mesh.size.y, mesh.size.z );
-      const hitbox = new THREE.Mesh(hitGeometry, new THREE.MeshBasicMaterial({ wireframe: true }));
-      hitbox.name = 'hitbox-' + text;
-      hitbox.position.add(new THREE.Vector3(0,mesh.size.y/2, 0));
-      mesh.add(hitbox);
       this.manager.addCollider(hitbox);
+    } else {
+      mesh.material.transparent = true;
     }
     mesh.body = new Body({
       mass,

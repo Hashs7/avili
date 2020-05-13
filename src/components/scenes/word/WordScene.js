@@ -8,39 +8,41 @@ import { Raycaster } from "three";
 import { GAME_STATES } from "../../../constantes";
 import TestimonyManager from "../../core/TestimonyManager";
 import LoadManager from "../../core/LoadManager";
+import {normalize} from "../../../utils";
+import gsap from 'gsap';
 
 const wordsDef = [{
   text: 'Inutile',
   mass: 50,
-  position: new Vec3(125, 10, -3),
+  position: new Vec3(125, 10, 0),
   collide: false,
   movable: true,
   path: 'inutile.glb',
 }, {
   text: 'Cuisine',
   mass: 70,
-  position: new Vec3(135, 25, -5),
-  collide: true,
+  position: new Vec3(132, 25, -1),
+  collide: false,
   movable: true,
   path: 'cuisine.glb',
 }, {
   text: 'Moche',
   mass: 100,
-  position: new Vec3(150, 70, -3),
+  position: new Vec3(140, 70, 0),
   collide: true,
-  movable: false,
+  movable: true,
   path: 'moche.glb',
 }, {
   text: 'Pute',
   mass: 100,
-  position: new Vec3(145, 70, -3),
+  position: new Vec3(150, 70, 0),
   collide: true,
   movable: false,
   path: 'pute.glb',
 }, {
   text: 'Salope',
   mass: 100,
-  position: new Vec3(150, 70, -3),
+  position: new Vec3(145, 70, -3),
   collide: true,
   movable: false,
   path: 'salope.glb',
@@ -62,10 +64,23 @@ export default class extends Scene {
       0,
       0.5,
     );
+    this.rayWord = new Raycaster(
+      new THREE.Vector3(0,0,0),
+      new THREE.Vector3(0,0,0),
+      0,
+      4,
+    );
     this.ray.firstHitOnly = true;
+    this.rayWord.firstHitOnly = true;
 
     //TODO enable after player enter section
-    document.addEventListener('playerMoved', (e) => this.detectWall(e));
+    document.addEventListener('playerMoved', (e) => {
+      this.detectWall(e);
+      let word = this.detectWord(e);
+      if(word) {
+        this.wordFadeIn(word);
+      }
+    });
     this.init()
     return {
       instance: this,
@@ -94,6 +109,7 @@ export default class extends Scene {
     // TODO refacto
     if (objs[0].object.name === "m1") {
       this.dropWord();
+      setTimeout(() => this.dropWord(), 1000);
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm1');
       TestimonyManager.speak('first_badword.mp3', 'first_badword');
@@ -117,6 +133,38 @@ export default class extends Scene {
       }, 5000);
     }
   }
+
+  detectWord(e){
+    const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
+    const direction = new THREE.Vector3( 0, 0, 1 ).applyQuaternion( e.detail.quaternion );
+    this.rayWord.set(playerPosition, direction);
+    const hitboxes = this.factory.words.reduce((acc, el) => {
+      acc.push(el.children[0]);
+      return acc;
+    },[]);
+    const objs = this.rayWord.intersectObjects(hitboxes, false);
+    if(objs.length === 0) return;
+    return {object: objs[0].object.parent, distance: objs[0].distance};
+    //this.factory.models[0].material.opacity = normalize(objs[0].distance, 0, 6);
+  }
+
+  wordFadeIn(word){
+    const opacity = normalize(word.distance, 0, 6);
+    if(opacity <= 0.2) {
+      this.wordFadeOut(word.object.material)
+    } else {
+      word.object.material.opacity = opacity;
+    }
+  }
+
+  wordFadeOut(material){
+    gsap.to(material, {
+      opacity: 1,
+      duration: 0.5,
+      delay: 1,
+    })
+  }
+
 
   dropWord() {
     this.factory.addWord(wordsDef[this.wordIndex], this.wordIndex);

@@ -1,20 +1,52 @@
 import * as THREE from 'three'
-import { makeTextSprite } from "../../utils";
+import { makeTextSprite, randomInRange } from "../../utils";
 import Character from "./Character";
 import { Pathfinding } from "three-pathfinding";
+import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils";
+import gsap from 'gsap';
 
 export default class extends Character {
   constructor(gltf, world, sceneManager, name, startPosition, mapGeometry, pseudo) {
     super(gltf, world, sceneManager, name);
-    this.speed = 0.25;
+    this.speed = 0.5;
     this.isWalking = false;
     this.target = [];
     this.group.name = 'NPC';
-
+    this.plane = new THREE.Plane(new THREE.Vector3(0, -1, 0), 12);
     this.group.position.copy(startPosition);
+    this.skinnedMesh = this.character.children[0].children.filter(child => child instanceof THREE.SkinnedMesh);
+
     this.setPathFinding(mapGeometry);
     this.addPseudo(pseudo);
+    // this.createPlaneStencilGroup();
     // this.prepareCrossFade(this.runAction);
+  }
+
+  hide() {
+    this.skinnedMesh.forEach(mesh => {
+      mesh.material.transparent = true;
+      mesh.material.opacity = 0;
+    });
+  }
+
+  showAnimation(index) {
+    const delay = (randomInRange(400, 1000) / 1000) + (index / 2);
+    this.skinnedMesh.forEach(mesh => {
+      mesh.material.transparent = true;
+      mesh.material.opacity = 0;
+
+      gsap.to(mesh.material, {
+        opacity: 1,
+        delay,
+        duration: 1,
+        onComplete: () => { mesh.material.transparent = false },
+      })
+    });
+    gsap.to(this.playerName.material, {
+      opacity: 1,
+      duration: .3,
+      delay: delay,
+    })
   }
 
   /**
@@ -42,14 +74,16 @@ export default class extends Character {
     this.setOrientation(this.target[0]);
   }
 
+  teleportTo(target) {
+    this.group.position.copy(target);
+  }
+
   /**
    * Update each frame
-   * @param dt
+   * @param timeStep
    */
-  update() {
-    // TODO fix dt
-    // this.mixer.update( dt * 10 );
-    this.mixer.update( 0.01 );
+  update(timeStep) {
+    this.mixer.update( timeStep );
     if (!this.target || !this.target.length) return;
     const velocity = this.target[0].clone().sub( this.group.position );
     if (velocity.lengthSq() > 0.05 * 0.05) {
@@ -58,12 +92,20 @@ export default class extends Character {
     } else {
       this.target.shift();
 
-      if(this.target.length) {
+      if (this.target.length) {
         this.setOrientation(this.target[0]);
         return;
       }
+
+      // Finished walking
       this.setWalking(false);
+      if (!this.walkCallback) return;
+      this.walkCallback()
     }
+  }
+
+  setWalkCallback(cb) {
+    this.walkCallback = cb;
   }
 
   /**
@@ -72,7 +114,7 @@ export default class extends Character {
    * @param z
    */
   setOrientation({ x, z }) {
-    this.character.rotation.y = Math.atan2(x - this.group.position.x, z - this.group.position.z);
+    this.group.rotation.y = Math.atan2(x - this.group.position.x, z - this.group.position.z);
   }
 
   /**
@@ -81,14 +123,76 @@ export default class extends Character {
    */
   setWalking(walk) {
     if (this.isWalking === walk) return;
-    // this.prepareCrossFade(this.runAction);
     this.prepareCrossFade(walk ? this.runAction : this.idleAction);
     this.isWalking = walk;
   }
 
   async addPseudo(name) {
-    const playerName = await makeTextSprite(name, { fontsize: 26, fontface: "Roboto Slab" });
-    playerName.position.set(0, 1.7, 0);
-    this.group.add(playerName);
+    this.playerName = await makeTextSprite(name, { fontsize: 26, fontface: "Roboto Slab" });
+    this.playerName.position.set(0, 1.7, 0);
+    this.group.add(this.playerName);
+
+    // Hide pseudo on start
+    this.playerName.material.transparent = true;
+    this.playerName.material.opacity = 0;
+  }
+
+  createPlaneStencilGroup(renderOrder = 1) {
+    const skinnedMesh = this.character.children[0].children.filter(child => child instanceof THREE.SkinnedMesh);
+    const geometries = skinnedMesh.map(skin => skin.geometry);
+    const geometry = BufferGeometryUtils.mergeBufferGeometries(geometries);
+
+    const group = new THREE.Group();
+    const baseMat = new THREE.MeshBasicMaterial();
+    baseMat.depthWrite = false;
+    baseMat.depthTest = false;
+    baseMat.colorWrite = false;
+    baseMat.stencilWrite = true;
+    baseMat.stencilFunc = THREE.AlwaysStencilFunc;
+
+    // back faces
+    const mat0 = baseMat.clone();
+    mat0.side = THREE.BackSide;
+    mat0.clippingPlanes = [this.plane];
+    mat0.stencilFail = THREE.IncrementWrapStencilOp;
+    mat0.stencilZFail = THREE.IncrementWrapStencilOp;
+    mat0.stencilZPass = THREE.IncrementWrapStencilOp;
+
+    const mesh0 = new THREE.Mesh(geometry, mat0);
+    mesh0.renderOrder = renderOrder;
+    group.add(mesh0);
+
+    // front faces
+    const mat1 = baseMat.clone();
+    mat1.side = THREE.FrontSide;
+    mat1.clippingPlanes = [this.plane];
+    mat1.stencilFail = THREE.DecrementWrapStencilOp;
+    mat1.stencilZFail = THREE.DecrementWrapStencilOp;
+    mat1.stencilZPass = THREE.DecrementWrapStencilOp;
+
+    const mesh1 = new THREE.Mesh(geometry, mat1);
+    mesh1.renderOrder = renderOrder;
+
+    group.add(mesh1);
+    this.group.add(group);
+
+    const planeGeom = new THREE.PlaneBufferGeometry(100, 100);
+    const planeMat = new THREE.MeshStandardMaterial({
+      color: 0xE91E63,
+      metalness: 0.1,
+      roughness: 0.75,
+      clippingPlanes: this.plane,
+      stencilWrite: true,
+      stencilRef: 0,
+      stencilFunc: THREE.NotEqualStencilFunc,
+      stencilFail: THREE.ReplaceStencilOp,
+      stencilZFail: THREE.ReplaceStencilOp,
+      stencilZPass: THREE.ReplaceStencilOp,
+    });
+
+    const po = new THREE.Mesh(planeGeom, planeMat);
+    po.onAfterRender = (renderer) => renderer.clearStencil();
+    po.renderOrder = renderOrder;
+    this.group.add(po);
   }
 }

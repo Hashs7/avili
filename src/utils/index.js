@@ -6,6 +6,8 @@ export const randomInRangeInt = (from, to) => Math.floor(Math.random() * (Math.f
 
 export const toRadian = (degrees) => degrees * Math.PI / 180;
 
+export const normalize = (value, min, max) => (value - min) / (max - min);
+
 const imageLoader = (url) => {
   return new Promise( (resolve, reject) => {
     const image = new Image();

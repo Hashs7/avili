@@ -11,6 +11,7 @@ export default class extends Character {
     // this.speed = 0.1;
     this.speed = 0.05;
     this.orientable = true;
+    // False for full intro | True to skip
     this.walkable = true;
     this.inputManager = new InputManager();
     this.inputManager.setInputReceiver(this);
@@ -67,6 +68,7 @@ export default class extends Character {
 
   groupCamera() {
     this.group.position.set(0, 0, 0);
+
     this.spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, Math.PI/10, 1);
     this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(this.group.position));
     this.spotLight.castShadow = true;
@@ -145,7 +147,7 @@ export default class extends Character {
   }
 
   detectWallCollision(nextPosition){
-    const hitbox = this.character.parent.children[2];
+    const hitbox = this.character.parent.children.find(el => el.name === 'hitbox');
     let isCollide = false;
 
     //hitbox.position.x += nextPosition.x;
