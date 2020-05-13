@@ -9,6 +9,9 @@ class AudioManager {
     this.introAudio = null;
     this.ambiantVolume = 1;
     this.audios = [];
+
+    this.introAudio = new Audio('./assets/audio/music/ambient-calm.mp3');
+    this.windAudio = new Audio('./assets/audio/music/ambiance-vent.mp3');
   }
 
   initAudio() {
@@ -17,9 +20,6 @@ class AudioManager {
   }
 
   loadAudio() {
-    this.introAudio = new Audio('./assets/audio/music/ambient-calm.mp3');
-    this.windAudio = new Audio('./assets/audio/music/ambiance-vent.mp3');
-
     if (!this.testimonyListener) return;
     const prefixTestimony ='./assets/audio/testimony/';
     const audioTestimony = [

@@ -47,10 +47,7 @@ export default class FieldOfViewManager {
       return armor;
     }
 
-    this.npc.forEach(({group}, index) => this.addFieldOfView(group, index));
-    console.log(this.firstNpc);
-    this.initFirstNpc(this.firstNpc);
-    
+
     document.addEventListener('stateUpdate', e => {
       if (e.detail !== GAME_STATES.infiltration_sequence_start) return;
       const arr = landingAreas.slice(4);
@@ -67,7 +64,8 @@ export default class FieldOfViewManager {
     document.addEventListener('showFov', () => {
       if (this.fieldsVisible) return;
       this.fieldsVisible = true;
-      this.npc.forEach(({group}) => this.addFieldOfView(group));
+      this.npc.forEach(({group}, index) => this.addFieldOfView(group, index));
+      this.initFirstNpc(this.firstNpc);
     });
   }
 
@@ -98,8 +96,7 @@ export default class FieldOfViewManager {
       fragmentShader: CircleGradientShader.fragmentShader,
       side: THREE.DoubleSide,
       transparent: true,
-      opacity: this.fieldsVisible ? 1 : 0,
-    })
+    });
 
     const npc = group.children.find(e => e.name = "npc");
 
