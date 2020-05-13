@@ -77,10 +77,12 @@ export default class Projectile {
         this.createProjectileFrom(this.tower.position, this.landingAreas[this.indexSequence[this.index]].position);
         this.index = this.index === this.landingAreas.length - 1 ? 0 : this.index + 1;
         if (!this.audioEnabled) return;
-        AudioManager.playSound('music/laser.mp3');
+        AudioManager.playSound('laser.mp3', false);
       },
       onComplete: () => {
         this.currentLandingPoint.userData.isDetectable = true;
+        if (!this.audioEnabled) return;
+        AudioManager.playSound('explosion.mp3', false);
       },
       value: 6.0,
       duration: 0.2,

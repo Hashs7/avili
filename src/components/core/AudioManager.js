@@ -1,21 +1,25 @@
 import * as THREE from "three/src/Three";
 import LoadManager from './LoadManager'
+import gsap from 'gsap';
 
 class AudioManager {
   constructor() {
-    this.listener = null;
+    this.testimonyListener = null;
+    this.ambiantListener = null;
     this.introAudio = null;
+    this.ambiantVolume = 1;
     this.audios = [];
   }
 
   initAudio() {
-    this.listener = new THREE.AudioListener();
+    this.testimonyListener = new THREE.AudioListener();
+    this.ambiantListener = new THREE.AudioListener();
   }
 
   loadAudio() {
-    if (!this.listener) return;
-    const prefix ='./assets/audio/';
-    const audioPaths = [
+    if (!this.testimonyListener) return;
+    const prefixTestimony ='./assets/audio/testimony/';
+    const audioTestimony = [
       'black_screen.mp3',
       'ending.mp3',
       'first_badword.mp3',
@@ -24,14 +28,27 @@ class AudioManager {
       'second_badword.mp3',
       'spawn_mates.mp3',
       'spawn_player.mp3',
-      'travelling.mp3',
-      'audio_mot_cuisine.mp3',
-      'music/laser.mp3',
-      'music/npc-angoissant.mp3',
     ];
-    audioPaths.forEach(file => {
-      LoadManager.loadAudio(prefix + file, (buffer) => {
-        const audio = new THREE.Audio( this.listener ).setBuffer( buffer );
+    audioTestimony.forEach(file => {
+      LoadManager.loadAudio(prefixTestimony + file, (buffer) => {
+        const audio = new THREE.Audio( this.testimonyListener ).setBuffer( buffer );
+        audio.name = file;
+        this.audios.push(audio);
+      })
+    });
+
+    if (!this.ambiantListener) return;
+    const prefixAmbiant ='./assets/audio/ambiant/';
+    const audioAmbiant = [
+      'ko.mp3',
+      'audio_mot_cuisine.mp3',
+      'laser.mp3',
+      'explosion.mp3',
+      'npc-angoissant.mp3',
+    ];
+    audioAmbiant.forEach(file => {
+      LoadManager.loadAudio(prefixAmbiant + file, (buffer) => {
+        const audio = new THREE.Audio( this.ambiantListener ).setBuffer( buffer );
         audio.name = file;
         this.audios.push(audio);
       })
@@ -53,12 +70,24 @@ class AudioManager {
     this.introAudio.removeListener('ended', this.bindIntro);
   }
 
-
   groupListener(group) {
-    group.add(this.listener);
+    group.add(this.testimonyListener);
+    group.add(this.ambiantListener);
   }
 
-  playSound(name) {
+  setAmbiantVolume(value) {
+    gsap.to(this, {
+      ambiantVolume: value,
+      onUpdate: () => this.ambiantListener.setMasterVolume(this.ambiantVolume),
+      duration: 1,
+    });
+    gsap.to(this.introAudio, {
+      volume: value,
+      duration: 1,
+    })
+  }
+
+  playSound(name, isTestimony) {
     const audio = this.audios.find(file => file.name === name);
     if (!audio) return;
     audio.play();

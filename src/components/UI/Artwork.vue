@@ -38,7 +38,7 @@
         this.$store.commit('setPlaying', true);
       },
       setLang(lang) {
-        this.$i18n.set(lang)
+        this.$i18n.set(lang);
       }
     },
   }

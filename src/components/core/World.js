@@ -235,7 +235,7 @@ export default class {
    * Wow such a function
    */
   wow() {
-    new Konami(() => AudioManager.playSound('KO.m4a'));
+    new Konami(() => AudioManager.playSound('ko.mp3', false));
   }
 
   /**

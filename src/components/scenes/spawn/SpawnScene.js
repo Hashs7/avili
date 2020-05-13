@@ -98,9 +98,11 @@ export default class extends Scene {
     /*
      * Pendant le travelling
      **/
+    /*
     setTimeout(() => {
       TestimonyManager.speak('travelling.mp3', 'travelling');
     }, 6000)
+    */
 
 
 
@@ -112,7 +114,7 @@ export default class extends Scene {
      */
     setTimeout(() => {
       TestimonyManager.speak('spawn_mates.mp3', 'spawn_mates');
-    }, 28000);
+    }, 18000);
 
     /**
      * Lorsque la joueuse apparait
@@ -122,7 +124,7 @@ export default class extends Scene {
       setTimeout(() => {
         this.world.getPlayer().setWalkable(true);
       }, 7500)
-    }, 65000);
+    }, 55000);
   }
 
   upAndDownCrystalAnimation() {

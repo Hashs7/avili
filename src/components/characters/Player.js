@@ -146,7 +146,7 @@ export default class extends Character {
   }
 
   detectWallCollision(nextPosition){
-    const hitbox = this.character.parent.children[2];
+    const hitbox = this.character.parent.children.find(el => el.name === 'hitbox');
     let isCollide = false;
 
     //hitbox.position.x += nextPosition.x;

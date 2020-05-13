@@ -53,7 +53,10 @@ export default class NPCManager {
       // delay each npc start moving
       setTimeout(() => {
           n.moveTo(npcsDefinition(this.mapPositions)[i].toTeleport);
-          n.setWalkCallback(() => {n.teleportTo(npcsDefinition(this.mapPositions)[i].target)})
+          n.setWalkCallback(() => {
+            document.dispatchEvent(new CustomEvent('showFov'));
+            n.teleportTo(npcsDefinition(this.mapPositions)[i].target)
+          })
       }, (i * 500) + 3000)
     );
     // no delay version
