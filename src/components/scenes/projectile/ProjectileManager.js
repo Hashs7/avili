@@ -1,5 +1,6 @@
 import * as THREE from 'three';
 import Projectile from "../../core/Projectile";
+import { GAME_STATES } from "../../../constantes";
 
 
 export default class ProjectileManager {
@@ -11,10 +12,10 @@ export default class ProjectileManager {
     this.playerPosition = new THREE.Vector3();
 
     document.addEventListener('stateUpdate', e => {
-      if (e.detail === 'infiltration_sequence_start') {
+      if (e.detail === GAME_STATES.infiltration_sequence_start) {
         this.proj.audioEnabled = false;
       }
-      if (e.detail !== 'projectile_sequence_start') return;
+      if (e.detail !== GAME_STATES.projectile_sequence_start) return;
       const arr = landingAreas.slice(0, 4);
       this.proj = new Projectile(towers[0], arr, this.scene, this.towerElements[0], this);
       this.proj.launchSequence();

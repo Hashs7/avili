@@ -17,7 +17,7 @@ import { GAME_STATES } from "../../constantes";
 import {Raycaster} from "three";
 import State from "../core/State";
 import NPCManager from "./NPCManager";
-
+import AudioManager from '../core/AudioManager';
 
 export default class {
   constructor(world, worldPhysic, camera) {
@@ -49,6 +49,7 @@ export default class {
     document.addEventListener('stateUpdate', (e) => {
       if (e.detail !== GAME_STATES.infiltration_sequence_start) return;
       this.ambianceInfiltrationTransition();
+      AudioManager.setWindLoopAudio();
     });
     document.addEventListener('stateUpdate', (e) => {
       if (e.detail !== GAME_STATES.words_sequence_start) return;

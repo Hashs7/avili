@@ -17,6 +17,9 @@ class AudioManager {
   }
 
   loadAudio() {
+    this.introAudio = new Audio('./assets/audio/music/ambient-calm.mp3');
+    this.windAudio = new Audio('./assets/audio/music/ambiance-vent.mp3');
+
     if (!this.testimonyListener) return;
     const prefixTestimony ='./assets/audio/testimony/';
     const audioTestimony = [
@@ -56,7 +59,6 @@ class AudioManager {
   }
 
   setIntroLoopAudio() {
-    this.introAudio = new Audio('./assets/audio/music/ambient-calm.mp3');
     this.bindIntro = () => {
       this.currentTime = 0;
       this.introAudio.play();
@@ -70,6 +72,21 @@ class AudioManager {
     this.introAudio.removeListener('ended', this.bindIntro);
   }
 
+  setWindLoopAudio() {
+    this.bindWind = () => {
+      this.currentTime = 0;
+      this.windAudio.play();
+    };
+    this.windAudio.addEventListener('ended', this.bindWind, false);
+    this.windAudio.play();
+  }
+
+  stopWindLoopAudio() {
+    this.windAudio.stop();
+    this.windAudio.removeListener('ended', this.bindWind);
+  }
+
+
   groupListener(group) {
     group.add(this.testimonyListener);
     group.add(this.ambiantListener);
@@ -82,6 +99,10 @@ class AudioManager {
       duration: 1,
     });
     gsap.to(this.introAudio, {
+      volume: value,
+      duration: 1,
+    });
+    gsap.to(this.windAudio, {
       volume: value,
       duration: 1,
     })

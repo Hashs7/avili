@@ -7,6 +7,7 @@ import {CircleGradientShader} from "../../shaders/CircleGradientShader";
 import CameraOperator from "../../core/CameraOperator";
 import gsap from 'gsap';
 import AudioManager from "../../core/AudioManager";
+import { GAME_STATES } from "../../../constantes";
 
 export default class FieldOfViewManager {
   constructor(world, scene, towers, landingAreas, towerElements, npc) {
@@ -46,7 +47,7 @@ export default class FieldOfViewManager {
     }
 
     document.addEventListener('stateUpdate', e => {
-      if (e.detail !== 'infiltration_sequence_start') return;
+      if (e.detail !== GAME_STATES.infiltration_sequence_start) return;
       const arr = landingAreas.slice(4);
       this.proj = new Projectile(towers[1], arr, this.scene, this.towerElements[1]);
       this.proj.launchSequence();
