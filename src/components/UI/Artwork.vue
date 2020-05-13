@@ -11,6 +11,7 @@
 
 <script>
   import HomeArtwork from "../core/HomeArtwork";
+  import AudioManager from "../core/AudioManager";
 
   export default {
     name: "Artwork",
@@ -18,6 +19,15 @@
       qualitySet() {
         return this.$store.state.quality;
       },
+      pseudo() {
+        return this.$store.state.pseudo;
+      },
+    },
+    watch: {
+      pseudo(newVal) {
+        if (!newVal) return;
+        AudioManager.setIntroLoopAudio();
+      }
     },
     mounted() {
       this.artwork = new HomeArtwork(this.$refs.homeCanvas, this.qualitySet);

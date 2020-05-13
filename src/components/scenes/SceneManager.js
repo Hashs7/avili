@@ -259,13 +259,14 @@ export default class {
   }
 
   setSpawn() {
-    console.log('setSpawn', this.spawnCrystal);
-    this.addScene(new SpawnScene(this.world, this.spline, this, this.spawnCrystal));
+    this.spawnScene = new SpawnScene(this.world, this.spline, this, this.spawnCrystal)
+    this.addScene(this.spawnScene);
   }
 
   async setFov() {
     await this.npcManager.loadNPC(this.map);
-    this.addScene(new FieldOfViewScene(this.world, this, this.towers, this.landingAreas, this.towerEls, this.npc));
+    this.npcManager.hideNPC();
+    this.addScene(new FieldOfViewScene(this.world, this, this.towers, this.landingAreas, this.towerEls, this.npcManager.npcs));
   }
 
   setProjectile() {

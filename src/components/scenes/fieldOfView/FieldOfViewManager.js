@@ -6,6 +6,7 @@ import {toRadian} from "../../../utils";
 import {CircleGradientShader} from "../../shaders/CircleGradientShader";
 import CameraOperator from "../../core/CameraOperator";
 import gsap from 'gsap';
+import AudioManager from "../../core/AudioManager";
 
 export default class FieldOfViewManager {
   constructor(world, scene, towers, landingAreas, towerElements, npc) {
@@ -125,7 +126,7 @@ export default class FieldOfViewManager {
       const rotation = Math.atan2( ( this.world.camera.position.x - playerModel.position.x ), ( this.world.camera.position.z - playerModel.position.z ) );
       this.armor().mask.material.transparent = true;
       this.armor().cape.material.transparent = true;
-
+      AudioManager.playSound('music/npc-angoissant.mp3')
       // mask, cape and rotation animations
       const tl = gsap.timeline({repeat: 0});
       tl.to(playerModel.rotation, {

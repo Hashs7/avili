@@ -69,6 +69,7 @@
     },
     methods: {
       initLoader() {
+        this.$store.commit('setLoaderVisible', true);
         this.completeTime = false;
         LoadManager.setReceiver(this);
         setTimeout(() => this.completeTime = true, this.minTime);
@@ -99,6 +100,7 @@
           y: -20,
           onComplete: () => {
             done()
+            this.$store.commit('setLoaderVisible', false);
           },
         });
         gsap.to(this.$refs.img, {

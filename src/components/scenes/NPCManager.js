@@ -5,18 +5,22 @@ import NPC from "../characters/NPC";
 const npcsDefinition = (positions) => [{
   name: 'Daesu',
   position: new THREE.Vector3(-1, 0, 2),
+  toTeleport: new THREE.Vector3(32, 0, 0),
   target: new THREE.Vector3(positions[0].x, 0, positions[0].z),
 },{
   name: 'Tardys',
   position: new THREE.Vector3(2, 0, -2),
+  toTeleport: new THREE.Vector3(32, 0, 0),
   target: new THREE.Vector3(positions[1].x, 0, positions[1].z),
 },{
   name: 'Farkana',
   position: new THREE.Vector3(5, 0, -3),
+  toTeleport: new THREE.Vector3(32, 0, 0),
   target: new THREE.Vector3(positions[2].x, 0, positions[2].z),
 },{
   name: 'Schteppe',
   position: new THREE.Vector3(3, 0, 3),
+  toTeleport: new THREE.Vector3(32, 0, 0),
   target: new THREE.Vector3(positions[3].x, 0, positions[3].z),
 }];
 
@@ -36,13 +40,27 @@ export default class NPCManager {
     }));
   }
 
+  hideNPC() {
+    this.npcs.forEach((n) => n.hide());
+  }
+
+  showNPC() {
+    this.npcs.forEach((n) => n.showAnimation());
+  }
+
   moveNPC() {
-    console.log('move', this.mapPositions);
-    this.npcs.forEach((n, i) => n.moveTo(npcsDefinition(this.mapPositions)[i].target));
+    this.npcs.forEach((n, i) =>
+      // delay each npc start moving
+      setTimeout(() => {
+          n.moveTo(npcsDefinition(this.mapPositions)[i].toTeleport);
+          n.setWalkCallback(() => {n.teleportTo(npcsDefinition(this.mapPositions)[i].target)})
+      }, i * 500)
+    );
+    // no delay version
+    // this.npcs.forEach((n, i) => n.moveTo(npcsDefinition(this.mapPositions)[i].target));
   }
 
   teleportNPC() {
-    console.log('tp', this.mapPositions);
     this.npcs.forEach((n, i) => n.teleportTo(npcsDefinition(this.mapPositions)[i].target));
   }
 

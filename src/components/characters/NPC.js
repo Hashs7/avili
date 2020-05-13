@@ -14,6 +14,7 @@ export default class extends Character {
     this.group.name = 'NPC';
     this.plane = new THREE.Plane(new THREE.Vector3(0, -1, 0), 12);
     this.group.position.copy(startPosition);
+    this.skinnedMesh = this.character.children[0].children.filter(child => child instanceof THREE.SkinnedMesh);
 
     this.setPathFinding(mapGeometry);
     this.showAnimation();
@@ -22,14 +23,22 @@ export default class extends Character {
     // this.prepareCrossFade(this.runAction);
   }
 
-  showAnimation() {
-    const skinnedMesh = this.character.children[0].children.filter(child => child instanceof THREE.SkinnedMesh);
-    skinnedMesh.forEach(mesh => {
+  hide() {
+    this.skinnedMesh.forEach(mesh => {
       mesh.material.transparent = true;
       mesh.material.opacity = 0;
+    });
+  }
+
+  showAnimation(index) {
+    const delay = 3  + index;
+    this.skinnedMesh.forEach(mesh => {
+      mesh.material.transparent = true;
+      mesh.material.opacity = 0;
+
       gsap.to(mesh.material, {
         opacity: 1,
-        delay: 3,
+        delay,
         duration: 3,
         onComplete: () => mesh.material.transparent = false,
       })
@@ -79,12 +88,20 @@ export default class extends Character {
     } else {
       this.target.shift();
 
-      if(this.target.length) {
+      if (this.target.length) {
         this.setOrientation(this.target[0]);
         return;
       }
+
+      // Finished walking
       this.setWalking(false);
+      if (!this.walkCallback) return;
+      this.walkCallback()
     }
+  }
+
+  setWalkCallback(cb) {
+    this.walkCallback = cb;
   }
 
   /**
@@ -149,7 +166,6 @@ export default class extends Character {
     mesh1.renderOrder = renderOrder;
 
     group.add(mesh1);
-    console.log(group);
     this.group.add(group);
 
     const planeGeom = new THREE.PlaneBufferGeometry(100, 100);

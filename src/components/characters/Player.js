@@ -11,6 +11,7 @@ export default class extends Character {
     // this.speed = 0.1;
     this.speed = 0.05;
     this.orientable = true;
+    // False for full intro | True to skip
     this.walkable = true;
     this.inputManager = new InputManager();
     this.inputManager.setInputReceiver(this);

@@ -3,11 +3,16 @@ import LoadManager from './LoadManager'
 
 class AudioManager {
   constructor() {
-    this.listener = new THREE.AudioListener();
+    this.listener = null;
     this.audios = [];
   }
 
+  initAudio() {
+    this.listener = new THREE.AudioListener();
+  }
+
   loadAudio() {
+    if (!this.listener) return;
     const prefix ='./assets/audio/';
     const audioPaths = [
       'black_screen.mp3',
@@ -20,6 +25,8 @@ class AudioManager {
       'spawn_player.mp3',
       'travelling.mp3',
       'audio_mot_cuisine.mp3',
+      'music/laser.mp3',
+      'music/npc-angoissant.mp3',
     ];
     audioPaths.forEach(file => {
       LoadManager.loadAudio(prefix + file, (buffer) => {
@@ -30,6 +37,18 @@ class AudioManager {
     })
   }
 
+
+  setIntroLoopAudio() {
+    const introAudio = new Audio('./assets/audio/music/intro.mp3');
+    introAudio.addEventListener('ended', () => {
+      this.currentTime = 0;
+      introAudio.play();
+    }, false);
+    introAudio.play();
+  }
+
+
+
   groupListener(group) {
     group.add(this.listener);
   }
@@ -39,7 +58,6 @@ class AudioManager {
     if (!audio) return;
     audio.play();
   }
-
 }
 
 export default new AudioManager();

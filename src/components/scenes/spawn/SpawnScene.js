@@ -22,37 +22,8 @@ export default class extends Scene {
       this.initTravelling();
     }, 5000);*/
     this.spawnCrystal = spawnCrystal;
-    console.log(spawnCrystal);
     this.upAndDownCrystalAnimation();
 
-    // Mettre a false pour jouer la première partie
-    // Lorsqu'on appuie sur jouer
-    setTimeout(() => {
-      TestimonyManager.speak('black_screen.mp3', 'black_screen');
-    }, 2000);
-
-    /*
-     * Pendant le travelling
-     *
-    setTimeout(() => {
-      TestimonyManager.speak('travelling.mp3', 'travelling');
-    }, 6000)
-     */
-
-    /**
-     * Lorsque les coéquipiers apparaissent
-     */
-    setTimeout(() => {
-      this.sceneManager.npcManager.moveNPC();
-      TestimonyManager.speak('spawn_mates.mp3', 'spawn_mates');
-    }, 28000);
-
-    /**
-     * Lorsque la joueuse apparait
-     */
-    setTimeout(() => {
-      TestimonyManager.speak('spawn_player.mp3', 'spawn_player');
-    }, 65000);
 
     return {
       instance: this,
@@ -110,6 +81,48 @@ export default class extends Scene {
       }, 1500)
     });
     // this.world.player.groupCamera();
+  }
+
+  playTestimony() {
+    // Mettre a false pour jouer la première partie
+    // Lorsqu'on appuie sur jouer
+    setTimeout(() => {
+      TestimonyManager.speak('black_screen.mp3', 'black_screen');
+    }, 1000);
+
+
+    setTimeout(() => {
+      this.sceneManager.npcManager.showNPC();
+    }, 5000)
+
+    /*
+     * Pendant le travelling
+     **/
+    setTimeout(() => {
+      TestimonyManager.speak('travelling.mp3', 'travelling');
+    }, 6000)
+
+
+
+    setTimeout(() => {
+      this.sceneManager.npcManager.moveNPC();
+    }, 8000)
+    /**
+     * Lorsque les coéquipiers apparaissent
+     */
+    setTimeout(() => {
+      TestimonyManager.speak('spawn_mates.mp3', 'spawn_mates');
+    }, 28000);
+
+    /**
+     * Lorsque la joueuse apparait
+     */
+    setTimeout(() => {
+      TestimonyManager.speak('spawn_player.mp3', 'spawn_player');
+      setTimeout(() => {
+        this.world.getPlayer().setWalkable(true);
+      }, 7500)
+    }, 65000);
   }
 
   upAndDownCrystalAnimation() {
