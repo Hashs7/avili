@@ -4,6 +4,7 @@ import Character from "./Character";
 import { Pathfinding } from "three-pathfinding";
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils";
 import gsap from 'gsap';
+import AudioManager from "../core/AudioManager";
 
 export default class extends Character {
   constructor(gltf, world, sceneManager, name, startPosition, mapGeometry, pseudo) {
@@ -128,6 +129,7 @@ export default class extends Character {
   }
 
   async addPseudo(name) {
+    this.pseudo = name;
     this.playerName = await makeTextSprite(name, { fontsize: 26, fontface: "Roboto Slab" });
     this.playerName.position.set(0, 1.7, 0);
     this.group.add(this.playerName);
