@@ -8,6 +8,8 @@ import { Raycaster } from "three";
 import { GAME_STATES } from "../../../constantes";
 import TestimonyManager from "../../core/TestimonyManager";
 import LoadManager from "../../core/LoadManager";
+import {normalize} from "../../../utils";
+import gsap from 'gsap';
 
 const wordsDef = [{
   text: 'Inutile',
@@ -62,10 +64,25 @@ export default class extends Scene {
       0,
       0.5,
     );
+    this.rayWord = new Raycaster(
+      new THREE.Vector3(0,0,0),
+      new THREE.Vector3(0,0,0),
+      0,
+      4,
+    );
     this.ray.firstHitOnly = true;
+    this.rayWord.firstHitOnly = true;
 
     //TODO enable after player enter section
-    document.addEventListener('playerMoved', (e) => this.detectWall(e));
+    document.addEventListener('playerMoved', (e) => {
+      this.detectWall(e);
+      let word = this.detectWord(e);
+      if(word) {
+        this.wordFadeIn(word);
+      } else {
+        this.wordFadeOut();
+      }
+    });
     this.init()
     return {
       instance: this,
@@ -118,6 +135,32 @@ export default class extends Scene {
       }, 5000);
     }
   }
+
+  detectWord(e){
+    const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
+    const direction = new THREE.Vector3( 0, 0, 1 ).applyQuaternion( e.detail.quaternion );
+    this.rayWord.set(playerPosition, direction);
+    const hitboxes = this.factory.words.reduce((acc, el) => {
+      acc.push(el.children[0]);
+      return acc;
+    },[]);
+    const objs = this.rayWord.intersectObjects(hitboxes, false);
+    if(objs.length === 0) return;
+    return {object: objs[0].object.parent, distance: objs[0].distance};
+    //this.factory.models[0].material.opacity = normalize(objs[0].distance, 0, 6);
+  }
+
+  wordFadeIn(word){
+    word.object.material.opacity = normalize(word.distance, 0, 6);
+  }
+
+  wordFadeOut(){
+    gsap.to([this.factory.models[0].material, this.factory.models[1].material], {
+      opacity: 1,
+      duration: 0.5,
+    })
+  }
+
 
   dropWord() {
     this.factory.addWord(wordsDef[this.wordIndex], this.wordIndex);

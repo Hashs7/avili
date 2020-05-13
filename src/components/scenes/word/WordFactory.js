@@ -79,6 +79,8 @@ export default class WordFactory {
     mesh.add(hitbox);
     if (collide) {
       this.manager.addCollider(hitbox);
+    } else {
+      mesh.material.transparent = true;
     }
     mesh.body = new Body({
       mass,
