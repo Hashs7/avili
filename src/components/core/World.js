@@ -29,6 +29,7 @@ export default class {
     this.sinceLastFrame = 0;
 
     this.audioManager = AudioManager;
+    this.audioManager.initAudio();
 
     this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.01, 1000);
     this.camera.name = 'MainCamera';
@@ -68,6 +69,10 @@ export default class {
 
     // this.setPostProcessing(false);
     this.composer = new EffectComposer(this.renderer);
+  }
+
+  loaderFinished() {
+    this.sceneManager.spawnScene.instance.playTestimony();
   }
 
 
@@ -230,7 +235,7 @@ export default class {
    * Wow such a function
    */
   wow() {
-    new Konami(() => AudioManager.playSound('KO.m4a'));
+    new Konami(() => AudioManager.playSound('ko.mp3', false));
   }
 
   /**

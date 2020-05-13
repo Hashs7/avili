@@ -6,11 +6,13 @@ import {toRadian} from "../../../utils";
 import {CircleGradientShader} from "../../shaders/CircleGradientShader";
 import CameraOperator from "../../core/CameraOperator";
 import gsap from 'gsap';
+import AudioManager from "../../core/AudioManager";
 
 export default class FieldOfViewManager {
   constructor(world, scene, towers, landingAreas, towerElements, npc) {
     this.scene = scene;
     this.world = world;
+    this.fieldsVisible = false;
     this.fieldOfView = new THREE.Object3D();
     this.fieldOfViewName = "FieldOfView";
     this.fieldOfViews = [];
@@ -47,7 +49,7 @@ export default class FieldOfViewManager {
     this.npc.forEach(({group}, index) => this.addFieldOfView(group, index));
     console.log(this.firstNpc);
     this.initFirstNpc(this.firstNpc);
-
+    
     document.addEventListener('stateUpdate', e => {
       if (e.detail !== 'infiltration_sequence_start') return;
       const arr = landingAreas.slice(4);
@@ -59,6 +61,12 @@ export default class FieldOfViewManager {
     document.addEventListener('playerMoved', e => {
       const playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
       this.lastPosition = playerPosition;
+    });
+
+    document.addEventListener('showFov', () => {
+      if (this.fieldsVisible) return;
+      this.fieldsVisible = true;
+      this.npc.forEach(({group}) => this.addFieldOfView(group));
     });
   }
 
@@ -89,15 +97,16 @@ export default class FieldOfViewManager {
       fragmentShader: CircleGradientShader.fragmentShader,
       side: THREE.DoubleSide,
       transparent: true,
+      opacity: this.fieldsVisible ? 1 : 0,
     })
 
     const npc = group.children.find(e => e.name = "npc");
 
     this.fieldOfView = new THREE.Mesh(geometry, customMaterial);
-    this.fieldOfView.rotateX(toRadian(90))
+    this.fieldOfView.rotateX(toRadian(90));
 
     this.fieldOfView.position.y += 0.1;
-    this.fieldOfView.rotation.z = this.fieldOfView.geometry.parameters.thetaLength/2;
+    this.fieldOfView.rotation.z = this.fieldOfView.geometry.parameters.thetaLength / 2;
 
     this.fieldOfView.name = `${this.fieldOfViewName}-${index}`;
     this.fieldOfViews.push(this.fieldOfView);
@@ -134,7 +143,7 @@ export default class FieldOfViewManager {
       const rotation = Math.atan2( ( this.world.camera.position.x - playerModel.position.x ), ( this.world.camera.position.z - playerModel.position.z ) );
       this.armor().mask.material.transparent = true;
       this.armor().cape.material.transparent = true;
-
+      AudioManager.playSound('npc-angoissant.mp3', false);
       // mask, cape and rotation animations
       const tl = gsap.timeline({repeat: 0});
       tl.to(playerModel.rotation, {

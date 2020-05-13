@@ -5,6 +5,7 @@ import CameraOperator from "./CameraOperator";
 import {GlowShader} from "../shaders/GlowShader";
 import {CircleOutlineShader} from "../shaders/CircleOutlineShader";
 import {randomInRangeInt, toRadian} from "../../utils";
+import AudioManager from './AudioManager'
 
 export default class Projectile {
   constructor(tower, landingAreas, scene, towerElements) {
@@ -19,6 +20,7 @@ export default class Projectile {
     this.circleUniforms = {
       uCircleSize: {type: 'f', value: 0.48}
     }
+    this.audioEnabled = true;
     this.index = 0
     this.indexSequence = [0, 2, 1, 3]
     this.towerElements = towerElements;
@@ -74,9 +76,13 @@ export default class Projectile {
       onStart: () => {
         this.createProjectileFrom(this.tower.position, this.landingAreas[this.indexSequence[this.index]].position);
         this.index = this.index === this.landingAreas.length - 1 ? 0 : this.index + 1;
+        if (!this.audioEnabled) return;
+        AudioManager.playSound('laser.mp3', false);
       },
       onComplete: () => {
         this.currentLandingPoint.userData.isDetectable = true;
+        if (!this.audioEnabled) return;
+        AudioManager.playSound('explosion.mp3', false);
       },
       value: 6.0,
       duration: 0.2,

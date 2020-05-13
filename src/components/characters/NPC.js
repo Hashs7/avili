@@ -14,25 +14,38 @@ export default class extends Character {
     this.group.name = 'NPC';
     this.plane = new THREE.Plane(new THREE.Vector3(0, -1, 0), 12);
     this.group.position.copy(startPosition);
+    this.skinnedMesh = this.character.children[0].children.filter(child => child instanceof THREE.SkinnedMesh);
 
     this.setPathFinding(mapGeometry);
-    this.showAnimation();
     this.addPseudo(pseudo);
     // this.createPlaneStencilGroup();
     // this.prepareCrossFade(this.runAction);
   }
 
-  showAnimation() {
-    const skinnedMesh = this.character.children[0].children.filter(child => child instanceof THREE.SkinnedMesh);
-    skinnedMesh.forEach(mesh => {
+  hide() {
+    this.skinnedMesh.forEach(mesh => {
       mesh.material.transparent = true;
       mesh.material.opacity = 0;
+    });
+  }
+
+  showAnimation(index) {
+    const delay = 1 + (index / 2);
+    this.skinnedMesh.forEach(mesh => {
+      mesh.material.transparent = true;
+      mesh.material.opacity = 0;
+
       gsap.to(mesh.material, {
         opacity: 1,
-        delay: 3,
-        duration: 3,
-        onComplete: () => mesh.material.transparent = false,
+        delay,
+        duration: 1,
+        onComplete: () => { mesh.material.transparent = false },
       })
+    });
+    gsap.to(this.playerName.material, {
+      opacity: 1,
+      duration: .3,
+      delay: delay,
     })
   }
 
@@ -79,12 +92,20 @@ export default class extends Character {
     } else {
       this.target.shift();
 
-      if(this.target.length) {
+      if (this.target.length) {
         this.setOrientation(this.target[0]);
         return;
       }
+
+      // Finished walking
       this.setWalking(false);
+      if (!this.walkCallback) return;
+      this.walkCallback()
     }
+  }
+
+  setWalkCallback(cb) {
+    this.walkCallback = cb;
   }
 
   /**
@@ -93,7 +114,7 @@ export default class extends Character {
    * @param z
    */
   setOrientation({ x, z }) {
-    this.character.rotation.y = Math.atan2(x - this.group.position.x, z - this.group.position.z);
+    this.group.rotation.y = Math.atan2(x - this.group.position.x, z - this.group.position.z);
   }
 
   /**
@@ -107,9 +128,13 @@ export default class extends Character {
   }
 
   async addPseudo(name) {
-    const playerName = await makeTextSprite(name, { fontsize: 26, fontface: "Roboto Slab" });
-    playerName.position.set(0, 1.7, 0);
-    this.group.add(playerName);
+    this.playerName = await makeTextSprite(name, { fontsize: 26, fontface: "Roboto Slab" });
+    this.playerName.position.set(0, 1.7, 0);
+    this.group.add(this.playerName);
+
+    // Hide pseudo on start
+    this.playerName.material.transparent = true;
+    this.playerName.material.opacity = 0;
   }
 
   createPlaneStencilGroup(renderOrder = 1) {
@@ -149,7 +174,6 @@ export default class extends Character {
     mesh1.renderOrder = renderOrder;
 
     group.add(mesh1);
-    console.log(group);
     this.group.add(group);
 
     const planeGeom = new THREE.PlaneBufferGeometry(100, 100);

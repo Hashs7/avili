@@ -54,6 +54,9 @@
       notSupported() {
         return this.width < 425;
       },
+      loaderVisible() {
+        return this.$store.state.loaderVisible;
+      },
       qualitySet() {
         return this.$store.state.quality;
       },
@@ -74,6 +77,10 @@
       isPlaying(newVal) {
         if (!newVal && !this.world) return;
         this.initWorld();
+      },
+      loaderVisible(newVal) {
+        if (newVal || !this.world) return;
+        this.world.loaderFinished();
       }
     },
     mounted() {
