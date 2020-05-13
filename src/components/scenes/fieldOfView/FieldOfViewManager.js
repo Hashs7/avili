@@ -45,8 +45,7 @@ export default class FieldOfViewManager {
         if(child.name === 'ahat') armor.cape = child;
       });
       return armor;
-    }
-
+    };
 
     document.addEventListener('stateUpdate', e => {
       if (e.detail !== GAME_STATES.infiltration_sequence_start) return;

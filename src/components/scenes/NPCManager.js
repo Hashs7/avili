@@ -35,6 +35,7 @@ export default class NPCManager {
   async loadNPC(map) {
     return await Promise.all(npcsDefinition(this.mapPositions).map(async (n) => {
       const gltf = await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
+      console.log(gltf);
       const npc = new NPC(gltf, this.world, this.sceneManager, 'npc', n.position, map.geometry, n.name);
       this.npcs.push(npc);
     }));
