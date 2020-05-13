@@ -45,7 +45,7 @@ export default class NPCManager {
   }
 
   showNPC() {
-    this.npcs.forEach((n) => n.showAnimation());
+    this.npcs.forEach((n, i) => n.showAnimation(i));
   }
 
   moveNPC() {
@@ -54,7 +54,7 @@ export default class NPCManager {
       setTimeout(() => {
           n.moveTo(npcsDefinition(this.mapPositions)[i].toTeleport);
           n.setWalkCallback(() => {n.teleportTo(npcsDefinition(this.mapPositions)[i].target)})
-      }, i * 500)
+      }, (i * 500) + 3000)
     );
     // no delay version
     // this.npcs.forEach((n, i) => n.moveTo(npcsDefinition(this.mapPositions)[i].target));

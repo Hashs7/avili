@@ -4,6 +4,7 @@ import LoadManager from './LoadManager'
 class AudioManager {
   constructor() {
     this.listener = null;
+    this.introAudio = null;
     this.audios = [];
   }
 
@@ -37,16 +38,20 @@ class AudioManager {
     })
   }
 
-
   setIntroLoopAudio() {
-    const introAudio = new Audio('./assets/audio/music/intro.mp3');
-    introAudio.addEventListener('ended', () => {
+    this.introAudio = new Audio('./assets/audio/music/ambient-calm.mp3');
+    this.bindIntro = () => {
       this.currentTime = 0;
-      introAudio.play();
-    }, false);
-    introAudio.play();
+      this.introAudio.play();
+    };
+    this.introAudio.addEventListener('ended', this.bindIntro, false);
+    this.introAudio.play();
   }
 
+  stopIntroLoopAudio() {
+    this.introAudio.stop();
+    this.introAudio.removeListener('ended', this.bindIntro);
+  }
 
 
   groupListener(group) {
