@@ -22,6 +22,7 @@ export default class FieldOfViewManager {
     this.alreadyHit = false;
 
     this.npc = npc;
+    this.firstNpc = this.npc[0].group
 
     this.player = this.world.getPlayer();
     this.armor = () => {
@@ -43,7 +44,9 @@ export default class FieldOfViewManager {
       return armor;
     }
 
-    this.npc.forEach(({group}) => this.addFieldOfView(group));
+    this.npc.forEach(({group}, index) => this.addFieldOfView(group, index));
+    console.log(this.firstNpc);
+    this.initFirstNpc(this.firstNpc);
 
     document.addEventListener('stateUpdate', e => {
       if (e.detail !== 'infiltration_sequence_start') return;
@@ -74,7 +77,7 @@ export default class FieldOfViewManager {
    * @param z
    * @param index
    */
-  addFieldOfView(group) {
+  addFieldOfView(group, index) {
     let geometry = new THREE.CircleGeometry(
       3,
       20,
@@ -96,10 +99,16 @@ export default class FieldOfViewManager {
     this.fieldOfView.position.y += 0.1;
     this.fieldOfView.rotation.z = this.fieldOfView.geometry.parameters.thetaLength/2;
 
-    this.fieldOfView.name = this.fieldOfViewName;
+    this.fieldOfView.name = `${this.fieldOfViewName}-${index}`;
     this.fieldOfViews.push(this.fieldOfView);
 
     group.add(this.fieldOfView);
+  }
+
+  initFirstNpc(firstNpc){
+    firstNpc.rotation.y = toRadian(-90);
+    const fov = firstNpc.children.find(e => e.name.startsWith("FieldOfView"));
+    fov.scale.set(2, 2, 2);
   }
 
   /**
@@ -146,6 +155,7 @@ export default class FieldOfViewManager {
 
       CameraOperator.zoom(() => {
         this.lastPosition = new THREE.Vector3();
+        console.log(objs[i].object.name);
         if(objs[i].object.name === "FieldOfView-3") {
           objs[i].object.name = "Undetectable";
           TestimonyManager.speak('infiltration_end.mp3', 'infiltration_end');
@@ -155,6 +165,19 @@ export default class FieldOfViewManager {
             this.armor().setVisibility(true)
             this.alreadyHit = false;
           });
+
+          if(objs[i].object.name === "FieldOfView-0"){
+            gsap.to(this.firstNpc.rotation, {
+              y: `+=${toRadian(90)}`,
+              delay: 2,
+            })
+            gsap.to(objs[i].object.scale, {
+              x: 1,
+              y: 1,
+              z: 1,
+              delay: 3,
+            })
+          }
         }
         this.player.setWalkable(true);
         this.player.setOrientable(true);
