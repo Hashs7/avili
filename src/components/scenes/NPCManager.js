@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import LoadManager from "../core/LoadManager";
 import NPC from "../characters/NPC";
+import { randomInRange } from "../../utils";
 
 const npcsDefinition = (positions) => [{
   name: 'Daesu',
@@ -35,7 +36,6 @@ export default class NPCManager {
   async loadNPC(map) {
     return await Promise.all(npcsDefinition(this.mapPositions).map(async (n) => {
       const gltf = await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
-      console.log(gltf);
       const npc = new NPC(gltf, this.world, this.sceneManager, 'npc', n.position, map.geometry, n.name);
       this.npcs.push(npc);
     }));
@@ -50,16 +50,16 @@ export default class NPCManager {
   }
 
   moveNPC() {
-    this.npcs.forEach((n, i) =>
-      // delay each npc start moving
-      setTimeout(() => {
+    this.npcs.forEach((n, i) => {
+        const delay = (i * randomInRange(200, 500)) + 3000;
+        setTimeout(() => {
           n.moveTo(npcsDefinition(this.mapPositions)[i].toTeleport);
           n.setWalkCallback(() => {
             document.dispatchEvent(new CustomEvent('showFov'));
-            n.teleportTo(npcsDefinition(this.mapPositions)[i].target)
+            n.teleportTo(npcsDefinition(this.mapPositions)[i].target);
           })
-      }, (i * 500) + 3000)
-    );
+        }, delay)
+    });
     // no delay version
     // this.npcs.forEach((n, i) => n.moveTo(npcsDefinition(this.mapPositions)[i].target));
   }

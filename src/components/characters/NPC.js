@@ -1,5 +1,5 @@
 import * as THREE from 'three'
-import { makeTextSprite } from "../../utils";
+import { makeTextSprite, randomInRange } from "../../utils";
 import Character from "./Character";
 import { Pathfinding } from "three-pathfinding";
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils";
@@ -30,7 +30,7 @@ export default class extends Character {
   }
 
   showAnimation(index) {
-    const delay = 1 + (index / 2);
+    const delay = (randomInRange(400, 1000) / 1000) + (index / 2);
     this.skinnedMesh.forEach(mesh => {
       mesh.material.transparent = true;
       mesh.material.opacity = 0;
