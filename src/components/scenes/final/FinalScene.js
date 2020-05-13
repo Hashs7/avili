@@ -113,7 +113,8 @@ export default class extends Scene {
       opacity: 0,
     });
     const plane = new THREE.Mesh( geometry, material );
-    this.manager.world.player.group.children[3].add(plane);
+    const camera = this.manager.world.player.group.children.find(e => e.name === "MainCamera")
+    camera.add(plane);
     plane.position.set(0, 0,-1);
 
     gsap.to(plane.material, {
