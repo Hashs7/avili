@@ -13,7 +13,6 @@ export default class FieldOfViewManager {
   constructor(world, scene, towers, landingAreas, towerElements, npc) {
     this.scene = scene;
     this.world = world;
-    this.fieldsVisible = false;
     this.fieldOfView = new THREE.Object3D();
     this.fieldOfViewName = "FieldOfView";
     this.fieldOfViews = [];
@@ -61,8 +60,6 @@ export default class FieldOfViewManager {
     });
 
     document.addEventListener('showFov', () => {
-      if (this.fieldsVisible) return;
-      this.fieldsVisible = true;
       this.npc.forEach(({group}, index) => this.addFieldOfView(group, index));
       this.initFirstNpc(this.firstNpc);
     });
@@ -95,6 +92,7 @@ export default class FieldOfViewManager {
       fragmentShader: CircleGradientShader.fragmentShader,
       side: THREE.DoubleSide,
       transparent: true,
+      visible: false,
     });
 
     const npc = group.children.find(e => e.name = "npc");
@@ -161,7 +159,6 @@ export default class FieldOfViewManager {
 
       CameraOperator.zoom(() => {
         this.lastPosition = new THREE.Vector3();
-        console.log(objs[i].object.name);
         if(objs[i].object.name === "FieldOfView-3") {
           objs[i].object.name = "Undetectable";
           TestimonyManager.speak('infiltration_end.mp3', 'infiltration_end');
@@ -177,11 +174,9 @@ export default class FieldOfViewManager {
               y: `+=${toRadian(90)}`,
               delay: 2,
             })
-            gsap.to(objs[i].object.scale, {
-              x: 1,
-              y: 1,
-              z: 1,
-              delay: 3,
+            objs[i].object.scale.set(1, 1, 1);
+            this.fieldOfViews.forEach(fov => {
+              fov.material.visible = true;
             })
           }
         }

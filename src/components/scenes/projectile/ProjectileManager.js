@@ -12,7 +12,7 @@ export default class ProjectileManager {
     this.playerPosition = new THREE.Vector3();
 
     document.addEventListener('stateUpdate', e => {
-      if (e.detail === GAME_STATES.infiltration_sequence_start) {
+      if (e.detail === GAME_STATES.infiltration_sequence_start && this.proj) {
         this.proj.audioEnabled = false;
       }
       if (e.detail !== GAME_STATES.projectile_sequence_start) return;
