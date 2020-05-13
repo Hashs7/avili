@@ -25,6 +25,7 @@ export default class FieldOfViewManager {
 
     this.npc = npc;
     this.firstNpc = this.npc[0].group
+    this.isFirstTime = true;
 
     this.player = this.world.getPlayer();
     this.armor = () => {
@@ -170,10 +171,11 @@ export default class FieldOfViewManager {
             this.alreadyHit = false;
           });
 
-          if(objs[i].object.name === "FieldOfView-0"){
+          if(objs[i].object.name === "FieldOfView-0" && this.isFirstTime){
             gsap.to(this.firstNpc.rotation, {
               y: `+=${toRadian(90)}`,
               delay: 2,
+              onComplete: () => {this.isFirstTime = false}
             })
             objs[i].object.scale.set(1, 1, 1);
             this.fieldOfViews.forEach(fov => {
