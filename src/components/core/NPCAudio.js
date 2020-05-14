@@ -34,6 +34,11 @@ const spawnAudio = [{
   time: 3000,
 }];
 
+const otherAudio = [{
+  name: 'loris',
+  sound: 'gros.mp3',
+  time: 1500,
+}];
 
 const projAudio = [{
   name: 'nico',
@@ -94,7 +99,7 @@ export default class NPCAudio {
 
   loadAudio() {
     const prefixTestimony ='./assets/audio/npc';
-    const audioPaths = [...spawnAudio, ...projAudio, ...fovAudio, ...wordsAudio].flat();
+    const audioPaths = [...spawnAudio, ...otherAudio, ...projAudio, ...fovAudio, ...wordsAudio].flat();
     audioPaths.forEach(({ name, sound }) => {
       LoadManager.loadAudio(`${prefixTestimony}/${name}/${sound}`, (buffer) => {
         const audio = new THREE.Audio( this.listener ).setBuffer( buffer );
@@ -108,6 +113,8 @@ export default class NPCAudio {
     document.addEventListener('npcAudio', (e) => {
       switch (e.detail.sequence) {
         case 'spawn': this.spawnSequence(e.detail.pseudo);
+          break;
+        case 'start': this.startSequence();
           break;
         case 'projectile': this.projectileSequence();
           break;
@@ -134,6 +141,7 @@ export default class NPCAudio {
     this.world.store.commit('setCommunication', { name: pseudo, time });
 
     const audio = this.audios.find(au => au.name === `${name}-${sound}`);
+    console.log(audio);
     if (!audio) return;
     audio.play();
   }

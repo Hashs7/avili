@@ -121,7 +121,11 @@ export default class extends Scene {
       // setTimeout(() => {
       //   this.world.getPlayer().setWalkable(true);
       // }, 7500)
+      setTimeout(() => {
+        document.dispatchEvent(new CustomEvent('npcAudio', { detail: { sequence: 'start' }}));
+      }, 6000)
     }, 40000);
+
 
     setTimeout(() => {
       const playerModel = this.world.player.group.children[0];

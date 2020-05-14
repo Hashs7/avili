@@ -15,6 +15,10 @@ export default class {
   constructor(canvas, store, pseudo) {
     this.canvas = canvas;
     this.store = store;
+
+    this.indicationComponent = null;
+    this.traductor = null;
+
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     this.renderer.localClippingEnabled = true;
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -107,9 +111,11 @@ export default class {
 
   setTestimony(receiver, tr) {
     TestimonyManager.setReceiver(receiver, tr);
-    /*setTimeout(() => {
-      TestimonyManager.speak('blbl.mp3', 'start')
-    }, 2000)*/
+  }
+
+  setIndication(receiver, tr) {
+    this.indicationComponent = receiver;
+    this.traductor = tr;
   }
 
   /**

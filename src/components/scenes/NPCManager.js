@@ -64,6 +64,7 @@ export default class NPCManager {
   }
 
   moveNPC() {
+    document.dispatchEvent(new CustomEvent('showFov'));
     this.sortNPC().forEach((n, i) => {
         const delay = (i * randomInRange(200, 500)) + 3000;
         setTimeout(() => {
@@ -71,7 +72,7 @@ export default class NPCManager {
           n.setWalkCallback(() => {
             document.dispatchEvent(new CustomEvent('showFov'));
             n.teleportTo(npcsDefinition(this.mapPositions)[i].target);
-          })
+          });
         }, delay)
     });
     // no delay version

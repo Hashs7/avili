@@ -144,8 +144,7 @@ export default class FieldOfViewManager {
       this.armor().cape.material.transparent = true;
 
       AudioManager.playSound('npc-angoissant.mp3', false);
-      // TODO get player pseudo fov
-      const pseudo = 'Daesu';
+      const pseudo = objs[i].object.parent.pseudo;
       document.dispatchEvent(new CustomEvent('npcAudio', { detail: { sequence: 'fov', pseudo }}));
       // mask, cape and rotation animations
       const tl = gsap.timeline({repeat: 0});
