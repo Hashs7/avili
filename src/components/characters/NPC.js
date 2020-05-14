@@ -4,7 +4,6 @@ import Character from "./Character";
 import { Pathfinding } from "three-pathfinding";
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils";
 import gsap from 'gsap';
-import AudioManager from "../core/AudioManager";
 
 export default class extends Character {
   constructor(gltf, world, sceneManager, name, startPosition, mapGeometry, pseudo) {

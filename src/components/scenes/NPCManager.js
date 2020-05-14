@@ -4,6 +4,13 @@ import NPC from "../characters/NPC";
 import { randomInRange } from "../../utils";
 import NPCAudio from "../core/NPCAudio";
 
+const npcOrder = [
+  'Daesu',
+  'Tardys',
+  'Farkana',
+  'Schteppe',
+];
+
 const npcsDefinition = (positions) => [{
   name: 'Daesu',
   position: new THREE.Vector3(-1, 0, 2),
@@ -52,10 +59,12 @@ export default class NPCManager {
     this.npcs.forEach((n, i) => n.showAnimation(i));
   }
 
+  sortNPC() {
+    return this.npcs.sort((a, b) => npcOrder.indexOf(a.pseudo) - npcOrder.indexOf(b.pseudo));
+  }
+
   moveNPC() {
-    console.log(this.mapPositions);
-    console.log(this.npcs);
-    this.npcs.forEach((n, i) => {
+    this.sortNPC().forEach((n, i) => {
         const delay = (i * randomInRange(200, 500)) + 3000;
         setTimeout(() => {
           n.moveTo(npcsDefinition(this.mapPositions)[i].toTeleport);
@@ -76,8 +85,7 @@ export default class NPCManager {
   /**
    * Positions set by designers from map
    */
-  addMatesPos({ name, position }) {
-    console.log('name', name);
+  addMatesPos({ position }) {
     this.mapPositions.push(position);
   }
 
