@@ -3,7 +3,7 @@
       @enter="enter"
       @leave="leave"
   >
-    <div class="indication" v-show="title">
+    <div class="indication" v-show="show">
       <div class="indication__content">
         <div>
           <h2 class="indication__title" ref="title">{{ title }}</h2>
@@ -70,16 +70,20 @@
         this.tl.play();
       },
       leave(el, done) {
-        this.tl.onReverseComplete = () => done();
+        this.tl.onReverseComplete = () => {
+          done();
+          this.title = null;
+          this.text = null;
+        };
         this.tl.reverse();
       },
       setIndication(name) {
         this.title = this.$t(`indications.${name}.title`);
         this.text = this.$t(`indications.${name}.text`);
+        this.show = true;
       },
       removeIndication() {
-        this.title = null;
-        this.text = null;
+        this.show = false;
       }
     },
   }

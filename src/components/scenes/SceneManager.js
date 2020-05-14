@@ -49,13 +49,16 @@ export default class {
     this.detectSectionPassed();
 
     document.addEventListener('stateUpdate', (e) => {
+      if (e.detail === GAME_STATES.words_sequence_start) {
+        this.ambianceWordsTransition();
+        AudioManager.setEndLoopAudio();
+        AudioManager.stopIntroLoopAudio();
+        AudioManager.stopWindLoopAudio();
+      }
+
       if (e.detail !== GAME_STATES.infiltration_sequence_start) return;
       this.ambianceInfiltrationTransition();
       AudioManager.setWindLoopAudio();
-    });
-    document.addEventListener('stateUpdate', (e) => {
-      if (e.detail !== GAME_STATES.words_sequence_start) return;
-      this.ambianceWordsTransition();
     });
   }
 
@@ -75,7 +78,7 @@ export default class {
 
   ambianceInfiltrationTransition() {
     const nextColor = new THREE.Color(0x05052b);
-    const duration = 15;
+    const duration = 30;
     const tl = gsap.timeline({ repeat: 0 });
     tl.to(this.globalLight, {
       intensity: 0.2,
@@ -94,7 +97,8 @@ export default class {
       duration,
     }, 'start');
     tl.to(this.mainScene.fog, {
-      near: 7,
+      near: 30,
+      far: 40,
       duration,
     }, 'start');
   }
@@ -103,7 +107,7 @@ export default class {
     const { spotLight } = this.world.getPlayer();
 
     // const nextColor = new THREE.Color(0x05052b);
-    const duration = 5;
+    const duration = 15;
     const tl = gsap.timeline({ repeat: 0 });
     tl.to(this.globalLight, {
       intensity: 0.1,
@@ -116,7 +120,7 @@ export default class {
       duration,
     }, 'start');
     tl.to(this.mainScene.fog, {
-      near: 35,
+      near: 30,
       duration,
     }, 'start');
   }

@@ -48,6 +48,9 @@ export default class FieldOfViewManager {
     };
 
     document.addEventListener('stateUpdate', e => {
+      if (e.detail === GAME_STATES.words_sequence_start) {
+        this.proj.audioEnabled = false;
+      }
       if (e.detail !== GAME_STATES.infiltration_sequence_start) return;
       const arr = landingAreas.slice(4);
       this.proj = new Projectile(towers[1], arr, this.scene, this.towerElements[1]);

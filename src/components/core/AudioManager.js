@@ -59,10 +59,7 @@ class AudioManager {
   }
 
   setIntroLoopAudio() {
-    this.bindIntro = () => {
-      this.currentTime = 0;
-      this.introAudio.play();
-    };
+    this.bindIntro = () => this.introAudio.play();
     this.introAudio.addEventListener('ended', this.bindIntro, false);
     this.introAudio.play();
   }
@@ -73,10 +70,7 @@ class AudioManager {
   }
 
   setWindLoopAudio() {
-    this.bindWind = () => {
-      this.currentTime = 0;
-      this.windAudio.play();
-    };
+    this.bindWind = () => this.windAudio.play();
     this.windAudio.addEventListener('ended', this.bindWind, false);
     this.windAudio.play();
   }
@@ -86,6 +80,16 @@ class AudioManager {
     this.windAudio.removeListener('ended', this.bindWind);
   }
 
+  setEndLoopAudio() {
+    this.bindEnd = () => this.windAudio.play();
+    this.windAudio.addEventListener('ended', this.bindEnd, false);
+    this.windAudio.play();
+  }
+
+  stopEndLoopAudio() {
+    this.windAudio.stop();
+    this.windAudio.removeListener('ended', this.bindEnd);
+  }
 
   groupListener(group) {
     group.add(this.testimonyListener);

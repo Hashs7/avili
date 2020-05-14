@@ -141,7 +141,6 @@ export default class NPCAudio {
     this.world.store.commit('setCommunication', { name: pseudo, time });
 
     const audio = this.audios.find(au => au.name === `${name}-${sound}`);
-    console.log(audio);
     if (!audio) return;
     audio.play();
   }
@@ -187,7 +186,7 @@ export default class NPCAudio {
   }
 
   wordsSequence() {
-    const { name, sound, time } = fovAudio[this.wordDropped];
+    const { name, sound, time } = wordsAudio[this.wordDropped];
     this.play(name, sound, time);
     this.wordDropped !== 5 ?
       this.wordDropped += 1 : this.wordDropped = 0;
