@@ -64,13 +64,15 @@ export default class NPCManager {
   }
 
   moveNPC() {
-    document.dispatchEvent(new CustomEvent('showFov'));
     this.sortNPC().forEach((n, i) => {
         const delay = (i * randomInRange(200, 500)) + 3000;
         setTimeout(() => {
           n.moveTo(npcsDefinition(this.mapPositions)[i].toTeleport);
           n.setWalkCallback(() => {
             n.teleportTo(npcsDefinition(this.mapPositions)[i].target);
+            if(i === this.sortNPC().length - 1){
+              document.dispatchEvent(new CustomEvent('showFov'));
+            }
           });
         }, delay)
     });
