@@ -167,6 +167,7 @@ export default class extends Scene {
 
 
   dropWord() {
+    document.dispatchEvent(new CustomEvent('npcAudio', { detail: 'word' }));
     this.factory.addWord(wordsDef[this.wordIndex], this.wordIndex);
     this.wordIndex++;
   }

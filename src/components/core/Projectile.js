@@ -174,6 +174,7 @@ export default class Projectile {
     objs.forEach(obj => {
       if (obj.object.name === this.landingAreaName && obj.object.userData.isDetectable) {
         const player = world.getPlayer();
+        document.dispatchEvent(new CustomEvent('npcAudio', { detail: 'projectile' }));
         player.teleport(world.lastCheckpointCoord, () => {
           position = new THREE.Vector3();
         })

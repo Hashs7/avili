@@ -35,6 +35,28 @@ const fovAudio = [{
   time: 1500,
 }]
 
+const wordsAudio = [{
+  name: 'leo',
+  sound: 'inutile.mp3',
+  time: 3100,
+}, {
+  name: 'loris',
+  sound: 'cuisine.mp3',
+  time: 1500,
+}, {
+  name: 'leo',
+  sound: 'moche.mp3',
+  time: 1500,
+}, {
+  name: 'leo',
+  sound: 'pute.mp3',
+  time: 1000,
+}, {
+  name: 'leo',
+  sound: 'salope.mp3',
+  time: 1500,
+}]
+
 export default class NPCAudio {
   contrustor(world) {
     this.world = world;
@@ -45,7 +67,7 @@ export default class NPCAudio {
 
   initEventListeners() {
     document.addEventListener('npcAudio', (e) => {
-      switch (e.sequence) {
+      switch (e.detail) {
         case 'spawn'  : this.spawnSequence();
           break;
         case 'projectile':
@@ -111,6 +133,9 @@ export default class NPCAudio {
   }
 
   wordsSequence() {
-
+    const { name, sound, time } = fovAudio[this.wordDropped];
+    this.play(name, sound, time);
+    this.wordDropped !== 5 ?
+      this.wordDropped += 1 : this.wordDropped = 0;
   }
 }
