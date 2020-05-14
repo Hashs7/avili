@@ -3,6 +3,7 @@ import InputManager from "../core/InputManager";
 import AudioManager from "../core/AudioManager";
 import Character, { ACTIONS } from "./Character";
 import { makeTextSprite } from "../../utils";
+import Stats from 'stats.js';
 
 export default class extends Character {
   constructor(gltf, world, camera, sceneManager, name) {
