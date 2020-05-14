@@ -182,10 +182,7 @@ export default class Projectile {
         document.dispatchEvent(new CustomEvent('npcAudio', { detail: { sequence: 'projectile' }}));
         manager.setLastPos(new THREE.Vector3());
 
-        player.teleport(world.lastCheckpointCoord, () => {
-          this.isDetected = false;
-          console.log('false this.isDetected', this.isDetected);
-        })
+        player.teleport(world.lastCheckpointCoord, () => this.isDetected = false);
       }
     });
   }

@@ -53,6 +53,8 @@ export default class NPCManager {
   }
 
   moveNPC() {
+    console.log(this.mapPositions);
+    console.log(this.npcs);
     this.npcs.forEach((n, i) => {
         const delay = (i * randomInRange(200, 500)) + 3000;
         setTimeout(() => {
@@ -74,7 +76,8 @@ export default class NPCManager {
   /**
    * Positions set by designers from map
    */
-  addMatesPos(position) {
+  addMatesPos({ name, position }) {
+    console.log('name', name);
     this.mapPositions.push(position);
   }
 

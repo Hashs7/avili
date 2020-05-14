@@ -13,6 +13,7 @@ export default class extends Character {
     this.isWalking = false;
     this.target = [];
     this.group.name = 'NPC';
+    this.group.pseudo = pseudo;
     this.plane = new THREE.Plane(new THREE.Vector3(0, -1, 0), 12);
     this.group.position.copy(startPosition);
     this.skinnedMesh = this.character.children[0].children.filter(child => child instanceof THREE.SkinnedMesh);

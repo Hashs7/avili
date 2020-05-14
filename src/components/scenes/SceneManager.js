@@ -154,7 +154,7 @@ export default class {
         child.material.opacity = 0;
       }
       if (child.name.split('mate').length > 1) {
-        this.npcManager.addMatesPos(child.position);
+        this.npcManager.addMatesPos({ name: child.name, position: child.position });
       }
       if (child.name === 'wall') {
         this.walls = child;
@@ -393,7 +393,6 @@ export default class {
   addScene(sceneObject) {
     this.loadedScenes.push(sceneObject);
     this.mainScene.add(sceneObject.scene);
-    console.log(sceneObject);
     if (sceneObject.scene.name === 'SpawnScene') {
       this.startUpdateScene(sceneObject.scene.name);
     }
@@ -413,12 +412,10 @@ export default class {
   startUpdateScene(sceneName) {
     const newScene = this.loadedScenes.find(({ scene }) => scene.name === sceneName);
     this.updateScenes.push(newScene);
-    console.log(sceneName, newScene);
   }
 
   stopUpdateScene(sceneName) {
     this.updateScenes = removeObjectOnce(this.updateScenes, sceneName);
-    console.log(sceneName, this.updateScenes);
   }
 
   destroy() {
