@@ -202,6 +202,9 @@ export default class extends Character {
     // this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
     // console.log(this.group.position);
     // get nextPosition
+    if(this.sceneManager.world.indicationComponent){
+      this.sceneManager.world.indicationComponent.removeIndication();
+    }
     if(!this.walkable) return;
     this.nextPosition = {
       x: Math.sin(this.character.rotation.y + decay) * this.speed,
