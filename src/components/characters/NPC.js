@@ -82,8 +82,10 @@ export default class extends Character {
     this.setOrientation(this.target[0]);
   }
 
-  teleportTo(target) {
+  teleportTo(target, sendEvent) {
     this.group.position.copy(target);
+    if (!sendEvent) return;
+    document.dispatchEvent(new CustomEvent('showFov'));
   }
 
   /**

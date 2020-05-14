@@ -33,10 +33,9 @@ export default class extends Character {
     sceneManager.mainSceneAddObject(this.camera);
 
     // Debug
-    /*
     this.stats = new Stats();
     this.stats.showPanel(1);
-    */
+    // document.body.appendChild( this.stats.dom );
   }
 
   addBody() {

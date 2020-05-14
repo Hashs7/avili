@@ -26,7 +26,6 @@ export default class extends Scene {
     this.upAndDownCrystalAnimation();
     this.initPlayer()
 
-
     return {
       instance: this,
       scene: this.scene,

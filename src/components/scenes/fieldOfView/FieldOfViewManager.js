@@ -24,7 +24,8 @@ export default class FieldOfViewManager {
     this.alreadyHit = false;
 
     this.npc = npc;
-    this.firstNpc = this.npc[0].group
+    console.log(this.npc);
+    this.firstNpc = this.npc[0].group;
     this.isFirstTime = true;
 
     this.player = this.world.getPlayer();

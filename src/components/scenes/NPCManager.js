@@ -69,10 +69,7 @@ export default class NPCManager {
         setTimeout(() => {
           n.moveTo(npcsDefinition(this.mapPositions)[i].toTeleport);
           n.setWalkCallback(() => {
-            n.teleportTo(npcsDefinition(this.mapPositions)[i].target);
-            if(i === this.sortNPC().length - 1){
-              document.dispatchEvent(new CustomEvent('showFov'));
-            }
+            n.teleportTo(npcsDefinition(this.mapPositions)[i].target, i === this.sortNPC().length - 1);
           });
         }, delay)
     });
