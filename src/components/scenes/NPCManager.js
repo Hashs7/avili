@@ -55,6 +55,7 @@ export default class NPCManager {
   moveNPC() {
     console.log(this.mapPositions);
     console.log(this.npcs);
+    document.dispatchEvent(new CustomEvent('showFov'));
     this.npcs.forEach((n, i) => {
         const delay = (i * randomInRange(200, 500)) + 3000;
         setTimeout(() => {
