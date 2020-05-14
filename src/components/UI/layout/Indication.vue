@@ -73,6 +73,14 @@
         this.tl.onReverseComplete = () => done();
         this.tl.reverse();
       },
+      setIndication(name) {
+        this.title = this.$t(`indications.${name}.title`);
+        this.text = this.$t(`indications.${name}.text`);
+      },
+      removeIndication() {
+        this.title = null;
+        this.text = null;
+      }
     },
   }
 </script>
