@@ -152,7 +152,10 @@ class CameraOperator{
       zoom: 2.5,
       duration: 2,
       onUpdate: () => {this.camera.updateProjectionMatrix()},
-      onComplete: () => {callback()},
+      onComplete: () => {
+        if(!callback) return;
+        callback()
+      },
     });
     tl.to(this.camera, {
       zoom: 1,

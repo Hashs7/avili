@@ -12,6 +12,7 @@ export default class Projectile {
     this.tower = tower;
     this.landingAreas = landingAreas;
     this.scene = scene;
+    this.isDetected = false;
     this.landingAreaName = "LandingArea";
     this.projAreaName = "Laser";
     this.uniforms = {
@@ -138,7 +139,7 @@ export default class Projectile {
     this.scene.add(cylinderGlow);
   }
 
-  createLandingPoint(coord){
+  createLandingPoint(coord) {
     const geometry = new THREE.CircleGeometry( 3, 30);
     const customMaterial = new THREE.ShaderMaterial({
       uniforms: this.circleUniforms,
@@ -162,7 +163,7 @@ export default class Projectile {
     return landingPoint;
   }
 
-  detectLandingArea(position, world){
+  detectLandingArea(position, world, manager) {
     const ray = new THREE.Raycaster(
       position,
       new THREE.Vector3(0, -1, 0),
@@ -173,9 +174,17 @@ export default class Projectile {
 
     objs.forEach(obj => {
       if (obj.object.name === this.landingAreaName && obj.object.userData.isDetectable) {
+        // Unique detection
+        if (this.isDetected) return;
+        this.isDetected = true;
         const player = world.getPlayer();
+
+        document.dispatchEvent(new CustomEvent('npcAudio', { detail: { sequence: 'projectile' }}));
+        manager.setLastPos(new THREE.Vector3());
+
         player.teleport(world.lastCheckpointCoord, () => {
-          position = new THREE.Vector3();
+          this.isDetected = false;
+          console.log('false this.isDetected', this.isDetected);
         })
       }
     });

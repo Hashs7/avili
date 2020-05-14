@@ -55,7 +55,7 @@ class AudioManager {
         audio.name = file;
         this.audios.push(audio);
       })
-    })
+    });
   }
 
   setIntroLoopAudio() {

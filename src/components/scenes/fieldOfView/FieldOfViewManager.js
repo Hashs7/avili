@@ -66,13 +66,17 @@ export default class FieldOfViewManager {
     });
   }
 
+  setLastPos(position) {
+    this.lastPosition = position;
+  }
+
   update() {
     this.towerElements[1].crystal.rotation.y += 0.01;
 
     if(this.alreadyHit) return;
     this.detectFieldOfView(this.lastPosition);
     if(!this.proj) return;
-    this.proj.detectLandingArea(this.lastPosition, this.world);
+    this.proj.detectLandingArea(this.lastPosition, this.world, this);
   }
 
   /**
@@ -140,6 +144,7 @@ export default class FieldOfViewManager {
       this.armor().mask.material.transparent = true;
       this.armor().cape.material.transparent = true;
       AudioManager.playSound('npc-angoissant.mp3', false);
+      document.dispatchEvent(new CustomEvent('npcAudio', { detail: { sequence: 'fov' }}));
       // mask, cape and rotation animations
       const tl = gsap.timeline({repeat: 0});
       tl.to(playerModel.rotation, {
@@ -162,7 +167,9 @@ export default class FieldOfViewManager {
         this.lastPosition = new THREE.Vector3();
         if(objs[i].object.name === "FieldOfView-3") {
           objs[i].object.name = "Undetectable";
-          TestimonyManager.speak('infiltration_end.mp3', 'infiltration_end');
+          setTimeout(() => {
+            TestimonyManager.speak('infiltration_end.mp3', 'infiltration_end');
+          }, 3000);
         } else {
           this.player.teleport(this.world.lastCheckpointCoord, () => {
             this.armor().setOpacity(1);

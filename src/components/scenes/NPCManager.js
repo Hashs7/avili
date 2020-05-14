@@ -2,6 +2,7 @@ import * as THREE from "three";
 import LoadManager from "../core/LoadManager";
 import NPC from "../characters/NPC";
 import { randomInRange } from "../../utils";
+import NPCAudio from "../core/NPCAudio";
 
 const npcsDefinition = (positions) => [{
   name: 'Daesu',
@@ -31,9 +32,11 @@ export default class NPCManager {
     this.sceneManager = sceneManager;
     this.npcs = [];
     this.mapPositions = [];
+    this.npcAudio = new NPCAudio(world);
   }
 
   async loadNPC(map) {
+    this.npcAudio.loadAudio();
     return await Promise.all(npcsDefinition(this.mapPositions).map(async (n) => {
       const gltf = await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
       const npc = new NPC(gltf, this.world, this.sceneManager, 'npc', n.position, map.geometry, n.name);

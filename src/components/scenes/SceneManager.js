@@ -16,6 +16,7 @@ import {Raycaster} from "three";
 import State from "../core/State";
 import NPCManager from "./NPCManager";
 import AudioManager from '../core/AudioManager';
+import { removeItemOnce, removeObjectOnce } from "../../utils";
 
 export default class {
   constructor(world, worldPhysic, camera) {
@@ -26,7 +27,10 @@ export default class {
 
     this.mat1 = new Material();
     this.scenesPath = './assets/models/scenes/';
+
     this.loadedScenes = [];
+    this.updateScenes = [];
+
     this.matesPos = [];
     this.mainScene = new THREE.Scene();
     this.initMainScene();
@@ -350,17 +354,25 @@ export default class {
 
       if (objs[0].object.name === "sectionTuto") {
         state.goToState("projectile_sequence_start");
+        this.startUpdateScene('ProjectileScene');
       }
 
       if (objs[0].object.name === "sectionInfiltration") {
+        this.stopUpdateScene('SpawnScene');
+        this.stopUpdateScene('ProjectileScene');
+        this.startUpdateScene('FieldOfViewScene');
         state.goToState(GAME_STATES.infiltration_sequence_start)
       }
 
       if (objs[0].object.name === "sectionHarcelement") {
+        this.stopUpdateScene('FieldOfViewScene');
+        this.startUpdateScene('WordScene');
+        this.startUpdateScene('FinalScene');
         state.goToState(GAME_STATES.words_sequence_start);
       }
 
       if (objs[0].object.name === "sectionSharing") {
+        this.stopUpdateScene('WordScene');
         state.goToState(GAME_STATES.final_teleportation);
       }
 
@@ -378,9 +390,13 @@ export default class {
     this.mainScene.add(mesh);
   }
 
-  addScene(scene) {
-    this.loadedScenes.push(scene);
-    this.mainScene.add(scene.scene);
+  addScene(sceneObject) {
+    this.loadedScenes.push(sceneObject);
+    this.mainScene.add(sceneObject.scene);
+    console.log(sceneObject);
+    if (sceneObject.scene.name === 'SpawnScene') {
+      this.startUpdateScene(sceneObject.scene.name);
+    }
   }
 
   addCollider(object) {
@@ -389,9 +405,20 @@ export default class {
 
   update(timeStep) {
     this.npcManager.update(timeStep);
-    for (let i = 0; i < this.loadedScenes.length; i++) {
-      this.loadedScenes[i].instance.update();
+    for (let i = 0; i < this.updateScenes.length; i++) {
+      this.updateScenes[i].instance.update();
     }
+  }
+
+  startUpdateScene(sceneName) {
+    const newScene = this.loadedScenes.find(({ scene }) => scene.name === sceneName);
+    this.updateScenes.push(newScene);
+    console.log(sceneName, newScene);
+  }
+
+  stopUpdateScene(sceneName) {
+    this.updateScenes = removeObjectOnce(this.updateScenes, sceneName);
+    console.log(sceneName, this.updateScenes);
   }
 
   destroy() {

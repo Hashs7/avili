@@ -4,11 +4,12 @@ import Character from "./Character";
 import { Pathfinding } from "three-pathfinding";
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils";
 import gsap from 'gsap';
+import AudioManager from "../core/AudioManager";
 
 export default class extends Character {
   constructor(gltf, world, sceneManager, name, startPosition, mapGeometry, pseudo) {
     super(gltf, world, sceneManager, name);
-    this.speed = 0.5;
+    this.speed = 1;
     this.isWalking = false;
     this.target = [];
     this.group.name = 'NPC';
@@ -34,18 +35,25 @@ export default class extends Character {
     this.skinnedMesh.forEach(mesh => {
       mesh.material.transparent = true;
       mesh.material.opacity = 0;
-
       gsap.to(mesh.material, {
         opacity: 1,
         delay,
         duration: 1,
-        onComplete: () => { mesh.material.transparent = false },
+        onComplete: () => {
+          mesh.material.transparent = false;
+        },
       })
     });
     gsap.to(this.playerName.material, {
       opacity: 1,
       duration: .3,
       delay: delay,
+      onComplete: () => {
+        document.dispatchEvent(new CustomEvent('npcAudio', { detail: {
+          sequence: 'spawn',
+          pseudo: this.pseudo,
+        }}));
+      }
     })
   }
 
@@ -128,6 +136,7 @@ export default class extends Character {
   }
 
   async addPseudo(name) {
+    this.pseudo = name;
     this.playerName = await makeTextSprite(name, { fontsize: 26, fontface: "Roboto Slab" });
     this.playerName.position.set(0, 1.7, 0);
     this.group.add(this.playerName);

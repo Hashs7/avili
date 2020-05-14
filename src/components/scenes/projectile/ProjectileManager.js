@@ -9,7 +9,7 @@ export default class ProjectileManager {
     this.world = world;
     this.proj;
     this.towerElements = towerEls;
-    this.playerPosition = new THREE.Vector3();
+    this.lastPosition = new THREE.Vector3();
 
     document.addEventListener('stateUpdate', e => {
       if (e.detail === GAME_STATES.infiltration_sequence_start && this.proj) {
@@ -22,14 +22,18 @@ export default class ProjectileManager {
     });
 
     document.addEventListener('playerMoved', e => {
-      this.playerPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
+      this.lastPosition = new THREE.Vector3().setFromMatrixPosition(e.detail.matrixWorld);
     });
+  }
+
+  setLastPos(position) {
+    this.lastPosition = position;
   }
 
   update() {
     this.towerElements[0].crystal.rotation.y += 0.01;
 
     if(!this.proj) return
-    this.proj.detectLandingArea(this.playerPosition, this.world);
+    this.proj.detectLandingArea(this.lastPosition, this.world, this);
   }
 }

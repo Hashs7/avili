@@ -1,0 +1,174 @@
+import AudioManager from "./AudioManager";
+import * as THREE from "three";
+import LoadManager from "./LoadManager";
+
+const definitionNPC = [{
+  name: 'leo',
+  pseudo: 'Daesu',
+},{
+  name: 'loris',
+  pseudo: 'Farkana',
+},{
+  name: 'nico',
+  pseudo: 'Schteppe',
+}];
+
+const spawnAudio = [{
+  name: 'nico',
+  sound: 'salutlesgars.mp3',
+  time: 3000,
+}, {
+  name: 'leo',
+  sound: 'salutlesgars.mp3',
+  time: 1500,
+}, {
+  name: 'loris',
+  sound: 'salutlesgars.mp3',
+  time: 3000,
+}];
+
+
+const projAudio = [{
+  name: 'nico',
+  sound: 'tourdemerde.mp3',
+  time: 3000,
+}, {
+  name: 'leo',
+  sound: 'perdregame.mp3',
+  time: 1500,
+}, {
+  name: 'leo',
+  sound: 'jouemeuf.mp3',
+  time: 3000,
+}];
+
+const fovAudio = [{
+  name: 'leo',
+  sound: 'perso.mp3',
+  time: 3100,
+}, {
+  name: 'leo',
+  sound: 'perdregame.mp3',
+  time: 1500,
+}];
+
+const wordsAudio = [{
+  name: 'leo',
+  sound: 'inutile.mp3',
+  time: 3100,
+}, {
+  name: 'loris',
+  sound: 'cuisine.mp3',
+  time: 1500,
+}, {
+  name: 'leo',
+  sound: 'moche.mp3',
+  time: 1500,
+}, {
+  name: 'leo',
+  sound: 'pute.mp3',
+  time: 1000,
+}, {
+  name: 'leo',
+  sound: 'salope.mp3',
+  time: 1500,
+}];
+
+export default class NPCAudio {
+  constructor(world) {
+    this.world = world;
+    this.projectileHit = 0;
+    this.fovDetected = 0;
+    this.wordDropped = 0;
+    this.listener = new THREE.AudioListener();
+    this.audios = [];
+    this.initEventListeners();
+  }
+
+  loadAudio() {
+    const prefixTestimony ='./assets/audio/npc';
+    const audioPaths = [...spawnAudio, ...projAudio, ...fovAudio, ...wordsAudio].flat();
+    audioPaths.forEach(({ name, sound }) => {
+      LoadManager.loadAudio(`${prefixTestimony}/${name}/${sound}`, (buffer) => {
+        const audio = new THREE.Audio( this.listener ).setBuffer( buffer );
+        audio.name = `${name}-${sound}`;
+        this.audios.push(audio);
+      })
+    });
+  }
+
+  initEventListeners() {
+    document.addEventListener('npcAudio', (e) => {
+      switch (e.detail.sequence) {
+        case 'spawn': this.spawnSequence(e.detail.pseudo);
+          break;
+        case 'projectile': this.projectileSequence();
+          break;
+        case 'fov':
+          this.insultsSequence();
+          break;
+        case 'word':
+          this.wordsSequence();
+          break;
+        default: break;
+      }
+    })
+  }
+
+  /**
+   *
+   * @param name : loris / nico / leo
+   * @param sound : .mp3
+   * @param time : number in ms
+   */
+  play(name, sound, time) {
+    const { pseudo } = definitionNPC.find(el => el.name === name);
+    AudioManager.playSound(`${name}/${sound}`, true);
+    this.world.store.commit('setCommunication', { name: pseudo, time });
+
+    const audio = this.audios.find(au => au.name === `${name}-${sound}`);
+    if (!audio) return;
+    audio.play();
+  }
+
+  /**
+   * Salut les gars
+   */
+  spawnSequence(pseudo) {
+    const player = definitionNPC.find(el => el.pseudo === pseudo);
+    if (!player) return;
+    this.play(player.name, 'salutlesgars.mp3', 2000);
+  }
+
+  /**
+   * Gros tu fous quoi ?
+   */
+  startSequence() {
+    this.play('loris', 'gros.mp3', 2000);
+  }
+
+  projectileSequence() {
+    const { name, sound, time } = projAudio[this.projectileHit];
+    this.play(name, sound, time);
+    this.projectileHit !== 2 ?
+      this.projectileHit += 1 : this.projectileHit = 0;
+  }
+
+  characterSequence() {
+    const { name, sound, time } = fovAudio[this.fovDetected];
+    this.play(name, sound, time);
+    this.fovDetected !== 1 ?
+      this.fovDetected += 1 : this.fovDetected = 0;
+  }
+
+  insultsSequence() {
+    this.play('leo', 'perso.mp3', 3100);
+  }
+
+  wordsSequence() {
+    const { name, sound, time } = fovAudio[this.wordDropped];
+    this.play(name, sound, time);
+    this.wordDropped !== 5 ?
+      this.wordDropped += 1 : this.wordDropped = 0;
+  }
+}

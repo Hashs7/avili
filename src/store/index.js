@@ -1,15 +1,8 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import { removeItemOnce } from "../utils";
 
 Vue.use(Vuex);
-
-const removeItemOnce = (arr, value) => {
-  const index = arr.indexOf(value);
-  if (index > -1) {
-    arr.splice(index, 1);
-  }
-  return arr;
-};
 
 export default new Vuex.Store({
   state: {
