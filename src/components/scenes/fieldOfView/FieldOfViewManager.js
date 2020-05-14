@@ -167,7 +167,9 @@ export default class FieldOfViewManager {
         this.lastPosition = new THREE.Vector3();
         if(objs[i].object.name === "FieldOfView-3") {
           objs[i].object.name = "Undetectable";
-          TestimonyManager.speak('infiltration_end.mp3', 'infiltration_end');
+          setTimeout(() => {
+            TestimonyManager.speak('infiltration_end.mp3', 'infiltration_end');
+          }, 3000);
         } else {
           this.player.teleport(this.world.lastCheckpointCoord, () => {
             this.armor().setOpacity(1);

@@ -2,12 +2,12 @@ export default {
   // Testimony subtitles
   black_screen: {
     0: {
-      sentence: "Ce que je préfère c'est les jeux multijoueurs en équipe.",
-      time: '2000',
+      sentence: "Ce que je préfère le plus c'est les jeux multijoueurs en équipe.",
+      time: '3000',
       last: 'false',
     },
     1: {
-      sentence: "C'est bien plus existant que de jouer toute seule.",
+      sentence: "C'est plus existant que de jouer toute seule.",
       time: '2000',
       last: 'true',
     },
@@ -31,28 +31,28 @@ export default {
   },*/
   spawn_mates: {
     0: {
-      sentence: "Mais voilà je suis une femme alors je n'ai pas les même expérience de jeu qu'un homme",
-      time: '5000',
+      sentence: "Mais voilà je suis une femme donc je n'ai pas les même expérience de jeu qu'un homme",
+      time: '4500',
       last: 'false',
     },
     1: {
-      sentence: "Genre si un homme fait des erreurs on va l'insulter sur ses skills,",
+      sentence: "Si un homme fait des erreurs on va l'insulter sur ses skills,",
       time: '3000',
       last: 'false',
     },
     2: {
-      sentence: "Mais pour une femme c'est différent tout de suite c'est mon genre qui va porter préjudice je vais avoir le droit à des insultes sexiste, mysogynes...",
-      time: '10000',
+      sentence: "Mais pour une femme c'est complétement différent à cause de mon genre je vais tout de suite avoir le droit à des insultes sexiste ou mysogynes...",
+      time: '7000',
       last: 'false',
     },
     3: {
-      sentence: "Du coup je parle hyper rarement dans les parties en ligne même si à certain moment ça pourrait me sortir de situation compliquée en faite",
-      time: '8000',
+      sentence: "Du coup je parle très rarement dans les parties en ligne même si à certain moment ça pourrait me sortir de situation compliquée",
+      time: '7000',
       last: 'false',
     },
     4: {
-      sentence: "Je préfère m'abstenir parce que ma voix elle risquerait d'enclencher une vague de haine",
-      time: '8000',
+      sentence: "En gros je préfère m'abstenir parce que ma voix risquerait d'enclencher une vague de haine",
+      time: '7000',
       last: 'true',
     }
   },
@@ -84,7 +84,7 @@ export default {
   },
   first_badword: {
     0: {
-      sentence: "Au début je m'efforce de pas y prêter attention",
+      sentence: "Au début j'essaie' de pas y faire attention",
       time: '2000',
       last: 'true',
     }
@@ -92,12 +92,17 @@ export default {
   second_badword: {
     0: {
       sentence: "Mais à force on craque",
-      time: '1000',
+      time: '2000',
       last: 'false',
     },
     1: {
-      sentence: "Ça fini par atteindre",
-      time: '1000',
+      sentence: "Et moi ça fini par atteindre",
+      time: '2000',
+      last: 'false',
+    },
+    2: {
+      sentence: "Et par m'affecter",
+      time: '2000',
       last: 'true',
     }
   },
