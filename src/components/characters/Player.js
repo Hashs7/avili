@@ -67,7 +67,7 @@ export default class extends Character {
   }
 
   groupCamera() {
-    this.group.position.set(65, 0, 0);
+    this.group.position.set(0, 0, 0);
 
     this.spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, Math.PI/10, 1);
     this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(this.group.position));
@@ -256,5 +256,28 @@ export default class extends Character {
 
   setOrientable(value) {
     this.orientable = value;
+  }
+
+  getArmor(){
+    const armor = {
+      mask: null, cape: null,
+      setOpacity: value => {
+        armor.mask.material.opacity = value;
+        armor.cape.material.opacity = value;
+      },
+      setVisibility: value => {
+        armor.mask.material.visible = value;
+        armor.cape.material.visible = value;
+      }
+    }
+    this.character.traverse(child => {
+      if(child.name === 'amask') armor.mask = child;
+      if(child.name === 'ahat') armor.cape = child;
+    });
+    return armor;
+  }
+
+  setVisibility(value){
+    this.character.visible = value;
   }
 }

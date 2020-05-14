@@ -2,6 +2,7 @@ import Scene from '../Scene';
 import * as THREE from "three";
 import TestimonyManager from "../../core/TestimonyManager";
 import gsap from 'gsap';
+import CameraOperator from "../../core/CameraOperator";
 
 export default class extends Scene {
   constructor(world, spline, sceneManager, spawnCrystal) {
@@ -23,6 +24,7 @@ export default class extends Scene {
     }, 5000);*/
     this.spawnCrystal = spawnCrystal;
     this.upAndDownCrystalAnimation();
+    this.initPlayer()
 
 
     return {
@@ -36,8 +38,8 @@ export default class extends Scene {
     this.spawnCrystal.rotation.y += 0.01;
   }
 
-  normalize(value, min, max) {
-    return (value - min) / (max - min);
+  initPlayer(){
+    this.world.player.setVisibility(false);
   }
 
   easeInOutCubic(x) {
@@ -90,41 +92,56 @@ export default class extends Scene {
       TestimonyManager.speak('black_screen.mp3', 'black_screen');
     }, 1000);
 
-
-    setTimeout(() => {
-      this.sceneManager.npcManager.showNPC();
-    }, 5000)
-
-    /*
-     * Pendant le travelling
-     **/
-    /*
-    setTimeout(() => {
-      TestimonyManager.speak('travelling.mp3', 'travelling');
-    }, 6000)
-    */
-
-
-
-    setTimeout(() => {
-      this.sceneManager.npcManager.moveNPC();
-    }, 8000)
     /**
      * Lorsque les coéquipiers apparaissent
      */
     setTimeout(() => {
       TestimonyManager.speak('spawn_mates.mp3', 'spawn_mates');
-    }, 18000);
+    }, 8000);
+
+    setTimeout(() => {
+      this.sceneManager.npcManager.showNPC();
+    }, 5000)
+
+    setTimeout(() => {
+      this.sceneManager.npcManager.moveNPC();
+    }, 22000)
+
+    setTimeout(() => {
+      this.world.player.setVisibility(true);
+      this.world.player.getArmor().setVisibility(false);
+      this.world.player.getArmor().setOpacity(0);
+    }, 30000)
 
     /**
      * Lorsque la joueuse apparait
      */
     setTimeout(() => {
       TestimonyManager.speak('spawn_player.mp3', 'spawn_player');
-      setTimeout(() => {
-        this.world.getPlayer().setWalkable(true);
-      }, 7500)
-    }, 55000);
+      // setTimeout(() => {
+      //   this.world.getPlayer().setWalkable(true);
+      // }, 7500)
+    }, 40000);
+
+    setTimeout(() => {
+      const playerModel = this.world.player.group.children[0];
+      const rotation = Math.atan2( ( this.world.camera.position.x - playerModel.position.x ), ( this.world.camera.position.z - playerModel.position.z ) );
+      const tl = gsap.timeline({repeat: 0});
+      tl.to(playerModel.rotation, {
+        y: rotation,
+        duration: 1,
+      })
+      tl.to([
+        this.world.player.getArmor().mask.material,
+        this.world.player.getArmor().cape.material
+      ], {
+        onStart: () => {this.world.player.getArmor().setVisibility(true);},
+        opacity: 1,
+        duration: 0.5,
+        ease: 'power2.in',
+      })
+      CameraOperator.zoom();
+    }, 42000);
   }
 
   upAndDownCrystalAnimation() {
