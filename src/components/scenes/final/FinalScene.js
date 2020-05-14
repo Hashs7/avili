@@ -3,6 +3,7 @@ import gsap from "gsap/gsap-core";
 import { GAME_STATES } from "../../../constantes";
 import * as THREE from "three";
 import {toRadian} from "../../../utils";
+import TestimonyManager from "../../core/TestimonyManager";
 
 export default class extends Scene {
   constructor(manager) {
@@ -12,6 +13,7 @@ export default class extends Scene {
 
     document.addEventListener('stateUpdate', (e) => {
       if (e.detail === GAME_STATES.final_black_screen){
+        TestimonyManager.speak('ending.mp3', 'ending');
         this.blackFade();
         this.addPortal();
       }
