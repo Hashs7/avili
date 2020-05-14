@@ -70,7 +70,6 @@ export default class NPCManager {
         setTimeout(() => {
           n.moveTo(npcsDefinition(this.mapPositions)[i].toTeleport);
           n.setWalkCallback(() => {
-            document.dispatchEvent(new CustomEvent('showFov'));
             n.teleportTo(npcsDefinition(this.mapPositions)[i].target);
           });
         }, delay)
