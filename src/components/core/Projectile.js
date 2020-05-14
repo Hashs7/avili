@@ -163,7 +163,7 @@ export default class Projectile {
     return landingPoint;
   }
 
-  detectLandingArea(position, world) {
+  detectLandingArea(position, world, manager) {
     const ray = new THREE.Raycaster(
       position,
       new THREE.Vector3(0, -1, 0),
@@ -181,8 +181,8 @@ export default class Projectile {
         const player = world.getPlayer();
         console.log('dispatchEvent projectile');
         document.dispatchEvent(new CustomEvent('npcAudio', { detail: { sequence: 'projectile' }}));
+        manager.setLastPos(new THREE.Vector3());
         player.teleport(world.lastCheckpointCoord, () => {
-          position = new THREE.Vector3();
           this.isDetected = false;
           console.log('false this.isDetected', this.isDetected);
         })

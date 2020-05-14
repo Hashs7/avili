@@ -66,13 +66,17 @@ export default class FieldOfViewManager {
     });
   }
 
+  setLastPos(position) {
+    this.lastPosition = position;
+  }
+
   update() {
     this.towerElements[1].crystal.rotation.y += 0.01;
 
     if(this.alreadyHit) return;
     this.detectFieldOfView(this.lastPosition);
     if(!this.proj) return;
-    this.proj.detectLandingArea(this.lastPosition, this.world);
+    this.proj.detectLandingArea(this.lastPosition, this.world, this);
   }
 
   /**
