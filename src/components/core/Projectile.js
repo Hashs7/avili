@@ -139,7 +139,7 @@ export default class Projectile {
     this.scene.add(cylinderGlow);
   }
 
-  createLandingPoint(coord){
+  createLandingPoint(coord) {
     const geometry = new THREE.CircleGeometry( 3, 30);
     const customMaterial = new THREE.ShaderMaterial({
       uniforms: this.circleUniforms,
@@ -174,14 +174,14 @@ export default class Projectile {
 
     objs.forEach(obj => {
       if (obj.object.name === this.landingAreaName && obj.object.userData.isDetectable) {
-        console.log(this.isDetected);
+        // Unique detection
         if (this.isDetected) return;
-        console.log('detecteeed');
         this.isDetected = true;
         const player = world.getPlayer();
-        console.log('dispatchEvent projectile');
+
         document.dispatchEvent(new CustomEvent('npcAudio', { detail: { sequence: 'projectile' }}));
         manager.setLastPos(new THREE.Vector3());
+
         player.teleport(world.lastCheckpointCoord, () => {
           this.isDetected = false;
           console.log('false this.isDetected', this.isDetected);

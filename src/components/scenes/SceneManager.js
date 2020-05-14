@@ -16,6 +16,7 @@ import {Raycaster} from "three";
 import State from "../core/State";
 import NPCManager from "./NPCManager";
 import AudioManager from '../core/AudioManager';
+import { removeItemOnce, removeObjectOnce } from "../../utils";
 
 export default class {
   constructor(world, worldPhysic, camera) {
@@ -353,14 +354,18 @@ export default class {
       }
 
       if (objs[0].object.name === "sectionInfiltration") {
+        this.stopUpdateScene('SpawnScene');
+        this.stopUpdateScene('ProjectileScene');
         state.goToState(GAME_STATES.infiltration_sequence_start)
       }
 
       if (objs[0].object.name === "sectionHarcelement") {
+        this.stopUpdateScene('FieldOfViewScene');
         state.goToState(GAME_STATES.words_sequence_start);
       }
 
       if (objs[0].object.name === "sectionSharing") {
+        this.stopUpdateScene('WordScene');
         state.goToState(GAME_STATES.final_teleportation);
       }
 
@@ -392,6 +397,11 @@ export default class {
     for (let i = 0; i < this.loadedScenes.length; i++) {
       this.loadedScenes[i].instance.update();
     }
+  }
+
+  stopUpdateScene(sceneName) {
+    this.loadedScenes = removeObjectOnce(this.loadedScenes, sceneName);
+    console.log(sceneName, this.loadedScenes);
   }
 
   destroy() {

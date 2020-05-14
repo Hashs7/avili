@@ -5,7 +5,7 @@ export default class extends Scene {
   constructor(world, manager, towers, landingAreas, towerEl, npc) {
     super();
     this.manager = manager;
-    this.scene.name = "FieldOfView";
+    this.scene.name = "FieldOfViewScene";
     this.fov = new FieldOfViewManager(world, this.scene, towers, landingAreas, towerEl, npc);
 
     return {

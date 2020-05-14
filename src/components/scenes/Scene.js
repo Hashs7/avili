@@ -10,4 +10,6 @@ export default class {
   }
 
   update() {}
+
+  stopUpdate() {}
 }

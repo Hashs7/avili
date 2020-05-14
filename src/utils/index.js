@@ -8,6 +8,22 @@ export const toRadian = (degrees) => degrees * Math.PI / 180;
 
 export const normalize = (value, min, max) => (value - min) / (max - min);
 
+export const removeItemOnce = (arr, value) => {
+  const index = arr.indexOf(value);
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
+  return arr;
+};
+
+export const removeObjectOnce = (arr, value) => {
+  const index = arr.map((e) => e.scene.name).indexOf(value);
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
+  return arr;
+};
+
 const imageLoader = (url) => {
   return new Promise( (resolve, reject) => {
     const image = new Image();
