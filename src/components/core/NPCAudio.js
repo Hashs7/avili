@@ -11,6 +11,9 @@ const definitionNPC = [{
 },{
   name: 'nico',
   pseudo: 'Schteppe',
+},{
+  name: 'jordan',
+  pseudo: 'Tardys',
 }];
 
 const spawnAudio = [{
@@ -23,6 +26,10 @@ const spawnAudio = [{
   time: 1500,
 }, {
   name: 'loris',
+  sound: 'salutlesgars.mp3',
+  time: 3000,
+}, {
+  name: 'jordan',
   sound: 'salutlesgars.mp3',
   time: 3000,
 }];
@@ -105,7 +112,7 @@ export default class NPCAudio {
         case 'projectile': this.projectileSequence();
           break;
         case 'fov':
-          this.insultsSequence();
+          this.insultsSequence(e.detail.pseudo);
           break;
         case 'word':
           this.wordsSequence();
@@ -161,7 +168,13 @@ export default class NPCAudio {
       this.fovDetected += 1 : this.fovDetected = 0;
   }
 
-  insultsSequence() {
+  /**
+   *
+   * @param pseudo
+   */
+  insultsSequence(pseudo) {
+    console.log(pseudo);
+    // TODO en fonction du pseudo du fov
     this.play('leo', 'perso.mp3', 3100);
   }
 

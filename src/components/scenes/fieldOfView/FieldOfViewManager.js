@@ -81,8 +81,7 @@ export default class FieldOfViewManager {
 
   /**
    * Create new field of view
-   * @param x
-   * @param z
+   * @param group
    * @param index
    */
   addFieldOfView(group, index) {
@@ -143,8 +142,11 @@ export default class FieldOfViewManager {
       const rotation = Math.atan2( ( this.world.camera.position.x - playerModel.position.x ), ( this.world.camera.position.z - playerModel.position.z ) );
       this.armor().mask.material.transparent = true;
       this.armor().cape.material.transparent = true;
+
       AudioManager.playSound('npc-angoissant.mp3', false);
-      document.dispatchEvent(new CustomEvent('npcAudio', { detail: { sequence: 'fov' }}));
+      // TODO get player pseudo fov
+      const pseudo = 'Daesu';
+      document.dispatchEvent(new CustomEvent('npcAudio', { detail: { sequence: 'fov', pseudo }}));
       // mask, cape and rotation animations
       const tl = gsap.timeline({repeat: 0});
       tl.to(playerModel.rotation, {
