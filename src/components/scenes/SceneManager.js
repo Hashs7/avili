@@ -97,7 +97,7 @@ export default class {
       duration,
     }, 'start');
     tl.to(this.mainScene.fog, {
-      near: 30,
+      near: 25,
       far: 40,
       duration,
     }, 'start');
@@ -120,7 +120,7 @@ export default class {
       duration,
     }, 'start');
     tl.to(this.mainScene.fog, {
-      near: 30,
+      near: 15,
       duration,
     }, 'start');
   }

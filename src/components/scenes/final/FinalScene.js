@@ -65,7 +65,8 @@ export default class extends Scene {
     tl.add(gsap.delayedCall(5, () => {
       player.teleport(new THREE.Vector3(0, 0, 0));
       player.addPseudo();
-      this.manager.mainScene.fog.near = 45;
+      this.manager.mainScene.fog.near = 30;
+      this.manager.mainScene.fog.far = 45;
     }));
 
     const color = new THREE.Color(0x96e1ff);
