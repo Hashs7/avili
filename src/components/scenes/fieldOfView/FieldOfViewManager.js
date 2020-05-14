@@ -24,8 +24,9 @@ export default class FieldOfViewManager {
     this.alreadyHit = false;
 
     this.npc = npc;
-    console.log(this.npc);
-    this.firstNpc = this.npc[0].group;
+    this.firstNpc = this.npc.find(e => e.group.pseudo === "Daesu").group;
+    console.log(this.firstNpc);
+    //this.firstNpc = this.npc[0].group;
     this.isFirstTime = true;
 
     this.player = this.world.getPlayer();
