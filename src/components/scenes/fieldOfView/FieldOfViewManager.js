@@ -140,7 +140,7 @@ export default class FieldOfViewManager {
       this.armor().mask.material.transparent = true;
       this.armor().cape.material.transparent = true;
       AudioManager.playSound('npc-angoissant.mp3', false);
-      document.dispatchEvent(new CustomEvent('npcAudio', { detail: 'fov' }));
+      document.dispatchEvent(new CustomEvent('npcAudio', { detail: { sequence: 'fov' }}));
       // mask, cape and rotation animations
       const tl = gsap.timeline({repeat: 0});
       tl.to(playerModel.rotation, {

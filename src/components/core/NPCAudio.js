@@ -1,4 +1,6 @@
 import AudioManager from "./AudioManager";
+import * as THREE from "three";
+import LoadManager from "./LoadManager";
 
 const definitionNPC = [{
   name: 'leo',
@@ -10,6 +12,21 @@ const definitionNPC = [{
   name: 'nico',
   pseudo: 'Schteppe',
 }];
+
+const spawnAudio = [{
+  name: 'nico',
+  sound: 'salutlesgars.mp3',
+  time: 3000,
+}, {
+  name: 'leo',
+  sound: 'salutlesgars.mp3',
+  time: 1500,
+}, {
+  name: 'loris',
+  sound: 'salutlesgars.mp3',
+  time: 3000,
+}];
+
 
 const projAudio = [{
   name: 'nico',
@@ -33,7 +50,7 @@ const fovAudio = [{
   name: 'leo',
   sound: 'perdregame.mp3',
   time: 1500,
-}]
+}];
 
 const wordsAudio = [{
   name: 'leo',
@@ -55,23 +72,37 @@ const wordsAudio = [{
   name: 'leo',
   sound: 'salope.mp3',
   time: 1500,
-}]
+}];
 
 export default class NPCAudio {
-  contrustor(world) {
+  constructor(world) {
     this.world = world;
     this.projectileHit = 0;
     this.fovDetected = 0;
     this.wordDropped = 0;
+    this.listener = new THREE.AudioListener();
+    this.audios = [];
+    this.initEventListeners();
+  }
+
+  loadAudio() {
+    const prefixTestimony ='./assets/audio/npc';
+    const audioPaths = [...spawnAudio, ...projAudio, ...fovAudio, ...wordsAudio].flat();
+    audioPaths.forEach(({ name, sound }) => {
+      LoadManager.loadAudio(`${prefixTestimony}/${name}/${sound}`, (buffer) => {
+        const audio = new THREE.Audio( this.listener ).setBuffer( buffer );
+        audio.name = `${name}-${sound}`;
+        this.audios.push(audio);
+      })
+    });
   }
 
   initEventListeners() {
     document.addEventListener('npcAudio', (e) => {
-      switch (e.detail) {
-        case 'spawn'  : this.spawnSequence();
+      switch (e.detail.sequence) {
+        case 'spawn': this.spawnSequence(e.detail.pseudo);
           break;
-        case 'projectile':
-          this.projectileSequence();
+        case 'projectile': this.projectileSequence();
           break;
         case 'fov':
           this.insultsSequence();
@@ -93,18 +124,20 @@ export default class NPCAudio {
   play(name, sound, time) {
     const { pseudo } = definitionNPC.find(el => el.name === name);
     AudioManager.playSound(`${name}/${sound}`, true);
-    this.world.store.commit('setCommunication', { name: pseudo, time })
+    this.world.store.commit('setCommunication', { name: pseudo, time });
+
+    const audio = this.audios.find(au => au.name === `${name}-${sound}`);
+    if (!audio) return;
+    audio.play();
   }
 
   /**
    * Salut les gars
    */
-  spawnSequence() {
-    definitionNPC.forEach((npc, i) => {
-      setTimeout(() => {
-        this.play(npc.name, 'salutlesgars.mp3', 2000);
-      }, i * 1500)
-    })
+  spawnSequence(pseudo) {
+    const player = definitionNPC.find(el => el.pseudo === pseudo);
+    if (!player) return;
+    this.play(player.name, 'salutlesgars.mp3', 2000);
   }
 
   /**

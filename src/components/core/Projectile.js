@@ -12,6 +12,7 @@ export default class Projectile {
     this.tower = tower;
     this.landingAreas = landingAreas;
     this.scene = scene;
+    this.isDetected = false;
     this.landingAreaName = "LandingArea";
     this.projAreaName = "Laser";
     this.uniforms = {
@@ -162,7 +163,7 @@ export default class Projectile {
     return landingPoint;
   }
 
-  detectLandingArea(position, world){
+  detectLandingArea(position, world) {
     const ray = new THREE.Raycaster(
       position,
       new THREE.Vector3(0, -1, 0),
@@ -173,10 +174,17 @@ export default class Projectile {
 
     objs.forEach(obj => {
       if (obj.object.name === this.landingAreaName && obj.object.userData.isDetectable) {
+        console.log(this.isDetected);
+        if (this.isDetected) return;
+        console.log('detecteeed');
+        this.isDetected = true;
         const player = world.getPlayer();
-        document.dispatchEvent(new CustomEvent('npcAudio', { detail: 'projectile' }));
+        console.log('dispatchEvent projectile');
+        document.dispatchEvent(new CustomEvent('npcAudio', { detail: { sequence: 'projectile' }}));
         player.teleport(world.lastCheckpointCoord, () => {
           position = new THREE.Vector3();
+          this.isDetected = false;
+          console.log('false this.isDetected', this.isDetected);
         })
       }
     });
