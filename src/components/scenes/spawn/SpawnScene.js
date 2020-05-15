@@ -24,6 +24,8 @@ export default class extends Scene {
     }, 5000);*/
     this.spawnCrystal = spawnCrystal;
     this.upAndDownCrystalAnimation();
+
+    // To enable
     this.initPlayer()
 
     return {

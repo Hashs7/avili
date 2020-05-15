@@ -7,7 +7,7 @@ export default class {
   constructor(canvas, quality) {
     this.mesh;
     this.statsEnabled = true;
-    this.spotLight = new THREE.SpotLight( new THREE.Color(113, 113, 255), 0.2, 0, Math.PI/10);
+    this.spotLight = new THREE.SpotLight( new THREE.Color(113, 113, 255), 0.05, 0, Math.PI/10);
     this.mouseX = 0;
     this.mouseY = 0;
 
@@ -20,9 +20,9 @@ export default class {
     this.canvas = canvas;
     this.quality = quality;
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color( 0x060708 );
+    this.scene.background = new THREE.Color( 0x292e47 );
 
-    this.camera = new THREE.PerspectiveCamera( 35, window.innerWidth / window.innerHeight, 1, 100 );
+    this.camera = new THREE.PerspectiveCamera( 35, window.innerWidth / window.innerHeight, 0.01, 30 );
     this.camera.position.set(1.925, -0.52, 6.932);
     this.camera.rotation.y = toRadian(33);
 
@@ -38,9 +38,9 @@ export default class {
   }
 
   init() {
-    this.scene.add( new THREE.AmbientLight( 0xfefefe, 10));
+    this.scene.add( new THREE.AmbientLight( 0xfefefe, 1));
     // this.scene.add( new THREE.HemisphereLight( 0xfefefe, 0x000000, 10));
-    // this.scene.fog = new THREE.Fog( 0x060708, 0.5, 20);
+    this.scene.fog = new THREE.Fog( 0x292e47, 5, 10);
     this.spotLight.position.set( 5, 10, 7.5 );
     this.spotLight.penumbra = 1;
     this.spotLight.decay = 1;

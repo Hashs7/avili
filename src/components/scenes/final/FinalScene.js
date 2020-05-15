@@ -66,8 +66,8 @@ export default class extends Scene {
     tl.add(gsap.delayedCall(5, async () => {
       player.teleport(new THREE.Vector3(0, 0, 0));
       player.addPseudo();
-      this.manager.mainScene.fog.near = 30;
-      this.manager.mainScene.fog.far = 45;
+      this.manager.mainScene.fog.near = 20;
+      this.manager.mainScene.fog.far = 30;
       const gltf = await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
       player.changeAppareance(gltf, 'npc');
     }));

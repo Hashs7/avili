@@ -16,7 +16,8 @@ import {Raycaster} from "three";
 import State from "../core/State";
 import NPCManager from "./NPCManager";
 import AudioManager from '../core/AudioManager';
-import { removeItemOnce, removeObjectOnce } from "../../utils";
+import { removeObjectOnce } from "../../utils";
+import Skybox from "../core/Skybox";
 
 export default class {
   constructor(world, worldPhysic, camera) {
@@ -26,7 +27,6 @@ export default class {
     this.npcManager = new NPCManager(world, this);
 
     this.mat1 = new Material();
-    this.scenesPath = './assets/models/scenes/';
 
     this.loadedScenes = [];
     this.updateScenes = [];
@@ -63,21 +63,19 @@ export default class {
   }
 
   initMainScene() {
-    // new Skybox(this.mainScene, 'afterrain');
+    // new Skybox(this.mainScene, 'cloud');
     this.globalLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.7);
     this.addFloor();
     this.mainScene.add(this.globalLight);
-    this.mainScene.fog = new THREE.Fog(0x96e1ff, 45, 50);
-    // this.mainScene.fog = new THREE.Fog( 0x96e1ff, 7, 50);
-    this.mainScene.background = new THREE.Color(0x96e1ff);
-    // this.mainScene.background = new THREE.Color(0xfefefe);
+    this.mainScene.fog = new THREE.Fog(0x365799, 30, 40);
+    this.mainScene.background = new THREE.Color(0x365799);
     /*setTimeout(() => {
      this.ambianceTransition()
      }, 6000)*/
   }
 
   ambianceInfiltrationTransition() {
-    const nextColor = new THREE.Color(0x05052b);
+    const nextColor = new THREE.Color(0x111526);
     const duration = 30;
     const tl = gsap.timeline({ repeat: 0 });
     tl.to(this.globalLight, {
@@ -97,8 +95,8 @@ export default class {
       duration,
     }, 'start');
     tl.to(this.mainScene.fog, {
-      near: 25,
-      far: 40,
+      near: 20,
+      far: 30,
       duration,
     }, 'start');
   }
@@ -120,7 +118,8 @@ export default class {
       duration,
     }, 'start');
     tl.to(this.mainScene.fog, {
-      near: 15,
+      near: 10,
+      far: 20,
       duration,
     }, 'start');
   }
@@ -130,7 +129,8 @@ export default class {
    */
   addFloor() {
     const geometry = new THREE.BoxGeometry(300, 0.1, 300);
-    const material = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 });
+    // const material = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 });
+    const material = new THREE.MeshBasicMaterial({ visible: false });
     const plane = new THREE.Mesh(geometry, material);
     plane.name = "Floor";
     plane.position.set(80, -0.1 , 50);
@@ -191,6 +191,12 @@ export default class {
       if(child.name.startsWith('z')) {
         this.landingAreas.push(child);
       }
+      if(child.name === 'fans001') {
+        console.log(child);
+        var axesHelper = new THREE.AxesHelper( 5 );
+        this.fans = child;
+        this.fans.add(axesHelper);
+      }
       if(child.name === 'Crystal'){
         this.spawnCrystal = child;
       }
@@ -235,7 +241,6 @@ export default class {
 
     this.mainSceneAddObject(t2Gltf.scene);
     this.towerEls.push(t2);
-
     //this.addGlowEffect([t1.crystal, t2.crystal]);
   }
 
@@ -417,6 +422,8 @@ export default class {
     for (let i = 0; i < this.updateScenes.length; i++) {
       this.updateScenes[i].instance.update();
     }
+    // if (!this.fans) return;
+    // this.fans.rotation.x += 0.01;
   }
 
   startUpdateScene(sceneName) {

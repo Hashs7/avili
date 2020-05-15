@@ -35,7 +35,7 @@ export default class {
     this.audioManager = AudioManager;
     this.audioManager.initAudio();
 
-    this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.01, 1000);
+    this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.01, 2000);
     this.camera.name = 'MainCamera';
 
     this.world = new World();
@@ -68,13 +68,16 @@ export default class {
     // this.setWorker();
     // this.render();
     this.wow();
-    //this.debugCamera();
+    // this.debugCamera();
     document.addEventListener('visibilitychange', () => this.handleVisibilityChange(), false);
 
     // this.setPostProcessing(false);
-    this.composer = new EffectComposer(this.renderer);
+    // this.composer = new EffectComposer(this.renderer);
   }
 
+  /**
+   * To enable
+   */
   loaderFinished() {
     this.sceneManager.spawnScene.instance.playTestimony();
   }
@@ -134,7 +137,7 @@ export default class {
     },{
       name: 'playerGltf',
       // path: './assets/models/characters/npc.glb'
-      path: './assets/models/characters/personnage_emilie_v10.glb',
+      path: './assets/models/characters/personnage_emilie_v11.glb',
     },{
       name: 'npc',
       path: './assets/models/characters/npc.glb'
@@ -188,15 +191,22 @@ export default class {
    * Rendering loop
    */
   render() {
-    this.stats.begin();
     this.renderDelta = this.clock.getDelta();
     let timeStep = this.renderDelta + this.logicDelta;
     // let timeStep = (this.renderDelta + this.logicDelta) * this.params.Time_Scale;
     this.update(timeStep);
     this.logicDelta = this.clock.getDelta();
+
+    this.stats.begin();
     this.renderer.render(this.sceneManager.mainScene, this.camera);
-    requestAnimationFrame(() => this.render());
     this.stats.end();
+
+    // console.log("Scene polycount:", this.renderer.info.render.triangles)
+    // console.log("Active Drawcalls:", this.renderer.info.render.calls)
+    // console.log("Textures in Memory", this.renderer.info.memory.textures)
+    // console.log("Geometries in Memory", this.renderer.info.memory.geometries)
+
+    requestAnimationFrame(() => this.render());
   }
 
   renderPostProcessing() {
@@ -230,7 +240,7 @@ export default class {
 
       case 'Élevé':
         this.renderer.antialias = true;
-        this.renderer.powerPreference = 'high-performance';
+        this.renderer.powerPreference = 'default';
         break;
     }
   }
