@@ -14,14 +14,14 @@ import gsap from 'gsap';
 const wordsDef = [{
   text: 'Inutile',
   mass: 50,
-  position: new Vec3(125, 10, 0),
+  position: new Vec3(127, 10, 0),
   collide: false,
   movable: true,
   path: 'inutile.glb',
 }, {
   text: 'Cuisine',
   mass: 70,
-  position: new Vec3(132, 25, -1),
+  position: new Vec3(134, 25, -1),
   collide: false,
   movable: true,
   path: 'cuisine.glb',
@@ -35,14 +35,14 @@ const wordsDef = [{
 }, {
   text: 'Pute',
   mass: 100,
-  position: new Vec3(150, 70, 0),
+  position: new Vec3(158, 70, 0),
   collide: true,
   movable: false,
   path: 'pute.glb',
 }, {
   text: 'Salope',
   mass: 100,
-  position: new Vec3(145, 70, -3),
+  position: new Vec3(147, 70, -3),
   collide: true,
   movable: false,
   path: 'salope.glb',
@@ -109,7 +109,6 @@ export default class extends Scene {
     // TODO refacto
     if (objs[0].object.name === "m1") {
       this.dropWord();
-      setTimeout(() => this.dropWord(), 1000);
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm1');
       TestimonyManager.speak('first_badword.mp3', 'first_badword');
@@ -118,9 +117,14 @@ export default class extends Scene {
       this.dropWord();
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm2');
-      TestimonyManager.speak('second_badword.mp3', 'second_badword');
     }
     if (objs[0].object.name === "m3") {
+      this.dropWord();
+      objs[0].object.name += 'Passed';
+      this.sections = this.sections.filter(s => s.name !== 'm3');
+      TestimonyManager.speak('second_badword.mp3', 'second_badword');
+    }
+    if (objs[0].object.name === "m5") {
       this.dropWord();
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm3');

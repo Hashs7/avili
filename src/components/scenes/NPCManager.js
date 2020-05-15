@@ -52,6 +52,7 @@ export default class NPCManager {
   }
 
   hideNPC() {
+    console.log(this.npcs);
     this.npcs.forEach((n) => n.hide());
   }
 

@@ -58,7 +58,7 @@ export default class {
 
     // Stats showing fps
     this.stats = new Stats();
-    this.stats.showPanel(0);
+    this.stats.showPanel(1);
     document.body.appendChild( this.stats.dom );
 
     LoadManager.setLoadedCallback(() => this.render());
@@ -133,7 +133,8 @@ export default class {
       path: './assets/models/environment/environment_tower_v2.glb',
     },{
       name: 'playerGltf',
-      path: './assets/models/characters/personnage_emilie_v10.glb',
+      path: './assets/models/characters/npc.glb'
+      // path: './assets/models/characters/personnage_emilie_v10.glb',
     },{
       name: 'npc',
       path: './assets/models/characters/npc.glb'
@@ -151,7 +152,7 @@ export default class {
     const mapGltf = assets.find(el => el.name === 'mapGltf').gltf;
     const t1Gltf = assets.find(el => el.name === 't1Gltf').gltf;
     const t2Gltf = assets.find(el => el.name === 't2Gltf').gltf;
-    this.player = new Player(playerGltf, this.world, this.camera, this.sceneManager, 'Emilie');
+    this.player = new Player(playerGltf, this.world, this.camera, this.sceneManager, 'npc');
     // this.player.groupCamera();
     this.sceneManager.addMap(mapGltf);
     this.sceneManager.addTowers(t1Gltf, t2Gltf);
@@ -169,8 +170,9 @@ export default class {
     if(this.player) {
       this.player.update(timeStep)
     }
+
     this.sceneManager.update(timeStep);
-    this.cameraOperator.renderFollowCamera();
+    // this.cameraOperator.renderFollowCamera();
     this.updatePhysics(timeStep);
   }
 

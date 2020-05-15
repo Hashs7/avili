@@ -167,6 +167,7 @@ export default class {
       }
       if (child.name === 'Plane') {
         this.map = child;
+        console.log(child);
       }
       if (child.name === 'NurbsPath') {
         this.spline = child;
@@ -174,7 +175,7 @@ export default class {
       if (sectionName.includes(child.name)) {
         this.sections.push(child);
       }
-      if (['m1', 'm2', 'm3'].includes(child.name)) {
+      if (['m1', 'm2', 'm3', 'm4', 'm5'].includes(child.name)) {
         this.sectionsWord.push(child);
       }
       if(child.name.startsWith('collide')) {

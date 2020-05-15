@@ -65,6 +65,8 @@ export default class extends Character {
     this.pathfinding = new Pathfinding();
     this.ZONE = 'level1';
     this.pathfinding.setZoneData(this.ZONE, Pathfinding.createZone(map));
+    //debugger
+
   }
 
   /**

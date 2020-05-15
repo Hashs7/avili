@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import InputManager from "../core/InputManager";
 import AudioManager from "../core/AudioManager";
 import Character, { ACTIONS } from "./Character";
-import { makeTextSprite } from "../../utils";
+import { makeTextSprite, throttle } from "../../utils";
 import Stats from 'stats.js';
 
 export default class extends Character {
@@ -140,6 +140,10 @@ export default class extends Character {
       this.prepareCrossFade(this.idleAction);
     }
 
+    if(this.sceneManager.world.indicationComponent && this.sceneManager.world.indicationComponent.show) {
+      this.sceneManager.world.indicationComponent.removeIndication();
+    }
+
     /*this.crossActions(moving).forEach((ac) => {
       if (!ac.condition) return;
       this.prepareCrossFade(ac.action);
@@ -202,9 +206,7 @@ export default class extends Character {
     // this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
     // console.log(this.group.position);
     // get nextPosition
-    if(this.sceneManager.world.indicationComponent){
-      this.sceneManager.world.indicationComponent.removeIndication();
-    }
+
     if(!this.walkable) return;
     this.nextPosition = {
       x: Math.sin(this.character.rotation.y + decay) * this.speed,

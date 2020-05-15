@@ -50,10 +50,6 @@ export default class {
       this.createScene(gltf.scene);
     });
 
-    if ( this.statsEnabled ) {
-      this.stats = new Stats();
-      document.body.appendChild( this.stats.dom );
-    }
     this.render()
   }
 
@@ -93,8 +89,6 @@ export default class {
   }
 
   render() {
-    this.stats.begin();
-
     this.targetX = this.mouseX * .0001;
     this.targetY = this.mouseY * .0001;
 
@@ -105,7 +99,6 @@ export default class {
 
     this.renderer.render( this.scene, this.camera );
     this.loop = requestAnimationFrame(() => this.render());
-    this.stats.end();
   }
 
   destroy() {
