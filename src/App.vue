@@ -8,9 +8,8 @@
 
     <router-view/>
 
-    <canvas class="webgl-render" ref="canvas" />
-    <FinalScreen v-if="isFinal" />
-
+    <canvas v-if="!isFinal" class="webgl-render" ref="canvas" />
+    <FinalScreen v-else />
 
     <div v-if="notSupported" class="not-supported">
       <p>L'expérience n'a pas été prévu pour cet appareil</p>
