@@ -14,22 +14,22 @@ const npcOrder = [
 const npcsDefinition = (positions) => [{
   name: 'Daesu',
   position: new THREE.Vector3(-1, 0, 2),
-  toTeleport: new THREE.Vector3(32, 0, 0),
+  toTeleport: new THREE.Vector3(0, 0, 0),
   target: new THREE.Vector3(positions[0].x, 0, positions[0].z),
 },{
   name: 'Tardys',
   position: new THREE.Vector3(2, 0, -2),
-  toTeleport: new THREE.Vector3(32, 0, 0),
+  toTeleport: new THREE.Vector3(0, 0, 0),
   target: new THREE.Vector3(positions[1].x, 0, positions[1].z),
 },{
   name: 'Farkana',
   position: new THREE.Vector3(5, 0, -3),
-  toTeleport: new THREE.Vector3(32, 0, 0),
+  toTeleport: new THREE.Vector3(0, 0, 0),
   target: new THREE.Vector3(positions[2].x, 0, positions[2].z),
 },{
   name: 'Schteppe',
   position: new THREE.Vector3(3, 0, 3),
-  toTeleport: new THREE.Vector3(32, 0, 0),
+  toTeleport: new THREE.Vector3(0, 0, 0),
   target: new THREE.Vector3(positions[3].x, 0, positions[3].z),
 }];
 

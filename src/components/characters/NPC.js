@@ -16,7 +16,7 @@ export default class extends Character {
     this.plane = new THREE.Plane(new THREE.Vector3(0, -1, 0), 12);
     this.group.position.copy(startPosition);
     this.skinnedMesh = this.character.children[0].children.filter(child => child instanceof THREE.SkinnedMesh);
-
+    console.log('char', this.character.position)
     this.setPathFinding(mapGeometry);
     this.addPseudo(pseudo);
     // this.createPlaneStencilGroup();
@@ -75,7 +75,9 @@ export default class extends Character {
    */
   moveTo(target) {
     const groupID = this.pathfinding.getGroup(this.ZONE, this.group.position);
+    debugger;
     this.target = this.pathfinding.findPath(this.group.position, target, this.ZONE, groupID);
+    debugger
     if (!this.target) {
       console.error('Path not found');
       return
