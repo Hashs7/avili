@@ -152,7 +152,6 @@ export default class {
   addMap(gltf) {
     let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
     gltf.scene.traverse((child) => {
-      // console.log(child.name);
       if (child.name.startsWith('section')) {
         child.material.transparent = true;
         child.material.opacity = 0;
@@ -165,9 +164,12 @@ export default class {
         child.material.visible = false;
         this.colliders.push(child);
       }
-      if (child.name === 'Plane') {
+      if (child.name === 'npcPath') {
         this.map = child;
         console.log(child);
+      }
+      if (child.name === 'Plane_fracturepart1') {
+        child.material.vertexColors = false;
       }
       if (child.name === 'NurbsPath') {
         this.spline = child;
