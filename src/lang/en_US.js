@@ -2,113 +2,123 @@ export default {
   // Testimony subtitles
   black_screen: {
     0: {
-      sentence: "EN Ce que je préfère c'est les jeux multijoueurs.",
+      sentence: "The thing I love the most is multiplayer games as a team.",
+      time: '3000',
+      last: 'false',
+    },
+    1: {
+      sentence: "it's way more exciting than playing alone.",
       time: '2000',
       last: 'true',
     },
-  },
-  travelling: {
-    0: {
-      sentence: "EN On peut collaborer avec des personnes du monde entier pour pouvoir arriver aux fins désirées",
-      time: '6000',
-      last: 'false',
-    },
-    1: {
-      sentence: "EN Genre généralement c'est la victoire d'une partie mais ça peut être élaborer des stratégies.",
-      time: '8000',
-      last: 'false',
-    },
-    2: {
-      sentence: "C’est vraiment plus excitant que de jouer toute seule.",
-      time: '3000',
-      last: 'true',
-    }
-  },
+  },/*
+   travelling: {
+   0: {
+   sentence: "We can team up with people around the whole world to get to the final goal.",
+   time: '6000',
+   last: 'false',
+   },
+   1: {
+   sentence: "Like usualy it's the game victory but you can also plan a lot of strategy." 
+   time: '8000',
+   last: 'false',
+   },
+   2: {
+   sentence: "It's way more exciting than playing alone.",
+   time: '3000',
+   last: 'true',
+   }
+   },*/
   spawn_mates: {
     0: {
-      sentence: "Mais voilà je suis une femme alors je n'ai pas les même expérience de jeu qu'un homme",
-      time: '5000',
+      sentence: "But reality strikes back, I'm a woman so I don't have the same game experience than a man.",
+      time: '4500',
       last: 'false',
     },
     1: {
-      sentence: "Genre si un homme fait des erreurs on va l'insulter sur ses skills,",
+      sentence: "If a man is not a good player, people are gonna swear at him,",
       time: '3000',
       last: 'false',
     },
     2: {
-      sentence: "Mais pour une femme c'est différent tout de suite c'est mon genre qui va porter préjudice je vais avoir le droit à des insultes sexiste, mysogynes...",
-      time: '10000',
+      sentence: "But for a woman it's wayyy more different. Because of my gender, I'm gonna have like sexism comments all the time...",
+      time: '7000',
       last: 'false',
     },
     3: {
-      sentence: "Du coup je parle hyper rarement dans les parties en ligne même si à certain moment ça pourrait me sortir de situation compliquée en faite",
-      time: '8000',
+      sentence: "So usualy I don't talk when I play but sometimes it would be very handy to talk with other players, it could help me to get out of complicate situations.",
+      time: '7000',
       last: 'false',
     },
     4: {
-      sentence: "Je préfère m'abstenir parce que ma voix elle risquerait d'enclencher une vague de haine",
-      time: '8000',
+      sentence: "In fact, I prefeer not to say anything because I don't want to risk to trigger a hate raid on me.",
+      time: '7000',
       last: 'true',
     }
   },
   spawn_player: {
     0: {
-      sentence: "Bah c'est triste à dire mais je dois me faire discrète même auprès de mes coéquipiers et puis...",
+      sentence: "It's sad to say but I have to be silent with my teammates and ...",
       time: '7000',
       last: 'true',
     },
   },
   infiltration_introduction: {
     0: {
-      sentence: "Si jamais les autres joueurs devinent que je suis une femme ça va gâcher ma partie",
+      sentence: "If the ohter players guess that I'm a woman it's going to ruin my game.",
       time: '5000',
       last: 'false',
     },
     1: {
-      sentence: "Genre je vais devoir supporter des remarques hyper lourdes",
+      sentence: "Like I'm gonna support some annoying comments about me",
       time: '3000',
       last: 'true',
     },
   },
   infiltration_end: {
     0: {
-      sentence: "De toute façon même en essayant d'être discrète ils finiront toujours par découvrir que je suis une femme",
+      sentence: "Anyway even when I try to be sneaky, they always find a way to discover that I'm a woman.",
       time: '4000',
       last: 'true',
     }
   },
   first_badword: {
     0: {
-      sentence: "Au début je m'efforce de pas y prêter attention",
+      sentence: "At first I try to not care about it",
       time: '2000',
       last: 'true',
     }
   },
   second_badword: {
     0: {
-      sentence: "Mais à force on craque",
-      time: '1000',
+      sentence: "But at some point, I can't",
+      time: '2000',
       last: 'false',
     },
     1: {
-      sentence: "Ça fini par atteindre",
-      time: '1000',
+      sentence: "And me, I can't take any of this anymore",
+      time: '2000',
+      last: 'false',
+    },
+    2: {
+      sentence: "It means a lot to me...",
+      time: '2000',
       last: 'true',
     }
   },
   ending: {
     0: {
-      sentence: "Le pire dans tout ça c'est qu'une fois la partie terminée ça continue",
+      sentence: "The worst in all of this, it's each game I play it's like this.",
       time: '4000',
       last: 'false',
     },
     1: {
-      sentence: "Genre y a des gens qui utilise mon pseudo pour me harceler sur d'autre plateforme",
+      sentence: "Like there is people who are trying to reach me on social media with my pseudo",
       time: '5000',
       last: 'false',
     },
     2: {
-      sentence: "Et là il est plus question de jeu",
+      sentence: "And after this, it's not a question of game anymore",
       time: '1000',
       last: 'true',
     },
@@ -117,14 +127,23 @@ export default {
   // Indications helper
   indications: {
     start: {
-      title: 'Movements',
-      text: 'Appuyez sur la touche z pour avancer et utilisez votre souris pour vous orienter',
+      title: 'Movement',
+      text: 'Push Z to move forward and use your mouse to rotate',
     }
   },
 
   // UI
   ui: {
     play: 'Play',
+    about: 'About',
     heaset: "The use of headphones is strongly recommended",
+    content: {
+      duration: "Student WebGL project realised in 2 months",
+      definition: "Lower someone until he loses his dignity, degrade him and dishonor him.",
+      description: "Avili is sensibilisation experience about the position of woman as a player. This experience can serve as an entry point to open the dialogue and as such allow things to change.",
+    },
+    credits: "Credits",
+    dev: "Developers",
+    design: "Designers",
   }
 };

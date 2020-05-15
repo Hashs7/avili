@@ -135,6 +135,15 @@ export default {
   // UI
   ui: {
     play: 'Jouer',
+    about: 'À propos',
     headset: "L'usage d'un casque audio est vivement recommandé",
+    content: {
+      duration: "Projet WebGL étudiant réalisé en 2 mois",
+      definition: "Abaisser quelqu’un jusqu’à lui faire perdre sa dignité, le dégrader et le déshonorer.",
+      description: "Avili est une expérience de sensibilisation sur la position de la femme en tant que joueuse. Cette expérience peut servir de point d’entrée pour ouvrir le dialogue et ainsi permettre une réflexion proactive sur comment changer les choses.",
+    },
+    credits: "Crédits",
+    dev: "Développeurs",
+    design: "Designers",
   }
 };
