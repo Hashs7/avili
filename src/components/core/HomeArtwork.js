@@ -59,7 +59,7 @@ export default class {
         this.renderer.antialias = false;
         this.renderer.powerPreference  = 'low-power';
         break;
-      case 'Moyenne':
+      case 'Moyen':
         this.renderer.antialias = false;
         this.renderer.powerPreference  = 'default';
         break;

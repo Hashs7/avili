@@ -7,6 +7,7 @@ Vue.use(Vuex);
 export default new Vuex.Store({
   state: {
     canvasRef: null,
+    showAbout: false,
     pseudo: null,
     playerTalking: [],
 
@@ -25,6 +26,9 @@ export default new Vuex.Store({
     changeScene(state, { scene, camera }) {
       state.scene = scene;
       state.camera = camera;
+    },
+    toggleAbout(state, value) {
+      state.showAbout = value;
     },
     setLoader(state, value) {
       state.loadEnable = value;

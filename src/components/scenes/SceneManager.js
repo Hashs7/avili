@@ -167,7 +167,6 @@ export default class {
       }
       if (child.name === 'npcPath') {
         this.map = child;
-        console.log(child);
       }
       if (child.name === 'Plane_fracturepart1') {
         child.material.vertexColors = false;
@@ -426,8 +425,14 @@ export default class {
     for (let i = 0; i < this.updateScenes.length; i++) {
       this.updateScenes[i].instance.update();
     }
-    // if (!this.fans) return;
-    // this.fans.rotation.x += 0.01;
+    if (!this.fans) return;
+    // console.log(this.fans);
+    // let invWorldRot = object.getWorldQuaternion(new THREE.Quaternion()).inverse();
+    // axis.applyQuaternion(invWorldRot);
+    //
+    // let deltaLocalRot = new THREE.Quaternion();
+    // deltaLocalRot.setFromAxisAngle(axis, radians);
+    // object.quaternion.multiply(deltaLocalRot);
   }
 
   startUpdateScene(sceneName) {

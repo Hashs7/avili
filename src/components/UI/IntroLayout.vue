@@ -1,5 +1,5 @@
 <template>
-  <div class="intro-layout" :style="{ backgroundImage: `url(${background})` }">
+  <div class="intro-layout" :class="{white}" :style="{ backgroundImage: `url(${background})` }">
     <CircleIcon class="circle-background" ref="circle" v-show="show"/>
     <slot></slot>
   </div>
@@ -8,7 +8,8 @@
 <script>
   import gsap from 'gsap';
   import CircleIcon from '@/assets/icons/circle.svg';
-  import background from '@/assets/img/background.png'
+  import backgroundDark from '@/assets/img/background.png'
+  import backgroundWhite from '@/assets/img/background-white.png'
 
   export default {
     name: "IntroLayout",
@@ -20,10 +21,14 @@
         type: Boolean,
         default: true,
       },
+      white: {
+        type: Boolean,
+        default: false,
+      },
     },
     data() {
       return {
-        background,
+        background: backgroundDark,
         rect: null,
         delta: null,
       }
@@ -49,6 +54,9 @@
       },
     },
     mounted() {
+      if (this.white) {
+        this.background = backgroundWhite;
+      }
       if (!this.$refs.circle) return;
       this.rect = this.$refs.circle.getBoundingClientRect();
       window.addEventListener('mousemove', this.mouseMove, { passive: true });
@@ -100,5 +108,18 @@
     color: $white;
     background-size: cover;
     background-position: center;
+
+    &.white {
+      color: #04081C !important;
+
+      .quality-selection__chevron path {
+        fill: #04081C;
+      }
+      .circle-background {
+        path, rect {
+          fill: #04081C;
+        }
+      }
+    }
   }
 </style>
