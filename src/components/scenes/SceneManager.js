@@ -426,7 +426,7 @@ export default class {
       this.updateScenes[i].instance.update();
     }
     if (!this.fans) return;
-    console.log(this.fans);
+    // console.log(this.fans);
     // let invWorldRot = object.getWorldQuaternion(new THREE.Quaternion()).inverse();
     // axis.applyQuaternion(invWorldRot);
     //
