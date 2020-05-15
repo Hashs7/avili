@@ -133,8 +133,8 @@ export default class {
       path: './assets/models/environment/environment_tower_v2.glb',
     },{
       name: 'playerGltf',
-      path: './assets/models/characters/npc.glb'
-      // path: './assets/models/characters/personnage_emilie_v10.glb',
+      // path: './assets/models/characters/npc.glb'
+      path: './assets/models/characters/personnage_emilie_v10.glb',
     },{
       name: 'npc',
       path: './assets/models/characters/npc.glb'
@@ -152,7 +152,7 @@ export default class {
     const mapGltf = assets.find(el => el.name === 'mapGltf').gltf;
     const t1Gltf = assets.find(el => el.name === 't1Gltf').gltf;
     const t2Gltf = assets.find(el => el.name === 't2Gltf').gltf;
-    this.player = new Player(playerGltf, this.world, this.camera, this.sceneManager, 'npc');
+    this.player = new Player(playerGltf, this.world, this.camera, this.sceneManager, 'Emilie');
     // this.player.groupCamera();
     this.sceneManager.addMap(mapGltf);
     this.sceneManager.addTowers(t1Gltf, t2Gltf);
