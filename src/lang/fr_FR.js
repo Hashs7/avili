@@ -137,6 +137,7 @@ export default {
     play: 'Jouer',
     about: 'À propos',
     headset: "L'usage d'un casque audio est vivement recommandé",
+    end: "Le premier pas, c'est d'en parler. Partage le lien de l'expérience et viens en discuter sur Discord",
     content: {
       duration: "Projet WebGL étudiant réalisé en 2 mois",
       definition: "Abaisser quelqu’un jusqu’à lui faire perdre sa dignité, le dégrader et le déshonorer.",

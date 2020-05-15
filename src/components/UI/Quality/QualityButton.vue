@@ -1,5 +1,5 @@
 <template>
-  <button class="btn" @click="$emit('click')" data-hover="big" data-click="disapear">
+  <button class="btn" :class="{white: contrast}" @click="$emit('click')" data-hover="big" data-click="disapear">
     <span class="btn__title">
       <slot></slot>
     </span>
@@ -11,7 +11,13 @@
 
 <script>
   export default {
-    name: "Button"
+    name: "Button",
+    props: {
+      contrast: {
+        type: Boolean,
+        default: false
+      },
+    },
   }
 </script>
 
@@ -34,6 +40,7 @@
       }
     }
   }
+
   .btn__title {
     pointer-events: none;
     user-select: none;
@@ -41,8 +48,10 @@
     line-height: 1;
     font-family: $font-primary;
     font-size: 30px;
+    text-transform: uppercase;
     transition: all .3s ease-in-out;
   }
+
   .btn__hover {
     pointer-events: none;
     position: absolute;
@@ -54,8 +63,21 @@
     font-family: $font-btn;
     font-size: 48px;
     opacity: 0;
-    //transform: rotate(-7deg);
     transform: rotate(-7deg) scale(.5);
     transition: all .3s ease-out;
+  }
+
+  .btn.white {
+    .btn__title {
+      color: #04081C;
+    }
+    &:hover {
+      .btn__title {
+        opacity: .1;
+      }
+      .btn__hover {
+        color: #04081C;
+      }
+    }
   }
 </style>

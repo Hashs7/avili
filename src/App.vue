@@ -8,10 +8,8 @@
 
     <router-view/>
 
-    <canvas v-if="!isFinal" class="webgl-render" ref="canvas"/>
-    <div v-else>
-      <h1>Fin du jeu</h1>
-    </div>
+    <canvas class="webgl-render" ref="canvas" />
+    <FinalScreen v-if="isFinal" />
 
 
     <div v-if="notSupported" class="not-supported">
@@ -27,6 +25,7 @@
   import Testimony from '@/components/UI/layout/Testimony';
   import Indication from '@/components/UI/layout/Indication';
   import Communication from '@/components/UI/layout/Communication';
+  import FinalScreen from '@/components/UI/FinalScreen';
 
   export default {
     name: 'App',
@@ -36,6 +35,7 @@
       Testimony,
       Indication,
       Communication,
+      FinalScreen,
     },
     data() {
       return {
