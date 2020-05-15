@@ -37,6 +37,8 @@ export default class extends Character {
     this.stats = new Stats();
     this.stats.showPanel(1);
     // document.body.appendChild( this.stats.dom );
+
+    this.skinnedMesh = this.character.children[0].children.filter(child => child instanceof THREE.SkinnedMesh);
   }
 
   addBody() {
@@ -204,7 +206,7 @@ export default class extends Character {
     // const speed = isStrafing ? this.speed / 2 : this.speed;
     // this.character.body.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
     // this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
-    // console.log(this.group.position);
+    console.log(this.group.position);
     // get nextPosition
 
     if(!this.walkable) return;
@@ -284,5 +286,19 @@ export default class extends Character {
 
   setVisibility(value){
     this.character.visible = value;
+  }
+
+  hide() {
+    this.skinnedMesh.forEach(mesh => {
+      mesh.material.transparent = true;
+      mesh.material.opacity = 0.2;
+    });
+  }
+
+  show(){
+    this.skinnedMesh.forEach(mesh => {
+      mesh.material.transparent = true;
+      mesh.material.opacity = 1;
+    });
   }
 }

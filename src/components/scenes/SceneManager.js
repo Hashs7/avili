@@ -45,6 +45,7 @@ export default class {
     this.walls = new THREE.Mesh();
     this.crystals = [];
     this.spawnCrystal = new THREE.Object3D();
+    this.bushes = [];
 
     this.detectSectionPassed();
 
@@ -194,6 +195,9 @@ export default class {
       if(child.name === 'Crystal'){
         this.spawnCrystal = child;
       }
+      if(child.name.startsWith('invisibleArea')){
+        this.bushes.push(child);
+      }
     });
 
     gltf.scene.children.filter(el => el.name !== 'map');
@@ -277,7 +281,7 @@ export default class {
   async setFov() {
     await this.npcManager.loadNPC(this.map);
     this.npcManager.hideNPC();
-    this.addScene(new FieldOfViewScene(this.world, this, this.towers, this.landingAreas, this.towerEls, this.npcManager.npcs));
+    this.addScene(new FieldOfViewScene(this.world, this, this.towers, this.landingAreas, this.towerEls, this.npcManager.npcs, this.bushes));
   }
 
   setProjectile() {
