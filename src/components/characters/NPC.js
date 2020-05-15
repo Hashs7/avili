@@ -4,7 +4,6 @@ import Character from "./Character";
 import { Pathfinding } from "three-pathfinding";
 import { BufferGeometryUtils } from "three/examples/jsm/utils/BufferGeometryUtils";
 import gsap from 'gsap';
-import AudioManager from "../core/AudioManager";
 
 export default class extends Character {
   constructor(gltf, world, sceneManager, name, startPosition, mapGeometry, pseudo) {
@@ -13,10 +12,11 @@ export default class extends Character {
     this.isWalking = false;
     this.target = [];
     this.group.name = 'NPC';
+    this.group.pseudo = pseudo;
     this.plane = new THREE.Plane(new THREE.Vector3(0, -1, 0), 12);
     this.group.position.copy(startPosition);
     this.skinnedMesh = this.character.children[0].children.filter(child => child instanceof THREE.SkinnedMesh);
-
+    console.log('char', this.character.position)
     this.setPathFinding(mapGeometry);
     this.addPseudo(pseudo);
     // this.createPlaneStencilGroup();
@@ -65,6 +65,8 @@ export default class extends Character {
     this.pathfinding = new Pathfinding();
     this.ZONE = 'level1';
     this.pathfinding.setZoneData(this.ZONE, Pathfinding.createZone(map));
+    //debugger
+
   }
 
   /**
@@ -73,7 +75,8 @@ export default class extends Character {
    */
   moveTo(target) {
     const groupID = this.pathfinding.getGroup(this.ZONE, this.group.position);
-    this.target = this.pathfinding.findPath(this.group.position, target, this.ZONE, groupID);
+    //this.target = this.pathfinding.findPath(this.group.position, target, this.ZONE, groupID);
+    this.target = [new THREE.Vector3(10.8, 0, 0.5), new THREE.Vector3(34.54, 0, 0.27)];
     if (!this.target) {
       console.error('Path not found');
       return
@@ -82,8 +85,10 @@ export default class extends Character {
     this.setOrientation(this.target[0]);
   }
 
-  teleportTo(target) {
+  teleportTo(target, sendEvent) {
     this.group.position.copy(target);
+    if (!sendEvent) return;
+    document.dispatchEvent(new CustomEvent('showFov'));
   }
 
   /**

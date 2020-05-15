@@ -6,12 +6,12 @@ class AudioManager {
   constructor() {
     this.testimonyListener = null;
     this.ambiantListener = null;
-    this.introAudio = null;
     this.ambiantVolume = 1;
     this.audios = [];
 
     this.introAudio = new Audio('./assets/audio/music/ambient-calm.mp3');
     this.windAudio = new Audio('./assets/audio/music/ambiance-vent.mp3');
+    this.endAudio = new Audio('./assets/audio/music/fin.mp3');
   }
 
   initAudio() {
@@ -59,33 +59,43 @@ class AudioManager {
   }
 
   setIntroLoopAudio() {
-    this.bindIntro = () => {
-      this.currentTime = 0;
-      this.introAudio.play();
-    };
+    this.bindIntro = () => this.introAudio.play();
     this.introAudio.addEventListener('ended', this.bindIntro, false);
     this.introAudio.play();
   }
 
   stopIntroLoopAudio() {
-    this.introAudio.stop();
-    this.introAudio.removeListener('ended', this.bindIntro);
+    if (!this.introAudio) return;
+    this.introAudio.pause();
+    this.introAudio.currentTime = 0;
+    this.introAudio.removeEventListener('ended', this.bindIntro);
   }
 
   setWindLoopAudio() {
-    this.bindWind = () => {
-      this.currentTime = 0;
-      this.windAudio.play();
-    };
+    this.bindWind = () => this.windAudio.play();
     this.windAudio.addEventListener('ended', this.bindWind, false);
     this.windAudio.play();
   }
 
   stopWindLoopAudio() {
-    this.windAudio.stop();
-    this.windAudio.removeListener('ended', this.bindWind);
+    if (!this.windAudio) return;
+    this.windAudio.pause();
+    this.windAudio.currentTime = 0;
+    this.windAudio.removeEventListener('ended', this.bindWind);
   }
 
+  setEndLoopAudio() {
+    this.bindEnd = () => this.endAudio.play();
+    this.endAudio.addEventListener('ended', this.bindEnd, false);
+    this.endAudio.play();
+  }
+
+  stopEndLoopAudio() {
+    if (!this.endAudio) return;
+    this.endAudio.pause();
+    this.endAudio.currentTime = 0;
+    this.endAudio.removeEventListener('ended', this.bindEnd);
+  }
 
   groupListener(group) {
     group.add(this.testimonyListener);

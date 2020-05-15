@@ -10,7 +10,7 @@ import AudioManager from "../../core/AudioManager";
 import { GAME_STATES } from "../../../constantes";
 
 export default class FieldOfViewManager {
-  constructor(world, scene, towers, landingAreas, towerElements, npc) {
+  constructor(world, scene, towers, landingAreas, towerElements, npc, bushes) {
     this.scene = scene;
     this.world = world;
     this.fieldOfView = new THREE.Object3D();
@@ -24,8 +24,11 @@ export default class FieldOfViewManager {
     this.alreadyHit = false;
 
     this.npc = npc;
-    this.firstNpc = this.npc[0].group
+    this.firstNpc = this.npc.find(e => e.group.pseudo === "Daesu").group;
+    this.secondNpc = this.npc.find(e => e.group.pseudo === "Tardys").group;
     this.isFirstTime = true;
+
+    this.bushes = bushes;
 
     this.player = this.world.getPlayer();
     this.armor = () => {
@@ -48,6 +51,9 @@ export default class FieldOfViewManager {
     };
 
     document.addEventListener('stateUpdate', e => {
+      if (e.detail === GAME_STATES.words_sequence_start) {
+        this.proj.audioEnabled = false;
+      }
       if (e.detail !== GAME_STATES.infiltration_sequence_start) return;
       const arr = landingAreas.slice(4);
       this.proj = new Projectile(towers[1], arr, this.scene, this.towerElements[1]);
@@ -63,6 +69,7 @@ export default class FieldOfViewManager {
     document.addEventListener('showFov', () => {
       this.npc.forEach(({group}, index) => this.addFieldOfView(group, index));
       this.initFirstNpc(this.firstNpc);
+      this.initSecondNpc(this.secondNpc);
     });
   }
 
@@ -81,8 +88,7 @@ export default class FieldOfViewManager {
 
   /**
    * Create new field of view
-   * @param x
-   * @param z
+   * @param group
    * @param index
    */
   addFieldOfView(group, index) {
@@ -120,78 +126,105 @@ export default class FieldOfViewManager {
     fov.scale.set(2, 2, 2);
   }
 
+  initSecondNpc(secondNpc){
+    secondNpc.rotation.y = toRadian(-90);
+    const tl = gsap.timeline({repeat: -1});
+    tl.to(secondNpc.rotation, {
+      y: `-=${toRadian(180)}`,
+      duration: 2.5,
+      delay: 3,
+    });
+    tl.to(secondNpc.rotation, {
+      y: `+=${toRadian(180)}`,
+      duration: 2.5,
+      delay: 3,
+    })
+  }
+
+
   /**
    * Detect if player is in field
    * @param position
    */
   detectFieldOfView(position){
+    this.player.show();
+
     const ray = new Raycaster(
       position,
       new THREE.Vector3(0, -1, 0),
       0,
       300,
     );
-    let objs = ray.intersectObjects(this.fieldOfViews, false);
-    for (let i = 0; i < objs.length; i++) {
-      if(!objs[i].object.name.startsWith(this.fieldOfViewName)) return;
-      this.alreadyHit = true;
+    const objects = [...this.fieldOfViews, ...this.bushes];
+    let objs = ray.intersectObjects(objects, false);
+    if(objs.length === 0)return;
+    if(objs[objs.length - 1].object.name.startsWith('invisibleArea')){
+      this.player.hide();
+    } else {
+      for (let i = 0; i < objs.length; i++) {
+        //console.log(objs[i].object.name);
+        if(!objs[i].object.name.startsWith(this.fieldOfViewName)) return;
+        this.alreadyHit = true;
 
-      //TestimonyManager.speak('audio_mot_cuisine.mp3');
-      const playerModel = this.player.group.children[0];
-      this.player.setWalkable(false);
-      this.player.setOrientable(false);
-      const rotation = Math.atan2( ( this.world.camera.position.x - playerModel.position.x ), ( this.world.camera.position.z - playerModel.position.z ) );
-      this.armor().mask.material.transparent = true;
-      this.armor().cape.material.transparent = true;
-      AudioManager.playSound('npc-angoissant.mp3', false);
-      document.dispatchEvent(new CustomEvent('npcAudio', { detail: { sequence: 'fov' }}));
-      // mask, cape and rotation animations
-      const tl = gsap.timeline({repeat: 0});
-      tl.to(playerModel.rotation, {
-        y: rotation,
-        duration: 1,
-      })
-      tl.to([
-        this.armor().mask.material,
-        this.armor().cape.material
-      ], {
-        opacity: 0,
-        duration: 0.5,
-        ease: 'power2.in',
-        onComplete: () => {
-          this.armor().setVisibility(false)
-        },
-      })
+        //TestimonyManager.speak('audio_mot_cuisine.mp3');
+        const playerModel = this.player.group.children[0];
+        this.player.setWalkable(false);
+        this.player.setOrientable(false);
+        const rotation = Math.atan2( ( this.world.camera.position.x - playerModel.position.x ), ( this.world.camera.position.z - playerModel.position.z ) );
+        this.armor().mask.material.transparent = true;
+        this.armor().cape.material.transparent = true;
 
-      CameraOperator.zoom(() => {
-        this.lastPosition = new THREE.Vector3();
-        if(objs[i].object.name === "FieldOfView-3") {
-          objs[i].object.name = "Undetectable";
-          setTimeout(() => {
-            TestimonyManager.speak('infiltration_end.mp3', 'infiltration_end');
-          }, 3000);
-        } else {
-          this.player.teleport(this.world.lastCheckpointCoord, () => {
-            this.armor().setOpacity(1);
-            this.armor().setVisibility(true)
-            this.alreadyHit = false;
-          });
+        AudioManager.playSound('npc-angoissant.mp3', false);
+        const pseudo = objs[i].object.parent.pseudo;
+        document.dispatchEvent(new CustomEvent('npcAudio', { detail: { sequence: 'fov', pseudo }}));
+        // mask, cape and rotation animations
+        const tl = gsap.timeline({repeat: 0});
+        tl.to(playerModel.rotation, {
+          y: rotation,
+          duration: 1,
+        })
+        tl.to([
+          this.armor().mask.material,
+          this.armor().cape.material
+        ], {
+          opacity: 0,
+          duration: 0.5,
+          ease: 'power2.in',
+          onComplete: () => {
+            this.armor().setVisibility(false)
+          },
+        })
 
-          if(objs[i].object.name === "FieldOfView-0" && this.isFirstTime){
-            gsap.to(this.firstNpc.rotation, {
-              y: `+=${toRadian(90)}`,
-              delay: 2,
-              onComplete: () => {this.isFirstTime = false}
-            })
-            objs[i].object.scale.set(1, 1, 1);
-            this.fieldOfViews.forEach(fov => {
-              fov.material.visible = true;
-            })
+        CameraOperator.zoom(() => {
+          this.lastPosition = new THREE.Vector3();
+          if(objs[i].object.name === "FieldOfView-3") {
+            objs[i].object.name = "Undetectable";
+            setTimeout(() => {
+              TestimonyManager.speak('infiltration_end.mp3', 'infiltration_end');
+            }, 3000);
+          } else {
+            this.player.teleport(this.world.lastCheckpointCoord, () => {
+              this.armor().setOpacity(1);
+              this.armor().setVisibility(true)
+              this.alreadyHit = false;
+            });
+
+            if(objs[i].object.name === "FieldOfView-0" && this.isFirstTime){
+              gsap.to(this.firstNpc.rotation, {
+                y: `+=${toRadian(90)}`,
+                delay: 2,
+                onComplete: () => {this.isFirstTime = false}
+              })
+              objs[i].object.scale.set(1, 1, 1);
+              this.fieldOfViews.forEach(fov => {
+                fov.material.visible = true;
+              })
+            }
           }
-        }
-        this.player.setWalkable(true);
-        this.player.setOrientable(true);
-      });
+          this.player.setWalkable(true);
+          this.player.setOrientable(true);
+        });
+      }
     }
   }
 }

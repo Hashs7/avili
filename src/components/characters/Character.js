@@ -20,6 +20,17 @@ export default class {
     sceneManager.mainSceneAddObject(this.group);
   }
 
+  changeAppareance(gltf, name) {
+    const newCharacter = gltf.scene.children.find(el => el.name === name);
+    // newCharacter.position.copy(this.character.position);
+    if (!newCharacter) return;
+    this.group.remove(this.character);
+    this.character = newCharacter;
+    this.mixer = new THREE.AnimationMixer(this.character);
+    this.setAnimations(gltf.animations);
+    this.group.add(this.character)
+  }
+
   setAnimations(animations) {
     this.idleAction = this.mixer.clipAction( animations.find(act => act.name === ACTIONS.IDLE));
     this.runAction = this.mixer.clipAction( animations.find(act => act.name === ACTIONS.RUNNING));

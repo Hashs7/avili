@@ -16,7 +16,8 @@ import {Raycaster} from "three";
 import State from "../core/State";
 import NPCManager from "./NPCManager";
 import AudioManager from '../core/AudioManager';
-import { removeItemOnce, removeObjectOnce } from "../../utils";
+import { removeObjectOnce } from "../../utils";
+import Skybox from "../core/Skybox";
 
 export default class {
   constructor(world, worldPhysic, camera) {
@@ -26,7 +27,6 @@ export default class {
     this.npcManager = new NPCManager(world, this);
 
     this.mat1 = new Material();
-    this.scenesPath = './assets/models/scenes/';
 
     this.loadedScenes = [];
     this.updateScenes = [];
@@ -45,37 +45,39 @@ export default class {
     this.walls = new THREE.Mesh();
     this.crystals = [];
     this.spawnCrystal = new THREE.Object3D();
+    this.bushes = [];
 
     this.detectSectionPassed();
 
     document.addEventListener('stateUpdate', (e) => {
+      if (e.detail === GAME_STATES.words_sequence_start) {
+        this.ambianceWordsTransition();
+        AudioManager.setEndLoopAudio();
+        AudioManager.stopIntroLoopAudio();
+        AudioManager.stopWindLoopAudio();
+      }
+
       if (e.detail !== GAME_STATES.infiltration_sequence_start) return;
       this.ambianceInfiltrationTransition();
       AudioManager.setWindLoopAudio();
     });
-    document.addEventListener('stateUpdate', (e) => {
-      if (e.detail !== GAME_STATES.words_sequence_start) return;
-      this.ambianceWordsTransition();
-    });
   }
 
   initMainScene() {
-    // new Skybox(this.mainScene, 'afterrain');
+    // new Skybox(this.mainScene, 'cloud');
     this.globalLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.7);
     this.addFloor();
     this.mainScene.add(this.globalLight);
-    this.mainScene.fog = new THREE.Fog(0x96e1ff, 45, 50);
-    // this.mainScene.fog = new THREE.Fog( 0x96e1ff, 7, 50);
-    this.mainScene.background = new THREE.Color(0x96e1ff);
-    // this.mainScene.background = new THREE.Color(0xfefefe);
+    this.mainScene.fog = new THREE.Fog(0x365799, 30, 40);
+    this.mainScene.background = new THREE.Color(0x365799);
     /*setTimeout(() => {
      this.ambianceTransition()
      }, 6000)*/
   }
 
   ambianceInfiltrationTransition() {
-    const nextColor = new THREE.Color(0x05052b);
-    const duration = 15;
+    const nextColor = new THREE.Color(0x111526);
+    const duration = 30;
     const tl = gsap.timeline({ repeat: 0 });
     tl.to(this.globalLight, {
       intensity: 0.2,
@@ -94,7 +96,8 @@ export default class {
       duration,
     }, 'start');
     tl.to(this.mainScene.fog, {
-      near: 7,
+      near: 20,
+      far: 30,
       duration,
     }, 'start');
   }
@@ -103,7 +106,7 @@ export default class {
     const { spotLight } = this.world.getPlayer();
 
     // const nextColor = new THREE.Color(0x05052b);
-    const duration = 5;
+    const duration = 15;
     const tl = gsap.timeline({ repeat: 0 });
     tl.to(this.globalLight, {
       intensity: 0.1,
@@ -116,7 +119,8 @@ export default class {
       duration,
     }, 'start');
     tl.to(this.mainScene.fog, {
-      near: 35,
+      near: 10,
+      far: 20,
       duration,
     }, 'start');
   }
@@ -126,7 +130,8 @@ export default class {
    */
   addFloor() {
     const geometry = new THREE.BoxGeometry(300, 0.1, 300);
-    const material = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 });
+    // const material = new THREE.MeshBasicMaterial({ transparent: true, opacity: 0 });
+    const material = new THREE.MeshBasicMaterial({ visible: false });
     const plane = new THREE.Mesh(geometry, material);
     plane.name = "Floor";
     plane.position.set(80, -0.1 , 50);
@@ -148,21 +153,25 @@ export default class {
   addMap(gltf) {
     let sectionName = ["sectionInfiltration", "sectionTuto", "sectionHarcelement"];
     gltf.scene.traverse((child) => {
-      // console.log(child.name);
       if (child.name.startsWith('section')) {
         child.material.transparent = true;
         child.material.opacity = 0;
       }
       if (child.name.split('mate').length > 1) {
-        this.npcManager.addMatesPos(child.position);
+        this.npcManager.addMatesPos({ name: child.name, position: child.position });
       }
       if (child.name === 'wall') {
         this.walls = child;
         child.material.visible = false;
         this.colliders.push(child);
       }
-      if (child.name === 'Plane') {
+      if (child.name === 'npcPath') {
         this.map = child;
+        console.log(child);
+      }
+      if (child.name === 'Plane_fracturepart1') {
+        child.material.vertexColors = false;
+        //this.map = child;
       }
       if (child.name === 'NurbsPath') {
         this.spline = child;
@@ -170,7 +179,7 @@ export default class {
       if (sectionName.includes(child.name)) {
         this.sections.push(child);
       }
-      if (['m1', 'm2', 'm3'].includes(child.name)) {
+      if (['m1', 'm2', 'm3', 'm4', 'm5'].includes(child.name)) {
         this.sectionsWord.push(child);
       }
       if(child.name.startsWith('collide')) {
@@ -183,8 +192,17 @@ export default class {
       if(child.name.startsWith('z')) {
         this.landingAreas.push(child);
       }
+      if(child.name === 'fans001') {
+        console.log(child);
+        var axesHelper = new THREE.AxesHelper( 5 );
+        this.fans = child;
+        this.fans.add(axesHelper);
+      }
       if(child.name === 'Crystal'){
         this.spawnCrystal = child;
+      }
+      if(child.name.startsWith('invisibleArea')){
+        this.bushes.push(child);
       }
     });
 
@@ -227,7 +245,6 @@ export default class {
 
     this.mainSceneAddObject(t2Gltf.scene);
     this.towerEls.push(t2);
-
     //this.addGlowEffect([t1.crystal, t2.crystal]);
   }
 
@@ -269,7 +286,7 @@ export default class {
   async setFov() {
     await this.npcManager.loadNPC(this.map);
     this.npcManager.hideNPC();
-    this.addScene(new FieldOfViewScene(this.world, this, this.towers, this.landingAreas, this.towerEls, this.npcManager.npcs));
+    this.addScene(new FieldOfViewScene(this.world, this, this.towers, this.landingAreas, this.towerEls, this.npcManager.npcs, this.bushes));
   }
 
   setProjectile() {
@@ -373,6 +390,8 @@ export default class {
 
       if (objs[0].object.name === "sectionSharing") {
         this.stopUpdateScene('WordScene');
+        this.startUpdateScene('SpawnScene');
+        AudioManager.stopEndLoopAudio();
         state.goToState(GAME_STATES.final_teleportation);
       }
 
@@ -393,7 +412,6 @@ export default class {
   addScene(sceneObject) {
     this.loadedScenes.push(sceneObject);
     this.mainScene.add(sceneObject.scene);
-    console.log(sceneObject);
     if (sceneObject.scene.name === 'SpawnScene') {
       this.startUpdateScene(sceneObject.scene.name);
     }
@@ -408,17 +426,17 @@ export default class {
     for (let i = 0; i < this.updateScenes.length; i++) {
       this.updateScenes[i].instance.update();
     }
+    // if (!this.fans) return;
+    // this.fans.rotation.x += 0.01;
   }
 
   startUpdateScene(sceneName) {
     const newScene = this.loadedScenes.find(({ scene }) => scene.name === sceneName);
     this.updateScenes.push(newScene);
-    console.log(sceneName, newScene);
   }
 
   stopUpdateScene(sceneName) {
     this.updateScenes = removeObjectOnce(this.updateScenes, sceneName);
-    console.log(sceneName, this.updateScenes);
   }
 
   destroy() {

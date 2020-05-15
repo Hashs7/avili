@@ -2,7 +2,8 @@ import * as THREE from 'three'
 import InputManager from "../core/InputManager";
 import AudioManager from "../core/AudioManager";
 import Character, { ACTIONS } from "./Character";
-import { makeTextSprite } from "../../utils";
+import { makeTextSprite, throttle } from "../../utils";
+import Stats from 'stats.js';
 
 export default class extends Character {
   constructor(gltf, world, camera, sceneManager, name) {
@@ -33,10 +34,11 @@ export default class extends Character {
     sceneManager.mainSceneAddObject(this.camera);
 
     // Debug
-    /*
     this.stats = new Stats();
     this.stats.showPanel(1);
-    */
+    // document.body.appendChild( this.stats.dom );
+
+    this.skinnedMesh = this.character.children[0].children.filter(child => child instanceof THREE.SkinnedMesh);
   }
 
   addBody() {
@@ -71,7 +73,7 @@ export default class extends Character {
 
     this.spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, Math.PI/10, 1);
     this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(this.group.position));
-    this.spotLight.castShadow = true;
+    // this.spotLight.castShadow = true;
     this.spotLight.target = this.group;
 
     // this.spotLight.lookAt(this.character.position);
@@ -83,7 +85,7 @@ export default class extends Character {
 
   async addPseudo() {
     const playerName = await makeTextSprite(this.sceneManager.world.pseudo, { fontsize: 26, fontface: "Roboto Slab" });
-    playerName.position.set(0, 1.6, 0);
+    playerName.position.set(0, 1.7, 0);
     playerName.name = "pseudo";
     this.group.add(playerName);
   }
@@ -138,6 +140,10 @@ export default class extends Character {
     if (!moving && this.action !== ACTIONS.IDLE && !this.inputManager.controls.up) {
       this.isWalking = moving;
       this.prepareCrossFade(this.idleAction);
+    }
+
+    if(this.sceneManager.world.indicationComponent && this.sceneManager.world.indicationComponent.show) {
+      this.sceneManager.world.indicationComponent.removeIndication();
     }
 
     /*this.crossActions(moving).forEach((ac) => {
@@ -200,8 +206,7 @@ export default class extends Character {
     // const speed = isStrafing ? this.speed / 2 : this.speed;
     // this.character.body.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
     // this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
-    // console.log(this.group.position);
-    // get nextPosition
+
     if(!this.walkable) return;
     this.nextPosition = {
       x: Math.sin(this.character.rotation.y + decay) * this.speed,
@@ -279,5 +284,19 @@ export default class extends Character {
 
   setVisibility(value){
     this.character.visible = value;
+  }
+
+  hide() {
+    this.skinnedMesh.forEach(mesh => {
+      mesh.material.transparent = true;
+      mesh.material.opacity = 0.2;
+    });
+  }
+
+  show(){
+    this.skinnedMesh.forEach(mesh => {
+      mesh.material.transparent = true;
+      mesh.material.opacity = 1;
+    });
   }
 }

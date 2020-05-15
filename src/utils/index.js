@@ -24,6 +24,18 @@ export const removeObjectOnce = (arr, value) => {
   return arr;
 };
 
+export const throttle = (f, t) => (
+  // eslint-disable-next-line func-names
+  function (args) {
+    const previousCall = this.lastCall;
+    this.lastCall = Date.now();
+    if (previousCall === undefined // function is being called for the first time
+      || (this.lastCall - previousCall) > t) { // throttle time has elapsed
+      f(args);
+    }
+  }
+);
+
 const imageLoader = (url) => {
   return new Promise( (resolve, reject) => {
     const image = new Image();

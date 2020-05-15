@@ -4,6 +4,7 @@ import { GAME_STATES } from "../../../constantes";
 import * as THREE from "three";
 import {toRadian} from "../../../utils";
 import TestimonyManager from "../../core/TestimonyManager";
+import LoadManager from "../../core/LoadManager";
 
 export default class extends Scene {
   constructor(manager) {
@@ -62,10 +63,13 @@ export default class extends Scene {
       duration: 2,
     }, 'fadeOut');
 
-    tl.add(gsap.delayedCall(5, () => {
+    tl.add(gsap.delayedCall(5, async () => {
       player.teleport(new THREE.Vector3(0, 0, 0));
       player.addPseudo();
-      this.manager.mainScene.fog.near = 45;
+      this.manager.mainScene.fog.near = 20;
+      this.manager.mainScene.fog.far = 30;
+      const gltf = await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
+      player.changeAppareance(gltf, 'npc');
     }));
 
     const color = new THREE.Color(0x96e1ff);

@@ -95,7 +95,7 @@
         this.world = new World(this.$refs.canvas, this.$store, this.pseudo);
         this.world.setQuality(this.qualitySet);
         this.world.setTestimony(this.$refs.testimony, this.$t);
-        // this.world.setIndication(this.$refs.indication, this.$t);
+        this.world.setIndication(this.$refs.indication, this.$t);
         this.world.setFollower(this.$refs.follower);
         this.resize();
         window.addEventListener('resize', this.resize);

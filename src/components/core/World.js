@@ -15,6 +15,10 @@ export default class {
   constructor(canvas, store, pseudo) {
     this.canvas = canvas;
     this.store = store;
+
+    this.indicationComponent = null;
+    this.traductor = null;
+
     this.renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
     this.renderer.localClippingEnabled = true;
     this.renderer.setSize(window.innerWidth, window.innerHeight);
@@ -31,7 +35,7 @@ export default class {
     this.audioManager = AudioManager;
     this.audioManager.initAudio();
 
-    this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.01, 1000);
+    this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.01, 40);
     this.camera.name = 'MainCamera';
 
     this.world = new World();
@@ -54,7 +58,7 @@ export default class {
 
     // Stats showing fps
     this.stats = new Stats();
-    this.stats.showPanel(0);
+    this.stats.showPanel(1);
     document.body.appendChild( this.stats.dom );
 
     LoadManager.setLoadedCallback(() => this.render());
@@ -64,13 +68,16 @@ export default class {
     // this.setWorker();
     // this.render();
     this.wow();
-    //this.debugCamera();
+    // this.debugCamera();
     document.addEventListener('visibilitychange', () => this.handleVisibilityChange(), false);
 
     // this.setPostProcessing(false);
-    this.composer = new EffectComposer(this.renderer);
+    // this.composer = new EffectComposer(this.renderer);
   }
 
+  /**
+   * To enable
+   */
   loaderFinished() {
     this.sceneManager.spawnScene.instance.playTestimony();
   }
@@ -107,9 +114,11 @@ export default class {
 
   setTestimony(receiver, tr) {
     TestimonyManager.setReceiver(receiver, tr);
-    /*setTimeout(() => {
-      TestimonyManager.speak('blbl.mp3', 'start')
-    }, 2000)*/
+  }
+
+  setIndication(receiver, tr) {
+    this.indicationComponent = receiver;
+    this.traductor = tr;
   }
 
   /**
@@ -118,7 +127,7 @@ export default class {
   async loadAssets() {
     const assetsDef = [{
       name: 'mapGltf',
-      path: './assets/models/map/Map7.glb',
+      path: './assets/models/map/map15-05.glb',
     },{
       name: 't1Gltf',
       path: './assets/models/environment/environment_tower_v2.glb',
@@ -127,7 +136,8 @@ export default class {
       path: './assets/models/environment/environment_tower_v2.glb',
     },{
       name: 'playerGltf',
-      path: './assets/models/characters/personnage_emilie_v10.glb',
+      // path: './assets/models/characters/npc.glb'
+      path: './assets/models/characters/personnage_emilie_v13.glb',
     },{
       name: 'npc',
       path: './assets/models/characters/npc.glb'
@@ -163,8 +173,9 @@ export default class {
     if(this.player) {
       this.player.update(timeStep)
     }
+
     this.sceneManager.update(timeStep);
-    this.cameraOperator.renderFollowCamera();
+    // this.cameraOperator.renderFollowCamera();
     this.updatePhysics(timeStep);
   }
 
@@ -186,21 +197,16 @@ export default class {
     // let timeStep = (this.renderDelta + this.logicDelta) * this.params.Time_Scale;
     this.update(timeStep);
     this.logicDelta = this.clock.getDelta();
+
     this.renderer.render(this.sceneManager.mainScene, this.camera);
+
+/*    console.log("Scene polycount:", this.renderer.info.render.triangles)
+    console.log("Active Drawcalls:", this.renderer.info.render.calls)
+    console.log("Textures in Memory", this.renderer.info.memory.textures)
+    console.log("Geometries in Memory", this.renderer.info.memory.geometries)*/
+
     requestAnimationFrame(() => this.render());
     this.stats.end();
-  }
-
-  renderPostProcessing() {
-    // this.stats.begin();
-    this.renderDelta = this.clock.getDelta();
-    let timeStep = this.renderDelta + this.logicDelta;
-    // let timeStep = (this.renderDelta + this.logicDelta) * this.params.Time_Scale;
-    this.update(timeStep);
-    this.logicDelta = this.clock.getDelta();
-    this.composer.render();
-    this.loop = requestAnimationFrame(() => this.renderPostProcessing());
-    // this.stats.end();
   }
 
   setFollower(el) {
@@ -222,7 +228,7 @@ export default class {
 
       case 'Élevé':
         this.renderer.antialias = true;
-        this.renderer.powerPreference = 'high-performance';
+        this.renderer.powerPreference = 'default';
         break;
     }
   }

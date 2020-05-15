@@ -170,10 +170,10 @@ export default class Projectile {
       0,
       300,
     );
-    const objs = ray.intersectObjects(this.scene.children, false);
 
-    objs.forEach(obj => {
-      if (obj.object.name === this.landingAreaName && obj.object.userData.isDetectable) {
+    const objs = ray.intersectObjects(this.scene.children, false);
+    for (let i = 0; i < objs.length; i++) {
+      if (objs[i].object.name === this.landingAreaName && objs[i].object.userData.isDetectable) {
         // Unique detection
         if (this.isDetected) return;
         this.isDetected = true;
@@ -182,11 +182,8 @@ export default class Projectile {
         document.dispatchEvent(new CustomEvent('npcAudio', { detail: { sequence: 'projectile' }}));
         manager.setLastPos(new THREE.Vector3());
 
-        player.teleport(world.lastCheckpointCoord, () => {
-          this.isDetected = false;
-          console.log('false this.isDetected', this.isDetected);
-        })
+        player.teleport(world.lastCheckpointCoord, () => this.isDetected = false);
       }
-    });
+    }
   }
 }

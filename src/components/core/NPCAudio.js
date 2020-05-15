@@ -11,6 +11,9 @@ const definitionNPC = [{
 },{
   name: 'nico',
   pseudo: 'Schteppe',
+},{
+  name: 'jordan',
+  pseudo: 'Tardys',
 }];
 
 const spawnAudio = [{
@@ -25,8 +28,17 @@ const spawnAudio = [{
   name: 'loris',
   sound: 'salutlesgars.mp3',
   time: 3000,
+}, {
+  name: 'jordan',
+  sound: 'salutlesgars.mp3',
+  time: 3000,
 }];
 
+const otherAudio = [{
+  name: 'loris',
+  sound: 'gros.mp3',
+  time: 1500,
+}];
 
 const projAudio = [{
   name: 'nico',
@@ -87,7 +99,7 @@ export default class NPCAudio {
 
   loadAudio() {
     const prefixTestimony ='./assets/audio/npc';
-    const audioPaths = [...spawnAudio, ...projAudio, ...fovAudio, ...wordsAudio].flat();
+    const audioPaths = [...spawnAudio, ...otherAudio, ...projAudio, ...fovAudio, ...wordsAudio].flat();
     audioPaths.forEach(({ name, sound }) => {
       LoadManager.loadAudio(`${prefixTestimony}/${name}/${sound}`, (buffer) => {
         const audio = new THREE.Audio( this.listener ).setBuffer( buffer );
@@ -102,10 +114,12 @@ export default class NPCAudio {
       switch (e.detail.sequence) {
         case 'spawn': this.spawnSequence(e.detail.pseudo);
           break;
+        case 'start': this.startSequence();
+          break;
         case 'projectile': this.projectileSequence();
           break;
         case 'fov':
-          this.insultsSequence();
+          this.insultsSequence(e.detail.pseudo);
           break;
         case 'word':
           this.wordsSequence();
@@ -161,12 +175,18 @@ export default class NPCAudio {
       this.fovDetected += 1 : this.fovDetected = 0;
   }
 
-  insultsSequence() {
+  /**
+   *
+   * @param pseudo
+   */
+  insultsSequence(pseudo) {
+    console.log(pseudo);
+    // TODO en fonction du pseudo du fov
     this.play('leo', 'perso.mp3', 3100);
   }
 
   wordsSequence() {
-    const { name, sound, time } = fovAudio[this.wordDropped];
+    const { name, sound, time } = wordsAudio[this.wordDropped];
     this.play(name, sound, time);
     this.wordDropped !== 5 ?
       this.wordDropped += 1 : this.wordDropped = 0;

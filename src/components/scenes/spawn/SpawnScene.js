@@ -24,8 +24,9 @@ export default class extends Scene {
     }, 5000);*/
     this.spawnCrystal = spawnCrystal;
     this.upAndDownCrystalAnimation();
-    this.initPlayer()
 
+    // To enable
+    this.initPlayer()
 
     return {
       instance: this,
@@ -39,6 +40,8 @@ export default class extends Scene {
   }
 
   initPlayer(){
+    this.world.player.setWalkable(false);
+    this.world.player.setOrientable(false);
     this.world.player.setVisibility(false);
   }
 
@@ -121,7 +124,11 @@ export default class extends Scene {
       // setTimeout(() => {
       //   this.world.getPlayer().setWalkable(true);
       // }, 7500)
+      setTimeout(() => {
+        document.dispatchEvent(new CustomEvent('npcAudio', { detail: { sequence: 'start' }}));
+      }, 6000)
     }, 40000);
+
 
     setTimeout(() => {
       const playerModel = this.world.player.group.children[0];
@@ -140,8 +147,14 @@ export default class extends Scene {
         duration: 0.5,
         ease: 'power2.in',
       })
-      CameraOperator.zoom();
+      CameraOperator.zoom(() => {
+        this.world.player.setWalkable(true);
+        this.world.player.setOrientable(true);
+      });
     }, 42000);
+    setTimeout(() => {
+      this.world.indicationComponent.setIndication('start');
+    },45000)
   }
 
   upAndDownCrystalAnimation() {

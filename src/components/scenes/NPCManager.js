@@ -4,25 +4,32 @@ import NPC from "../characters/NPC";
 import { randomInRange } from "../../utils";
 import NPCAudio from "../core/NPCAudio";
 
+const npcOrder = [
+  'Daesu',
+  'Tardys',
+  'Farkana',
+  'Schteppe',
+];
+
 const npcsDefinition = (positions) => [{
   name: 'Daesu',
   position: new THREE.Vector3(-1, 0, 2),
-  toTeleport: new THREE.Vector3(32, 0, 0),
+  toTeleport: new THREE.Vector3(0, 0, 0),
   target: new THREE.Vector3(positions[0].x, 0, positions[0].z),
 },{
   name: 'Tardys',
   position: new THREE.Vector3(2, 0, -2),
-  toTeleport: new THREE.Vector3(32, 0, 0),
+  toTeleport: new THREE.Vector3(0, 0, 0),
   target: new THREE.Vector3(positions[1].x, 0, positions[1].z),
 },{
   name: 'Farkana',
   position: new THREE.Vector3(5, 0, -3),
-  toTeleport: new THREE.Vector3(32, 0, 0),
+  toTeleport: new THREE.Vector3(0, 0, 0),
   target: new THREE.Vector3(positions[2].x, 0, positions[2].z),
 },{
   name: 'Schteppe',
   position: new THREE.Vector3(3, 0, 3),
-  toTeleport: new THREE.Vector3(32, 0, 0),
+  toTeleport: new THREE.Vector3(0, 0, 0),
   target: new THREE.Vector3(positions[3].x, 0, positions[3].z),
 }];
 
@@ -45,6 +52,7 @@ export default class NPCManager {
   }
 
   hideNPC() {
+    console.log(this.npcs);
     this.npcs.forEach((n) => n.hide());
   }
 
@@ -52,15 +60,18 @@ export default class NPCManager {
     this.npcs.forEach((n, i) => n.showAnimation(i));
   }
 
+  sortNPC() {
+    return this.npcs.sort((a, b) => npcOrder.indexOf(a.pseudo) - npcOrder.indexOf(b.pseudo));
+  }
+
   moveNPC() {
-    this.npcs.forEach((n, i) => {
+    this.sortNPC().forEach((n, i) => {
         const delay = (i * randomInRange(200, 500)) + 3000;
         setTimeout(() => {
           n.moveTo(npcsDefinition(this.mapPositions)[i].toTeleport);
           n.setWalkCallback(() => {
-            document.dispatchEvent(new CustomEvent('showFov'));
-            n.teleportTo(npcsDefinition(this.mapPositions)[i].target);
-          })
+            n.teleportTo(npcsDefinition(this.mapPositions)[i].target, i === this.sortNPC().length - 1);
+          });
         }, delay)
     });
     // no delay version
@@ -74,7 +85,7 @@ export default class NPCManager {
   /**
    * Positions set by designers from map
    */
-  addMatesPos(position) {
+  addMatesPos({ position }) {
     this.mapPositions.push(position);
   }
 
