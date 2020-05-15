@@ -75,9 +75,8 @@ export default class extends Character {
    */
   moveTo(target) {
     const groupID = this.pathfinding.getGroup(this.ZONE, this.group.position);
-    debugger;
-    this.target = this.pathfinding.findPath(this.group.position, target, this.ZONE, groupID);
-    debugger
+    //this.target = this.pathfinding.findPath(this.group.position, target, this.ZONE, groupID);
+    this.target = [new THREE.Vector3(10.8, 0, 0.5), new THREE.Vector3(34.54, 0, 0.27)];
     if (!this.target) {
       console.error('Path not found');
       return
