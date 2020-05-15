@@ -165,13 +165,6 @@ export default class {
         this.colliders.push(child);
       }
       if (child.name === 'npcPath') {
-        console.log(child);
-        const material = new THREE.MeshBasicMaterial({color: 0xff0000});
-        child.material = material;
-        child.position.x = 0.01;
-        child.position.y = 0;
-        child.position.z = 0.001;
-
         this.map = child;
       }
       if (child.name === 'Plane_fracturepart1') {
