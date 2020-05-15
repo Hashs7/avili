@@ -86,6 +86,7 @@ export default class NPCManager {
    * Positions set by designers from map
    */
   addMatesPos({ position }) {
+    console.log(position);
     this.mapPositions.push(position);
   }
 

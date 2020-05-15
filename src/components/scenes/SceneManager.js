@@ -157,6 +157,7 @@ export default class {
         child.material.transparent = true;
         child.material.opacity = 0;
       }
+      console.log(child.name);
       if (child.name.split('mate').length > 1) {
         this.npcManager.addMatesPos({ name: child.name, position: child.position });
       }
