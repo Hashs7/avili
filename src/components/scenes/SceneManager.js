@@ -157,7 +157,6 @@ export default class {
         child.material.transparent = true;
         child.material.opacity = 0;
       }
-      console.log(child.name);
       if (child.name.split('mate').length > 1) {
         this.npcManager.addMatesPos({ name: child.name, position: child.position });
       }
@@ -168,7 +167,6 @@ export default class {
       }
       if (child.name === 'npcPath') {
         this.map = child;
-        console.log(child);
       }
       if (child.name === 'Plane_fracturepart1') {
         child.material.vertexColors = false;

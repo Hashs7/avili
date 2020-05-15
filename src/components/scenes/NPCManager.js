@@ -52,7 +52,6 @@ export default class NPCManager {
   }
 
   hideNPC() {
-    console.log(this.npcs);
     this.npcs.forEach((n) => n.hide());
   }
 
@@ -86,7 +85,6 @@ export default class NPCManager {
    * Positions set by designers from map
    */
   addMatesPos({ position }) {
-    console.log(position);
     this.mapPositions.push(position);
   }
 

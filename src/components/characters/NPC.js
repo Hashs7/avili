@@ -62,9 +62,9 @@ export default class extends Character {
    * @param map
    */
   setPathFinding(map) {
-    this.pathfinding = new Pathfinding();
+    /*this.pathfinding = new Pathfinding();
     this.ZONE = 'level1';
-    this.pathfinding.setZoneData(this.ZONE, Pathfinding.createZone(map));
+    this.pathfinding.setZoneData(this.ZONE, Pathfinding.createZone(map));*/
     //debugger
 
   }
@@ -74,7 +74,7 @@ export default class extends Character {
    * @param target
    */
   moveTo(target) {
-    const groupID = this.pathfinding.getGroup(this.ZONE, this.group.position);
+    // const groupID = this.pathfinding.getGroup(this.ZONE, this.group.position);
     //this.target = this.pathfinding.findPath(this.group.position, target, this.ZONE, groupID);
     this.target = [new THREE.Vector3(10.8, 0, 0.5), new THREE.Vector3(34.54, 0, 0.27)];
     if (!this.target) {
