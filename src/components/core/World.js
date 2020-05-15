@@ -35,7 +35,7 @@ export default class {
     this.audioManager = AudioManager;
     this.audioManager.initAudio();
 
-    this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.01, 2000);
+    this.camera = new THREE.PerspectiveCamera(35, window.innerWidth / window.innerHeight, 0.01, 40);
     this.camera.name = 'MainCamera';
 
     this.world = new World();
@@ -137,7 +137,7 @@ export default class {
     },{
       name: 'playerGltf',
       // path: './assets/models/characters/npc.glb'
-      path: './assets/models/characters/personnage_emilie_v11.glb',
+      path: './assets/models/characters/personnage_emilie_v13.glb',
     },{
       name: 'npc',
       path: './assets/models/characters/npc.glb'
@@ -191,34 +191,22 @@ export default class {
    * Rendering loop
    */
   render() {
+    this.stats.begin();
     this.renderDelta = this.clock.getDelta();
     let timeStep = this.renderDelta + this.logicDelta;
     // let timeStep = (this.renderDelta + this.logicDelta) * this.params.Time_Scale;
     this.update(timeStep);
     this.logicDelta = this.clock.getDelta();
 
-    this.stats.begin();
     this.renderer.render(this.sceneManager.mainScene, this.camera);
-    this.stats.end();
 
-    // console.log("Scene polycount:", this.renderer.info.render.triangles)
-    // console.log("Active Drawcalls:", this.renderer.info.render.calls)
-    // console.log("Textures in Memory", this.renderer.info.memory.textures)
-    // console.log("Geometries in Memory", this.renderer.info.memory.geometries)
+/*    console.log("Scene polycount:", this.renderer.info.render.triangles)
+    console.log("Active Drawcalls:", this.renderer.info.render.calls)
+    console.log("Textures in Memory", this.renderer.info.memory.textures)
+    console.log("Geometries in Memory", this.renderer.info.memory.geometries)*/
 
     requestAnimationFrame(() => this.render());
-  }
-
-  renderPostProcessing() {
-    // this.stats.begin();
-    this.renderDelta = this.clock.getDelta();
-    let timeStep = this.renderDelta + this.logicDelta;
-    // let timeStep = (this.renderDelta + this.logicDelta) * this.params.Time_Scale;
-    this.update(timeStep);
-    this.logicDelta = this.clock.getDelta();
-    this.composer.render();
-    this.loop = requestAnimationFrame(() => this.renderPostProcessing());
-    // this.stats.end();
+    this.stats.end();
   }
 
   setFollower(el) {

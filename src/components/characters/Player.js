@@ -73,7 +73,7 @@ export default class extends Character {
 
     this.spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, Math.PI/10, 1);
     this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(this.group.position));
-    this.spotLight.castShadow = true;
+    // this.spotLight.castShadow = true;
     this.spotLight.target = this.group;
 
     // this.spotLight.lookAt(this.character.position);
@@ -206,8 +206,6 @@ export default class extends Character {
     // const speed = isStrafing ? this.speed / 2 : this.speed;
     // this.character.body.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
     // this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
-    console.log(this.group.position);
-    // get nextPosition
 
     if(!this.walkable) return;
     this.nextPosition = {
