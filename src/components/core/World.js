@@ -124,7 +124,7 @@ export default class {
   async loadAssets() {
     const assetsDef = [{
       name: 'mapGltf',
-      path: './assets/models/map/map14-05-d.glb',
+      path: './assets/models/map/map15-05.glb',
     },{
       name: 't1Gltf',
       path: './assets/models/environment/environment_tower_v2.glb',

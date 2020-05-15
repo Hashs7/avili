@@ -75,9 +75,7 @@ export default class extends Character {
    */
   moveTo(target) {
     const groupID = this.pathfinding.getGroup(this.ZONE, this.group.position);
-    debugger;
     this.target = this.pathfinding.findPath(this.group.position, target, this.ZONE, groupID);
-    debugger
     if (!this.target) {
       console.error('Path not found');
       return

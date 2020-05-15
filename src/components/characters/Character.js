@@ -23,10 +23,11 @@ export default class {
   changeAppareance(gltf, name) {
     const newCharacter = gltf.scene.children.find(el => el.name === name);
     // newCharacter.position.copy(this.character.position);
-    debugger;
+    this.setAnimations(gltf.animations);
     if (!newCharacter) return;
     this.group.remove(this.character);
     this.character = newCharacter;
+    this.mixer = new THREE.AnimationMixer(this.character);
     this.group.add(this.character)
   }
 
