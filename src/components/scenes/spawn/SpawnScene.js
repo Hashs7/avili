@@ -26,7 +26,7 @@ export default class extends Scene {
     this.upAndDownCrystalAnimation();
 
     // To enable
-    // this.initPlayer()
+    this.initPlayer()
 
     return {
       instance: this,
@@ -104,7 +104,7 @@ export default class extends Scene {
 
     setTimeout(() => {
       this.sceneManager.npcManager.showNPC();
-    }, 5000)
+    }, 5500)
 
     setTimeout(() => {
       this.sceneManager.npcManager.moveNPC();

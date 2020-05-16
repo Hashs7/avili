@@ -14,7 +14,7 @@ import gsap from 'gsap';
 const wordsDef = [{
   text: 'Inutile',
   mass: 50,
-  position: new Vec3(127, 10, 0),
+  position: new Vec3(127, 10, -2),
   collide: false,
   movable: true,
   path: 'inutile.glb',
@@ -126,7 +126,7 @@ export default class extends Scene {
       TestimonyManager.speak('second_badword.mp3', 'second_badword');
 
       setTimeout(() => {
-        this.world.store.commit('setIndication', 'words')
+        this.manager.world.store.commit('setIndication', 'words')
       }, 7000)
     }
     if (objs[0].object.name === "m5") {

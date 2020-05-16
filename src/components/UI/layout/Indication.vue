@@ -11,7 +11,7 @@
         </div>
         <div class="indication__txt" ref="txt">
           <p v-if="title === 'Déplacement'">Appuyez sur la touche <span class="indication__key"><Key /></span> pour avancer et utilisez votre souris pour vous orienter</p>
-          <p v-if="title === 'Movement'">Push <span class="indication__key"><Key /></span> to move forward and use your mouse to rotate</p>
+          <p v-else-if="title === 'Movement'">Push <span class="indication__key"><Key /></span> to move forward and use your mouse to rotate</p>
           <p v-else>{{ text }}</p>
         </div>
       </div>

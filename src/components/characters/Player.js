@@ -69,7 +69,7 @@ export default class extends Character {
   }
 
   groupCamera() {
-    this.group.position.set(108, 0, 0);
+    this.group.position.set(0, 0, 0);
 
     this.spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, Math.PI/10, 1);
     this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(this.group.position));
@@ -142,7 +142,7 @@ export default class extends Character {
       this.prepareCrossFade(this.idleAction);
     }
 
-    if(this.sceneManager.world.indicationComponent && this.sceneManager.world.indicationComponent.show) {
+    if(this.sceneManager.world.indicationComponent && this.sceneManager.world.indicationComponent.show && this.inputManager.controls.up) {
       this.sceneManager.world.indicationComponent.removeIndication();
     }
 
