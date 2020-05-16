@@ -451,8 +451,8 @@ export default class {
 
 
 //======================================================================
-
-function init() {
+// http://jsfiddle.net/0hoawrkn/
+/*function init() {
 
   scene = new THREE.Scene();
   scene.add(new THREE.AmbientLight(0x222222));
@@ -617,11 +617,11 @@ function animate() {
     givenObject.updateMatrixWorld();
 
     //FLABBY method: - OK but verbose and excessive object creation
-    /*
+    /!*
      var ob_InvWorldQuaternion = new THREE.Quaternion();
      ob_InvWorldQuaternion = ob_WorldQuaternion.inverse();
      LDV.copy( WDV ).applyQuaternion( ob_InvWorldQuaternion );
-     */
+     *!/
 
     //LEAN method: copies WDV value into LDV then applies inverse world quaternion of givenObject.
 
@@ -676,4 +676,4 @@ function animate() {
   if (time > 50) time = 0;
 
 
-} //... EOF animate().
+}*/
