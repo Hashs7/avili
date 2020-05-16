@@ -154,21 +154,14 @@ export default class FieldOfViewManager {
   }
 
   initThirdNpc(){
+    const pos = this.thirdNpc.group.position;
     const tl = new gsap.timeline({ repeat: -1 });
     tl.to(this.thirdNpc.group.rotation, {
       y: `+=${toRadian(0)}`,
-      duration: 2,
-      delay: 5,
+      duration: 5,
+      delay: 10,
       onComplete : () => {
-        this.thirdNpc.moveTo([new THREE.Vector3(97,0, 7)]);
-      }
-    });
-    tl.to(this.thirdNpc.group.rotation, {
-      y: `+=${toRadian(0)}`,
-      duration: 2,
-      delay: 5,
-      onComplete : () => {
-        this.thirdNpc.moveTo([new THREE.Vector3(100,0, 13)]);
+        this.thirdNpc.moveTo([new THREE.Vector3(97,0, 7), new THREE.Vector3(pos.x,pos.y, pos.z)]);
       }
     });
   }
