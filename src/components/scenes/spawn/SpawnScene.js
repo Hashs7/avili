@@ -126,17 +126,22 @@ export default class extends Scene {
       // }, 7500)
       setTimeout(() => {
         document.dispatchEvent(new CustomEvent('npcAudio', { detail: { sequence: 'start' }}));
-      }, 6000)
+      }, 6100)
     }, 40000);
 
 
     setTimeout(() => {
       const playerModel = this.world.player.group.children[0];
       const rotation = Math.atan2( ( this.world.camera.position.x - playerModel.position.x ), ( this.world.camera.position.z - playerModel.position.z ) );
-      const tl = gsap.timeline({repeat: 0});
+      CameraOperator.zoom(() => {
+        this.world.player.setWalkable(true);
+        this.world.player.setOrientable(true);
+      }, 3.5);
+      const tl = gsap.timeline({ repeat: 0 });
       tl.to(playerModel.rotation, {
         y: rotation,
         duration: 1,
+        delay: 1,
       })
       tl.to([
         this.world.player.getArmor().mask.material,
@@ -147,14 +152,10 @@ export default class extends Scene {
         duration: 0.5,
         ease: 'power2.in',
       })
-      CameraOperator.zoom(() => {
-        this.world.player.setWalkable(true);
-        this.world.player.setOrientable(true);
-      });
     }, 42000);
     setTimeout(() => {
       this.world.indicationComponent.setIndication('start');
-    },45000)
+    },48000)
   }
 
   upAndDownCrystalAnimation() {

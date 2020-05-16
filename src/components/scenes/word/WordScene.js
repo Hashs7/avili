@@ -52,6 +52,7 @@ export default class extends Scene {
   constructor(world, camera, manager, material, sections) {
     super();
     this.world = world;
+    this.manager = manager;
     this.sections = sections;
     this.scene.name = "WordScene";
     this.wordIndex = 0;
