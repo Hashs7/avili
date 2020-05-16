@@ -31,6 +31,7 @@ class AudioManager {
       'second_badword.mp3',
       'spawn_mates.mp3',
       'spawn_player.mp3',
+      'narrateur_lou.mp3',
     ];
     audioTestimony.forEach(file => {
       LoadManager.loadAudio(prefixTestimony + file, (buffer) => {

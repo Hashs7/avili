@@ -83,20 +83,26 @@ export default class extends Scene {
       b: color.b,
       delay: 2,
       duration: 1,
+      onComplete: () => {
+        TestimonyManager.speak('narrateur_lou.mp3', 'final');
+      }
     }, 'fadeIn');
     tl.to(this.manager.mainScene.background, {
       r: color.r,
       g: color.g,
       b: color.b,
+      delay: 2,
       duration: 1,
     }, 'fadeIn');
     tl.to(player.spotLight, {
       intensity: 1,
       duration: 3,
+      delay: 2,
       penumbra: 1,
     }, 'fadeIn');
     tl.to(this.manager.globalLight, {
       intensity: 0.7,
+      delay: 2,
       duration: 5,
     }, 'fadeIn');
   }

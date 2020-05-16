@@ -142,7 +142,10 @@ export default class extends Character {
       this.prepareCrossFade(this.idleAction);
     }
 
-    if(this.sceneManager.world.indicationComponent && this.sceneManager.world.indicationComponent.show && this.inputManager.controls.up) {
+    if (this.sceneManager.world.indicationComponent &&
+      this.sceneManager.world.indicationComponent.show &&
+      this.sceneManager.world.indicationComponent.movement &&
+      this.inputManager.controls.up) {
       this.sceneManager.world.indicationComponent.removeIndication();
     }
 

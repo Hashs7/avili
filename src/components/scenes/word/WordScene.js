@@ -113,7 +113,10 @@ export default class extends Scene {
       this.dropWord();
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm1');
-      TestimonyManager.speak('first_badword.mp3', 'first_badword');
+
+      setTimeout(() => {
+        TestimonyManager.speak('first_badword.mp3', 'first_badword');
+      }, 5000)
     }
     if (objs[0].object.name === "m2") {
       this.dropWord();
@@ -124,7 +127,10 @@ export default class extends Scene {
       this.dropWord();
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm3');
-      TestimonyManager.speak('second_badword.mp3', 'second_badword');
+      setTimeout(() => {
+        TestimonyManager.speak('second_badword.mp3', 'second_badword');
+      }, 4000)
+
 
       setTimeout(() => {
         this.manager.world.indicationComponent.setIndication('words');
@@ -132,15 +138,16 @@ export default class extends Scene {
     }
     if (objs[0].object.name === "m5") {
       this.dropWord();
+      this.manager.world.indicationComponent.removeIndication();
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm3');
 
       setTimeout(() => {
         this.dropWord();
-      }, 2000);
+      }, 4000);
       setTimeout(() => {
         new State().goToState(GAME_STATES.final_black_screen);
-      }, 5000);
+      }, 8000);
     }
   }
 
