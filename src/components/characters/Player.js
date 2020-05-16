@@ -69,7 +69,6 @@ export default class extends Character {
   }
 
   groupCamera() {
-    //this.group.position.set(135, 0, 0);
     this.group.position.set(0, 0, 0);
 
     this.spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, Math.PI/10, 1);
