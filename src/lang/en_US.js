@@ -145,7 +145,7 @@ export default {
     content: {
       duration: "Student WebGL project realised in 2 months",
       definition: "Lower someone until he loses his dignity, degrade him and dishonor him.",
-      description: "Avili is sensibilisation experience about the position of woman as a player. This experience can serve as an entry point to open the dialogue and as such allow things to change.",
+      description: "Avili is a sensibilisation experience about the position of woman as a player. This experience can serve as an entry point to open the dialogue and as such allow things to change.",
     },
     credits: "Credits",
     dev: "Developers",

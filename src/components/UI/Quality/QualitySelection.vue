@@ -47,7 +47,7 @@
 <style lang="scss">
   .quality-selection__box {
     text-align: center;
-    max-width: 580px;
+    max-width: 650px;
     width: 100%;
     margin: 0 auto;
   }
