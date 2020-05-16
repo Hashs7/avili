@@ -20,10 +20,11 @@ export default class extends Scene {
       }
       else if (e.detail === GAME_STATES.final_teleportation){
         const group = this.manager.world.getPlayer().group;
+
         const pseudo = group.children.find(e => e.name === "pseudo");
-        const player = group.children.find(e => e.name === "Emilie");
+        const npc = group.children.find(e => e.name === "npc");
         pseudo.visible = false;
-        player.visible = false;
+        npc.visible = false;
 
         this.addWhiteScreen()
       }

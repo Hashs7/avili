@@ -40,6 +40,7 @@ export default class NPCManager {
     this.npcs = [];
     this.mapPositions = [];
     this.npcAudio = new NPCAudio(world);
+    //this.target = [new THREE.Vector3(10.8, 0, 0.5), new THREE.Vector3(34.54, 0, 0.27)];
   }
 
   async loadNPC(map) {
@@ -64,11 +65,13 @@ export default class NPCManager {
   }
 
   moveNPC() {
+    this.target = [new THREE.Vector3(10.8, 0, 0.5), new THREE.Vector3(34.54, 0, 0.27)];
     this.sortNPC().forEach((n, i) => {
         const delay = (i * randomInRange(200, 500)) + 3000;
         setTimeout(() => {
-          n.moveTo(npcsDefinition(this.mapPositions)[i].toTeleport);
+          n.moveTo(this.target);
           n.setWalkCallback(() => {
+            console.log(npcsDefinition(this.mapPositions)[i].target);
             n.teleportTo(npcsDefinition(this.mapPositions)[i].target, i === this.sortNPC().length - 1);
           });
         }, delay)

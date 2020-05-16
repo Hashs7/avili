@@ -16,6 +16,7 @@ export default class FieldOfViewManager {
     this.fieldOfView = new THREE.Object3D();
     this.fieldOfViewName = "FieldOfView";
     this.fieldOfViews = [];
+    this.fovGeometry = new THREE.CircleGeometry();
     this.lastPosition = new THREE.Vector3();
     this.proj;
 
@@ -26,6 +27,8 @@ export default class FieldOfViewManager {
     this.npc = npc;
     this.firstNpc = this.npc.find(e => e.group.pseudo === "Daesu").group;
     this.secondNpc = this.npc.find(e => e.group.pseudo === "Tardys").group;
+    this.thirdNpc = this.npc.find(e => e.group.pseudo === "Farkana");
+    this.fourthNpc = this.npc.find(e => e.group.pseudo === "Schteppe");
     this.isFirstTime = true;
 
     this.bushes = bushes;
@@ -52,7 +55,9 @@ export default class FieldOfViewManager {
 
     document.addEventListener('stateUpdate', e => {
       if (e.detail === GAME_STATES.words_sequence_start) {
-        this.proj.audioEnabled = false;
+        if(this.proj){
+          this.proj.audioEnabled = false;
+        }
       }
       if (e.detail !== GAME_STATES.infiltration_sequence_start) return;
       const arr = landingAreas.slice(4);
@@ -70,6 +75,8 @@ export default class FieldOfViewManager {
       this.npc.forEach(({group}, index) => this.addFieldOfView(group, index));
       this.initFirstNpc(this.firstNpc);
       this.initSecondNpc(this.secondNpc);
+      this.initThirdNpc();
+      this.initFourthNpc();
     });
   }
 
@@ -92,7 +99,7 @@ export default class FieldOfViewManager {
    * @param index
    */
   addFieldOfView(group, index) {
-    let geometry = new THREE.CircleGeometry(
+    this.fovGeometry = new THREE.CircleGeometry(
       3,
       20,
       0,
@@ -108,7 +115,7 @@ export default class FieldOfViewManager {
 
     const npc = group.children.find(e => e.name = "npc");
 
-    this.fieldOfView = new THREE.Mesh(geometry, customMaterial);
+    this.fieldOfView = new THREE.Mesh(this.fovGeometry, customMaterial);
     this.fieldOfView.rotateX(toRadian(90));
 
     this.fieldOfView.position.y += 0.1;
@@ -123,7 +130,15 @@ export default class FieldOfViewManager {
   initFirstNpc(firstNpc){
     firstNpc.rotation.y = toRadian(-90);
     const fov = firstNpc.children.find(e => e.name.startsWith("FieldOfView"));
-    fov.scale.set(2, 2, 2);
+    let geometry = new THREE.CircleGeometry(
+      3,
+      20,
+      0,
+      2.6,
+    );
+    fov.geometry = geometry;
+    fov.rotation.z = toRadian(0);
+    fov.scale.set(2, 0.8, 0.8);
   }
 
   initSecondNpc(secondNpc){
@@ -139,6 +154,35 @@ export default class FieldOfViewManager {
       duration: 2.5,
       delay: 3,
     })
+  }
+
+  initThirdNpc(){
+    console.log(this.thirdNpc);
+    const tl = new gsap.timeline({repeat: -1});
+    tl.to(this.thirdNpc.group.rotation, {
+      y: `+=${toRadian(0)}`,
+      duration: 2,
+      delay: 5,
+      onComplete : () => {
+        this.thirdNpc.moveTo([new THREE.Vector3(97,0, 7)]);
+      }
+    })
+    tl.to(this.thirdNpc.group.rotation, {
+      y: `+=${toRadian(0)}`,
+      duration: 2,
+      delay: 5,
+      onComplete : () => {
+        this.thirdNpc.moveTo([new THREE.Vector3(100,0, 13)]);
+      }
+    })
+  }
+
+  initFourthNpc(){
+    this.fourthNpcFov = this.fourthNpc.group.children.find(e => e.name === "FieldOfView-3");
+    this.fourthNpc.group.rotation.y = toRadian(35);
+    this.fourthNpcFov.visible = false;
+    this.fourthNpcFov.scale.set(1.8, 1.8, 1.8);
+    this.fourthNpc.hideNpc();
   }
 
 
@@ -198,6 +242,8 @@ export default class FieldOfViewManager {
         CameraOperator.zoom(() => {
           this.lastPosition = new THREE.Vector3();
           if(objs[i].object.name === "FieldOfView-3") {
+            this.fourthNpc.showNpc();
+            this.fourthNpcFov.visible = true;
             objs[i].object.name = "Undetectable";
             setTimeout(() => {
               TestimonyManager.speak('infiltration_end.mp3', 'infiltration_end');
@@ -210,6 +256,7 @@ export default class FieldOfViewManager {
             });
 
             if(objs[i].object.name === "FieldOfView-0" && this.isFirstTime){
+              objs[i].object.geometry = this.fovGeometry;
               gsap.to(this.firstNpc.rotation, {
                 y: `+=${toRadian(90)}`,
                 delay: 2,
@@ -217,6 +264,9 @@ export default class FieldOfViewManager {
               })
               objs[i].object.scale.set(1, 1, 1);
               this.fieldOfViews.forEach(fov => {
+                // if(fov.name !== "FieldOfView-3") {
+                //   fov.material.visible = true;
+                // }
                 fov.material.visible = true;
               })
             }
