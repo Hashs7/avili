@@ -30,6 +30,33 @@ export default class extends Character {
     });
   }
 
+  hideNpc(){
+    this.skinnedMesh.forEach(mesh => {
+      mesh.material.transparent = true;
+      mesh.material.opacity = 0;
+    });
+    this.playerName.material.opacity = 0;
+  }
+
+  // TODO refacto
+  showNpc(){
+    this.skinnedMesh.forEach(mesh => {
+      mesh.material.transparent = true;
+      mesh.material.opacity = 0;
+      gsap.to(mesh.material, {
+        opacity: 1,
+        duration: 1,
+        onComplete: () => {
+          mesh.material.transparent = false;
+        },
+      })
+    });
+    gsap.to(this.playerName.material, {
+      opacity: 1,
+      duration: .3,
+    })
+  }
+
   showAnimation(index) {
     const delay = (randomInRange(400, 1000) / 1000) + (index / 2);
     this.skinnedMesh.forEach(mesh => {
@@ -74,18 +101,20 @@ export default class extends Character {
    * @param target
    */
   moveTo(target) {
+    this.target = target;
     // const groupID = this.pathfinding.getGroup(this.ZONE, this.group.position);
     //this.target = this.pathfinding.findPath(this.group.position, target, this.ZONE, groupID);
-    this.target = [new THREE.Vector3(10.8, 0, 0.5), new THREE.Vector3(34.54, 0, 0.27)];
-    if (!this.target) {
+    //this.target = [new THREE.Vector3(10.8, 0, 0.5), new THREE.Vector3(34.54, 0, 0.27)];
+    if (!target) {
       console.error('Path not found');
       return
     }
     this.setWalking(true);
-    this.setOrientation(this.target[0]);
+    this.setOrientation(target[0]);
   }
 
   teleportTo(target, sendEvent) {
+    console.log("teleport");
     this.group.position.copy(target);
     if (!sendEvent) return;
     document.dispatchEvent(new CustomEvent('showFov'));
