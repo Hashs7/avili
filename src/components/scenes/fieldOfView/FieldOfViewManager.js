@@ -158,7 +158,7 @@ export default class FieldOfViewManager {
 
   initThirdNpc(){
     console.log(this.thirdNpc);
-    const tl = new gsap.timeline({repeat: -1});
+    const tl = new gsap.timeline({ repeat: -1 });
     tl.to(this.thirdNpc.group.rotation, {
       y: `+=${toRadian(0)}`,
       duration: 2,
@@ -264,10 +264,10 @@ export default class FieldOfViewManager {
               })
               objs[i].object.scale.set(1, 1, 1);
               this.fieldOfViews.forEach(fov => {
-                // if(fov.name !== "FieldOfView-3") {
-                //   fov.material.visible = true;
-                // }
-                fov.material.visible = true;
+                if(fov.name !== "FieldOfView-3") {
+                  fov.material.visible = true;
+                }
+                // fov.material.visible = true;
               })
             }
           }

@@ -140,7 +140,7 @@ export default {
   ui: {
     play: 'Play',
     about: 'About',
-    heaset: "The use of headphones is strongly recommended",
+    headset: "The use of headphones is strongly recommended",
     end: "The first step is to talk about. Share the experience link and come discuss on discord",
     content: {
       duration: "Student WebGL project realised in 2 months",
