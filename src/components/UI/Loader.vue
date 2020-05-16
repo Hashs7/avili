@@ -6,9 +6,6 @@
     <div v-show="isPlaying && loadEnable || !completeTime" :class="{show: isPlaying && loadEnable || !completeTime}" class="loader-wrap" ref="loader">
       <IntroLayout>
         <div class="loader">
-          <div class="loader__container">
-            <span ref="progress" class="loader__progress"></span>
-          </div>
           <span class="loader__percent">{{percent}}%</span>
         </div>
         <div class="advertising">
@@ -122,10 +119,10 @@
           percent: Math.round(value),
           duration: .01,
         });
-        gsap.to(this.$refs.progress, {
+        /*gsap.to(this.$refs.progress, {
           width: `${value}%`,
           duration: .01,
-        });
+        });*/
       },
     },
   }

@@ -9,7 +9,7 @@ const definitionNPC = [{
   name: 'loris',
   pseudo: 'Farkana',
 },{
-  name: 'nico',
+  name: 'florian',
   pseudo: 'Schteppe',
 },{
   name: 'jordan',
@@ -17,7 +17,7 @@ const definitionNPC = [{
 }];
 
 const spawnAudio = [{
-  name: 'nico',
+  name: 'florian',
   sound: 'salutlesgars.mp3',
   time: 3000,
 }, {
@@ -41,7 +41,7 @@ const otherAudio = [{
 }];
 
 const projAudio = [{
-  name: 'nico',
+  name: 'florian',
   sound: 'tourdemerde.mp3',
   time: 3000,
 }, {
@@ -52,6 +52,10 @@ const projAudio = [{
   name: 'leo',
   sound: 'jouemeuf.mp3',
   time: 3000,
+}, {
+  name: 'leo',
+  sound: 'rage.mp3',
+  time: 3000,
 }];
 
 const fovAudio = [{
@@ -59,9 +63,9 @@ const fovAudio = [{
   sound: 'perso.mp3',
   time: 3100,
 }, {
-  name: 'leo',
-  sound: 'perdregame.mp3',
-  time: 1500,
+  name: 'jordan',
+  sound: 'ahmaistunefilleenfait.mp3',
+  time: 2000,
 }];
 
 const wordsAudio = [{
@@ -73,13 +77,13 @@ const wordsAudio = [{
   sound: 'cuisine.mp3',
   time: 1500,
 }, {
-  name: 'leo',
+  name: 'jordan',
   sound: 'moche.mp3',
   time: 1500,
 }, {
-  name: 'leo',
-  sound: 'pute.mp3',
-  time: 1000,
+  name: 'jordan',
+  sound: 'salepute.mp3',
+  time: 3000,
 }, {
   name: 'leo',
   sound: 'salope.mp3',
@@ -131,7 +135,7 @@ export default class NPCAudio {
 
   /**
    *
-   * @param name : loris / nico / leo
+   * @param name : loris / florian / leo
    * @param sound : .mp3
    * @param time : number in ms
    */
@@ -180,9 +184,12 @@ export default class NPCAudio {
    * @param pseudo
    */
   insultsSequence(pseudo) {
-    console.log(pseudo);
     // TODO en fonction du pseudo du fov
-    this.play('leo', 'perso.mp3', 3100);
+
+    const { name, sound, time } = fovAudio[this.fovDetected];
+    this.play(name, sound, time);
+    this.fovDetected !== 2 ?
+      this.fovDetected += 1 : this.fovDetected = 0;
   }
 
   wordsSequence() {

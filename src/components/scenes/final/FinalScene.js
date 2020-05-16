@@ -5,6 +5,7 @@ import * as THREE from "three";
 import {toRadian} from "../../../utils";
 import TestimonyManager from "../../core/TestimonyManager";
 import LoadManager from "../../core/LoadManager";
+import AudioManager from "../../core/AudioManager";
 
 export default class extends Scene {
   constructor(manager) {
@@ -71,6 +72,7 @@ export default class extends Scene {
       player.addPseudo();
       this.manager.mainScene.fog.near = 20;
       this.manager.mainScene.fog.far = 30;
+      AudioManager.stopEndLoopAudio();
     }));
 
     const color = new THREE.Color(0x96e1ff);

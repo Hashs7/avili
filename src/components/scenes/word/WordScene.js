@@ -29,21 +29,21 @@ const wordsDef = [{
   text: 'Moche',
   mass: 100,
   position: new Vec3(143, 70, 0),
-  collide: false,
+  collide: true,
   movable: true,
   path: 'moche.glb',
 }, {
   text: 'Pute',
   mass: 150,
   position: new Vec3(157, 70, 0),
-  collide: false,
+  collide: true,
   movable: false,
   path: 'pute.glb',
 }, {
   text: 'Salope',
   mass: 170,
   position: new Vec3(148, 70, -1),
-  collide: false,
+  collide: true,
   movable: false,
   path: 'salope.glb',
 }];
@@ -127,7 +127,7 @@ export default class extends Scene {
       TestimonyManager.speak('second_badword.mp3', 'second_badword');
 
       setTimeout(() => {
-        this.manager.world.store.commit('setIndication', 'words')
+        this.manager.world.indicationComponent.setIndication('words');
       }, 7000)
     }
     if (objs[0].object.name === "m5") {
