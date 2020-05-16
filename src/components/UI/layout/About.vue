@@ -148,6 +148,7 @@
     padding: 0;
     width: 75px;
     height: 75px;
+    box-shadow: 0 3px 6px 0 rgba(0,0,0,0.15);
   }
 
   .lines {

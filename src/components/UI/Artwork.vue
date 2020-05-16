@@ -101,7 +101,7 @@
     left: 0;
     right: 0;
     margin: auto;
-    width: 207px;
+    width: 220px;
     height: 70px;
     font-size: 30px;
     font-family: $font-primary;
@@ -115,6 +115,7 @@
     }
 
     .text {
+      vertical-align: sub;
       position: relative;
       z-index: 10;
       color: $white;

@@ -124,6 +124,10 @@ export default class extends Scene {
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm3');
       TestimonyManager.speak('second_badword.mp3', 'second_badword');
+
+      setTimeout(() => {
+        this.world.store.commit('setIndication', 'words')
+      }, 7000)
     }
     if (objs[0].object.name === "m5") {
       this.dropWord();

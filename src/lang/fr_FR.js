@@ -128,7 +128,11 @@ export default {
   indications: {
     start: {
       title: 'Déplacement',
-      text: 'Appuyez sur la touche z pour avancer et utilisez votre souris pour vous orienter',
+      text: 'Appuyez sur la touche z pour avancer et utilisez votre curseur pour vous orienter',
+    },
+    words: {
+      title: 'Franchir les mots',
+      text: "Soulevez les mots à l'aide curseur en cliquant dessus",
     }
   },
 

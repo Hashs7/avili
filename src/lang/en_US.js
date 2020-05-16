@@ -128,7 +128,11 @@ export default {
   indications: {
     start: {
       title: 'Movement',
-      text: 'Push Z to move forward and use your mouse to rotate',
+      text: 'Push z to move forward and use your mouse to rotate',
+    },
+    words: {
+      title: 'Cross words',
+      text: "Lift the word using cursor and clicking on it",
     }
   },
 
