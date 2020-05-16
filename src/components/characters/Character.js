@@ -28,7 +28,8 @@ export default class {
     this.character = newCharacter;
     this.mixer = new THREE.AnimationMixer(this.character);
     this.setAnimations(gltf.animations);
-    this.group.add(this.character)
+    this.group.add(this.character);
+    this.speed = 0.05;
   }
 
   setAnimations(animations) {

@@ -140,7 +140,6 @@ export default class extends Character {
 
       // Finished walking
       this.setWalking(false);
-      debugger
       if (!this.walkCallback) return;
       this.walkCallback()
     }

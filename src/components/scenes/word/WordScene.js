@@ -28,22 +28,22 @@ const wordsDef = [{
 }, {
   text: 'Moche',
   mass: 100,
-  position: new Vec3(140, 70, 0),
-  collide: true,
+  position: new Vec3(143, 70, 0),
+  collide: false,
   movable: true,
   path: 'moche.glb',
 }, {
   text: 'Pute',
-  mass: 100,
+  mass: 150,
   position: new Vec3(157, 70, 0),
-  collide: true,
+  collide: false,
   movable: false,
   path: 'pute.glb',
 }, {
   text: 'Salope',
-  mass: 100,
+  mass: 170,
   position: new Vec3(148, 70, -1),
-  collide: true,
+  collide: false,
   movable: false,
   path: 'salope.glb',
 }];
@@ -76,8 +76,8 @@ export default class extends Scene {
     //TODO enable after player enter section
     document.addEventListener('playerMoved', (e) => {
       this.detectWall(e);
-      let word = this.detectWord(e);
-      if(word) {
+      const word = this.detectWord(e);
+      if (word) {
         this.wordFadeIn(word);
       }
     });

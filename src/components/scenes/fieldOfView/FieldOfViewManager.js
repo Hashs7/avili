@@ -45,7 +45,7 @@ export default class FieldOfViewManager {
           armor.mask.material.visible = value;
           armor.cape.material.visible = value;
         }
-      }
+      };
       this.player.character.traverse(child => {
         if(child.name === 'amask') armor.mask = child;
         if(child.name === 'ahat') armor.cape = child;
@@ -75,7 +75,6 @@ export default class FieldOfViewManager {
       this.npc.forEach(({group}, index) => this.addFieldOfView(group, index));
       this.initFirstNpc(this.firstNpc);
       this.initSecondNpc(this.secondNpc);
-      this.initThirdNpc();
       this.initFourthNpc();
     });
   }
@@ -112,8 +111,6 @@ export default class FieldOfViewManager {
       transparent: true,
       visible: false,
     });
-
-    const npc = group.children.find(e => e.name = "npc");
 
     this.fieldOfView = new THREE.Mesh(this.fovGeometry, customMaterial);
     this.fieldOfView.rotateX(toRadian(90));
@@ -157,7 +154,6 @@ export default class FieldOfViewManager {
   }
 
   initThirdNpc(){
-    console.log(this.thirdNpc);
     const tl = new gsap.timeline({ repeat: -1 });
     tl.to(this.thirdNpc.group.rotation, {
       y: `+=${toRadian(0)}`,
@@ -166,7 +162,7 @@ export default class FieldOfViewManager {
       onComplete : () => {
         this.thirdNpc.moveTo([new THREE.Vector3(97,0, 7)]);
       }
-    })
+    });
     tl.to(this.thirdNpc.group.rotation, {
       y: `+=${toRadian(0)}`,
       duration: 2,
@@ -174,17 +170,16 @@ export default class FieldOfViewManager {
       onComplete : () => {
         this.thirdNpc.moveTo([new THREE.Vector3(100,0, 13)]);
       }
-    })
+    });
   }
 
   initFourthNpc(){
     this.fourthNpcFov = this.fourthNpc.group.children.find(e => e.name === "FieldOfView-3");
     this.fourthNpc.group.rotation.y = toRadian(35);
-    this.fourthNpcFov.visible = false;
+    this.fourthNpcFov.visible = true;
     this.fourthNpcFov.scale.set(1.8, 1.8, 1.8);
     this.fourthNpc.hideNpc();
   }
-
 
   /**
    * Detect if player is in field
@@ -226,7 +221,7 @@ export default class FieldOfViewManager {
         tl.to(playerModel.rotation, {
           y: rotation,
           duration: 1,
-        })
+        });
         tl.to([
           this.armor().mask.material,
           this.armor().cape.material
@@ -237,7 +232,7 @@ export default class FieldOfViewManager {
           onComplete: () => {
             this.armor().setVisibility(false)
           },
-        })
+        });
 
         CameraOperator.zoom(() => {
           this.lastPosition = new THREE.Vector3();
@@ -251,11 +246,12 @@ export default class FieldOfViewManager {
           } else {
             this.player.teleport(this.world.lastCheckpointCoord, () => {
               this.armor().setOpacity(1);
-              this.armor().setVisibility(true)
+              this.armor().setVisibility(true);
               this.alreadyHit = false;
             });
 
             if(objs[i].object.name === "FieldOfView-0" && this.isFirstTime){
+              this.initThirdNpc();
               objs[i].object.geometry = this.fovGeometry;
               gsap.to(this.firstNpc.rotation, {
                 y: `+=${toRadian(90)}`,

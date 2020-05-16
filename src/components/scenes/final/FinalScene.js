@@ -65,12 +65,12 @@ export default class extends Scene {
     }, 'fadeOut');
 
     tl.add(gsap.delayedCall(5, async () => {
+      const gltf = await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
+      player.changeAppareance(gltf, 'npc');
       player.teleport(new THREE.Vector3(0, 0, 0));
       player.addPseudo();
       this.manager.mainScene.fog.near = 20;
       this.manager.mainScene.fog.far = 30;
-      const gltf = await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
-      player.changeAppareance(gltf, 'npc');
     }));
 
     const color = new THREE.Color(0x96e1ff);
@@ -79,6 +79,7 @@ export default class extends Scene {
       r: color.r,
       g: color.g,
       b: color.b,
+      delay: 2,
       duration: 1,
     }, 'fadeIn');
     tl.to(this.manager.mainScene.background, {
