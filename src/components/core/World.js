@@ -147,6 +147,7 @@ export default class {
     // this.player.groupCamera();
     this.sceneManager.addMap(mapGltf);
     this.sceneManager.addTowers(t1Gltf, t2Gltf);
+    this.sceneManager.initMainScene();
   }
 
   getPlayer() {

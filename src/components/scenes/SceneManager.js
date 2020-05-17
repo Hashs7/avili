@@ -35,7 +35,6 @@ export default class {
 
     this.matesPos = [];
     this.mainScene = new THREE.Scene();
-    this.initMainScene();
 
     this.colliders = [];
     this.sections = [];
@@ -75,40 +74,56 @@ export default class {
     /*setTimeout(() => {
      this.ambianceTransition()
      }, 6000)*/
-    this.blackFadeIn()
+    this.blackFadeIn();
   }
 
   blackFadeIn() {
     const player = this.world.getPlayer();
-    const tl = gsap.timeline();
-    this.manager.mainScene.background = new THREE.Color(0x000000);
+    console.log(this.world);
+    this.mainScene.background = new THREE.Color(0x000000);
 
+    const geometry = new THREE.PlaneBufferGeometry( window.innerWidth, window.innerHeight, 1 );
+    const material = new THREE.MeshBasicMaterial( {
+      color: 0x000000,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 1,
+    });
+    const plane = new THREE.Mesh( geometry, material );
+    const camera = player.group.children.find(e => e.name === "MainCamera");
+    camera.add(plane);
+    plane.position.set(0, 0,-1);
+
+    const tl = gsap.timeline({ delay: 4 });
 
     const color = new THREE.Color(0x365799);
 
-    tl.to(this.manager.mainScene.fog.color, {
+    tl.to(plane.material, {
+      opacity: 0,
+      duration: 1,
+      onComplete: () => {
+        camera.remove(plane);
+      }
+    }, 'fadeIn');
+    tl.to(this.mainScene.fog.color, {
       r: color.r,
       g: color.g,
       b: color.b,
-      delay: 2,
       duration: 1,
     }, 'fadeIn');
-    tl.to(this.manager.mainScene.background, {
+    tl.to(this.mainScene.background, {
       r: color.r,
       g: color.g,
       b: color.b,
-      delay: 2,
       duration: 1,
     }, 'fadeIn');
     tl.to(player.spotLight, {
       intensity: 1,
       duration: 3,
-      delay: 2,
       penumbra: 1,
     }, 'fadeIn');
-    tl.to(this.manager.globalLight, {
+    tl.to(this.globalLight, {
       intensity: 0.7,
-      delay: 2,
       duration: 5,
     }, 'fadeIn');
   }
