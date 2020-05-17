@@ -110,6 +110,7 @@ export default class extends Scene {
     if(objs.length === 0) return;
     // TODO refacto
     if (objs[0].object.name === "m1") {
+      this.manager.world.getPlayer().spotLight.color.setHex( 0x6d51fb );
       this.dropWord();
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm1');
