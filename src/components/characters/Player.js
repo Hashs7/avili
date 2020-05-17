@@ -75,6 +75,7 @@ export default class extends Character {
     this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(this.group.position));
     // this.spotLight.castShadow = true;
     this.spotLight.target = this.group;
+    this.spotLight.name = "playerSpotlight"
 
     // this.spotLight.lookAt(this.character.position);
     this.sceneManager.mainScene.add(this.spotLight);
