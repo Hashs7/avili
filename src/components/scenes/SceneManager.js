@@ -390,7 +390,6 @@ export default class {
       if (objs[0].object.name === "sectionSharing") {
         this.stopUpdateScene('WordScene');
         this.startUpdateScene('SpawnScene');
-        AudioManager.stopEndLoopAudio();
         state.goToState(GAME_STATES.final_teleportation);
       }
 

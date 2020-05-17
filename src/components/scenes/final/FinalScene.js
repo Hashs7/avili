@@ -5,6 +5,7 @@ import * as THREE from "three";
 import {toRadian} from "../../../utils";
 import TestimonyManager from "../../core/TestimonyManager";
 import LoadManager from "../../core/LoadManager";
+import AudioManager from "../../core/AudioManager";
 
 export default class extends Scene {
   constructor(manager) {
@@ -71,6 +72,7 @@ export default class extends Scene {
       player.addPseudo();
       this.manager.mainScene.fog.near = 20;
       this.manager.mainScene.fog.far = 30;
+      AudioManager.stopEndLoopAudio();
     }));
 
     const color = new THREE.Color(0x96e1ff);
@@ -81,20 +83,26 @@ export default class extends Scene {
       b: color.b,
       delay: 2,
       duration: 1,
+      onComplete: () => {
+        TestimonyManager.speak('narrateur_lou.mp3', 'final');
+      }
     }, 'fadeIn');
     tl.to(this.manager.mainScene.background, {
       r: color.r,
       g: color.g,
       b: color.b,
+      delay: 2,
       duration: 1,
     }, 'fadeIn');
     tl.to(player.spotLight, {
       intensity: 1,
       duration: 3,
+      delay: 2,
       penumbra: 1,
     }, 'fadeIn');
     tl.to(this.manager.globalLight, {
       intensity: 0.7,
+      delay: 2,
       duration: 5,
     }, 'fadeIn');
   }

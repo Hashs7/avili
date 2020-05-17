@@ -36,6 +36,7 @@
       return {
         background,
         show: false,
+        movement: false,
         tl: null,
         title: null,
         text: null,
@@ -82,9 +83,13 @@
         this.title = this.$t(`indications.${name}.title`);
         this.text = this.$t(`indications.${name}.text`);
         this.show = true;
+        if (name === 'start') {
+          this.movement = true;
+        }
       },
       removeIndication() {
         this.show = false;
+        this.movement = false;
       }
     },
   }

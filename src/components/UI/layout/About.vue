@@ -36,7 +36,7 @@
             </div>
             <div class="credits">
               <p>{{ $t('ui.design')}} :</p>
-              <p>Sulyvan Batt — Antoine Rault</p>
+              <p> Antoine Rault</p>
             </div>
           </div>
         </div>
