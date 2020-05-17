@@ -185,13 +185,13 @@ export default class extends Character {
     return isCollide;
   }
 
-  playerControls() {
+  playerControls(timeStep) {
 /*    const strafe = this.inputManager.controls.left && this.inputManager.controls.up ||
                   this.inputManager.controls.right && this.inputManager.controls.up ||
                   this.inputManager.controls.left && this.inputManager.controls.down ||
                   this.inputManager.controls.right && this.inputManager.controls.down;*/
     if (this.inputManager.controls.up) {
-      this.move(0)
+      this.move(timeStep, 0)
     }
     /*
     if (this.inputManager.controls.down) {
@@ -206,16 +206,17 @@ export default class extends Character {
     */
   }
 
-  move(decay) {
+  move(timeStep, decay) {
     // const speed = isStrafing ? this.speed / 2 : this.speed;
     // this.character.body.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
     // this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
     //console.log(this.group.position);
 
     if(!this.walkable) return;
+    console.log((timeStep + 0.984) * this.speed);
     this.nextPosition = {
-      x: Math.sin(this.character.rotation.y + decay) * this.speed,
-      z: Math.cos(this.character.rotation.y + decay) * this.speed
+      x: Math.sin(this.character.rotation.y + decay) * ((timeStep + 0.984) * this.speed),
+      z: Math.cos(this.character.rotation.y + decay) * ((timeStep + 0.984) * this.speed)
     };
 
     if (this.detectWallCollision(this.nextPosition)) {
@@ -235,7 +236,7 @@ export default class extends Character {
     // this.hitbox.position.copy(this.character.body.position);
     this.mixer.update( timeStep );
     this.raycaster.setFromCamera( this.mouse, this.camera );
-    this.playerControls();
+    this.playerControls(timeStep);
   }
 
   teleport(position, callback = null) {
