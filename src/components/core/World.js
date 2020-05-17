@@ -57,9 +57,11 @@ export default class {
     CameraOperator.setup(this, this.camera);
 
     // Stats showing fps
+    /*
     this.stats = new Stats();
     this.stats.showPanel(1);
     document.body.appendChild( this.stats.dom );
+    */
 
     LoadManager.setLoadedCallback(() => this.render());
 
@@ -115,7 +117,7 @@ export default class {
   async loadAssets() {
     const assetsDef = [{
       name: 'mapGltf',
-      path: './assets/models/map/map17-05.glb',
+      path: './assets/models/map/map15-05-low3.glb',
     },{
       name: 't1Gltf',
       path: './assets/models/environment/environment_tower_v2.glb',
@@ -180,7 +182,6 @@ export default class {
    * Rendering loop
    */
   render() {
-    this.stats.begin();
     this.renderDelta = this.clock.getDelta();
     let timeStep = this.renderDelta + this.logicDelta;
     // let timeStep = (this.renderDelta + this.logicDelta) * this.params.Time_Scale;
@@ -195,7 +196,6 @@ export default class {
     console.log("Geometries in Memory", this.renderer.info.memory.geometries)*/
 
     requestAnimationFrame(() => this.render());
-    this.stats.end();
   }
 
   setFollower(el) {

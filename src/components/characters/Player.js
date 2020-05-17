@@ -2,7 +2,7 @@ import * as THREE from 'three'
 import InputManager from "../core/InputManager";
 import AudioManager from "../core/AudioManager";
 import Character, { ACTIONS } from "./Character";
-import { makeTextSprite, throttle } from "../../utils";
+import { makeTextSprite } from "../../utils";
 import Stats from 'stats.js';
 
 export default class extends Character {
@@ -213,7 +213,6 @@ export default class extends Character {
     //console.log(this.group.position);
 
     if(!this.walkable) return;
-    console.log((timeStep + 0.984) * this.speed);
     this.nextPosition = {
       x: Math.sin(this.character.rotation.y + decay) * ((timeStep + 0.984) * this.speed),
       z: Math.cos(this.character.rotation.y + decay) * ((timeStep + 0.984) * this.speed)
