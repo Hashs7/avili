@@ -121,6 +121,8 @@ export default class extends Scene {
   }
 
   addWhiteScreen() {
+    this.manager.world.store.commit('setFinal', true);
+
     const geometry = new THREE.PlaneBufferGeometry( window.innerWidth, window.innerHeight, 1 );
     const material = new THREE.MeshBasicMaterial( {
       color: 0xffffff,
@@ -129,7 +131,7 @@ export default class extends Scene {
       opacity: 0,
     });
     const plane = new THREE.Mesh( geometry, material );
-    const camera = this.manager.world.player.group.children.find(e => e.name === "MainCamera")
+    const camera = this.manager.world.player.group.children.find(e => e.name === "MainCamera");
     camera.add(plane);
     plane.position.set(0, 0,-1);
 
@@ -137,7 +139,7 @@ export default class extends Scene {
       opacity: 1,
       duration: 2,
       onComplete: () => {
-        this.manager.world.store.commit('setFinal', true);
+        // this.manager.world.store.commit('setFinal', true);
         this.manager.world.destroy();
       }
     });

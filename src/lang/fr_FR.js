@@ -135,7 +135,7 @@ export default {
       last: 'false',
     },
     2: {
-      sentence: "Pour éviter cette situation le meilleur moyen c’est dans parler pour trouver des solutions.",
+      sentence: "Pour éviter cette situation le meilleur moyen c’est dans parler.",
       time: '5000',
       last: 'true',
     },

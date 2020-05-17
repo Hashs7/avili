@@ -18,6 +18,8 @@ import NPCManager from "./NPCManager";
 import AudioManager from '../core/AudioManager';
 import { removeObjectOnce } from "../../utils";
 import Skybox from "../core/Skybox";
+import LoadManager from "../core/LoadManager";
+import TestimonyManager from "../core/TestimonyManager";
 
 export default class {
   constructor(world, worldPhysic, camera) {
@@ -65,14 +67,50 @@ export default class {
 
   initMainScene() {
     // new Skybox(this.mainScene, 'cloud');
-    this.globalLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.7);
+    this.globalLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0);
     this.addFloor();
     this.mainScene.add(this.globalLight);
     this.mainScene.fog = new THREE.Fog(0x365799, 30, 40);
-    this.mainScene.background = new THREE.Color(0x365799);
+    // this.mainScene.background = new THREE.Color(0x365799);
     /*setTimeout(() => {
      this.ambianceTransition()
      }, 6000)*/
+    this.blackFadeIn()
+  }
+
+  blackFadeIn() {
+    const player = this.world.getPlayer();
+    const tl = gsap.timeline();
+    this.manager.mainScene.background = new THREE.Color(0x000000);
+
+
+    const color = new THREE.Color(0x365799);
+
+    tl.to(this.manager.mainScene.fog.color, {
+      r: color.r,
+      g: color.g,
+      b: color.b,
+      delay: 2,
+      duration: 1,
+    }, 'fadeIn');
+    tl.to(this.manager.mainScene.background, {
+      r: color.r,
+      g: color.g,
+      b: color.b,
+      delay: 2,
+      duration: 1,
+    }, 'fadeIn');
+    tl.to(player.spotLight, {
+      intensity: 1,
+      duration: 3,
+      delay: 2,
+      penumbra: 1,
+    }, 'fadeIn');
+    tl.to(this.manager.globalLight, {
+      intensity: 0.7,
+      delay: 2,
+      duration: 5,
+    }, 'fadeIn');
   }
 
   ambianceInfiltrationTransition() {
