@@ -243,11 +243,9 @@ export default class {
       if(child.name.startsWith('z')) {
         this.landingAreas.push(child);
       }
-      if(child.name === 'fans001') {
-        console.log(child);
-        var axesHelper = new THREE.AxesHelper( 5 );
+      if(child.name === 'fansWood') {}
+      if(child.name === 'fans') {
         this.fans = child;
-        this.fans.add(axesHelper);
       }
       if(child.name === 'Crystal'){
         this.spawnCrystal = child;
@@ -436,12 +434,12 @@ export default class {
         this.stopUpdateScene('FieldOfViewScene');
         this.startUpdateScene('WordScene');
         this.startUpdateScene('FinalScene');
+        this.startUpdateScene('SpawnScene');
         state.goToState(GAME_STATES.words_sequence_start);
       }
 
       if (objs[0].object.name === "sectionSharing") {
         this.stopUpdateScene('WordScene');
-        this.startUpdateScene('SpawnScene');
         state.goToState(GAME_STATES.final_teleportation);
       }
 

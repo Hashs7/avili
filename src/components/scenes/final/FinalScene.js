@@ -66,9 +66,9 @@ export default class extends Scene {
     }, 'fadeOut');
 
     tl.add(gsap.delayedCall(5, async () => {
+      player.teleport(new THREE.Vector3(0, 0, 0));
       const gltf = await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
       player.changeAppareance(gltf, 'npc');
-      player.teleport(new THREE.Vector3(0, 0, 0));
       player.addPseudo();
       this.manager.mainScene.fog.near = 20;
       this.manager.mainScene.fog.far = 30;
@@ -81,7 +81,7 @@ export default class extends Scene {
       r: color.r,
       g: color.g,
       b: color.b,
-      delay: 2,
+      delay: 3,
       duration: 1,
       onComplete: () => {
         TestimonyManager.speak('narrateur_lou.mp3', 'final');
@@ -91,18 +91,18 @@ export default class extends Scene {
       r: color.r,
       g: color.g,
       b: color.b,
-      delay: 2,
+      delay: 3,
       duration: 1,
     }, 'fadeIn');
     tl.to(player.spotLight, {
       intensity: 1,
       duration: 3,
-      delay: 2,
+      delay: 3,
       penumbra: 1,
     }, 'fadeIn');
     tl.to(this.manager.globalLight, {
       intensity: 0.7,
-      delay: 2,
+      delay: 3,
       duration: 5,
     }, 'fadeIn');
   }
