@@ -126,8 +126,8 @@ export default class extends Scene {
       // }, 7500)
       setTimeout(() => {
         document.dispatchEvent(new CustomEvent('npcAudio', { detail: { sequence: 'start' }}));
-      }, 6100)
-    }, 40000);
+      }, 5800)
+    }, 37000);
 
 
     setTimeout(() => {
@@ -152,10 +152,10 @@ export default class extends Scene {
         duration: 0.5,
         ease: 'power2.in',
       })
-    }, 42000);
+    }, 40000);
     setTimeout(() => {
       this.world.indicationComponent.setIndication('start');
-    },48000)
+    },46000)
   }
 
   upAndDownCrystalAnimation() {
