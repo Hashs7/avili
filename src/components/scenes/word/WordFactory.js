@@ -73,7 +73,7 @@ export default class WordFactory {
     mesh.size = mesh.geometry.boundingBox.getSize(new THREE.Vector3());
 
     const hitGeometry = new THREE.BoxGeometry( mesh.size.x, mesh.size.y, mesh.size.z );
-    const hitbox = new THREE.Mesh(hitGeometry, new THREE.MeshBasicMaterial({ wireframe: true }));
+    const hitbox = new THREE.Mesh(hitGeometry, new THREE.MeshBasicMaterial({ visible: false }));
     hitbox.name = 'hitbox-' + text;
     hitbox.position.add(new THREE.Vector3(0,mesh.size.y/2, 0));
     mesh.add(hitbox);
@@ -116,7 +116,7 @@ export default class WordFactory {
   setClickMarker(x,y,z) {
     if(!this.clickMarker){
       const shape = new THREE.SphereGeometry(0.2, 8, 8);
-      const markerMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000 } );
+      const markerMaterial = new THREE.MeshLambertMaterial( { color: 0xff0000, visible: false } );
       this.clickMarker = new THREE.Mesh(shape, markerMaterial);
       this.clickMarker.name = 'ClickMarker';
       this.scene.add(this.clickMarker);

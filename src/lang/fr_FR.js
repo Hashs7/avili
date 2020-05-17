@@ -123,12 +123,33 @@ export default {
       last: 'true',
     },
   },
+  final: {
+    0: {
+      sentence: "Améliorer la position de la femme en tant que joueuse aura un impact sur tout le milieu du jeu vidéo.",
+      time: '5200',
+      last: 'false',
+    },
+    1: {
+      sentence: "Et tous les hommes sont responsables.",
+      time: '3000',
+      last: 'false',
+    },
+    2: {
+      sentence: "Pour éviter cette situation le meilleur moyen c’est dans parler.",
+      time: '5000',
+      last: 'true',
+    },
+  },
 
   // Indications helper
   indications: {
     start: {
       title: 'Déplacement',
-      text: 'Appuyez sur la touche z pour avancer et utilisez votre souris pour vous orienter',
+      text: 'Appuyez sur la touche z pour avancer et utilisez votre curseur pour vous orienter',
+    },
+    words: {
+      title: 'Obstacles',
+      text: "Soulevez les mots à l'aide curseur en cliquant dessus",
     }
   },
 

@@ -128,7 +128,11 @@ export default {
   indications: {
     start: {
       title: 'Movement',
-      text: 'Push Z to move forward and use your mouse to rotate',
+      text: 'Push z to move forward and use your mouse to rotate',
+    },
+    words: {
+      title: 'Obstacles',
+      text: "Lift the word using cursor and clicking on it",
     }
   },
 
@@ -136,12 +140,12 @@ export default {
   ui: {
     play: 'Play',
     about: 'About',
-    heaset: "The use of headphones is strongly recommended",
+    headset: "The use of headphones is strongly recommended",
     end: "The first step is to talk about. Share the experience link and come discuss on discord",
     content: {
       duration: "Student WebGL project realised in 2 months",
       definition: "Lower someone until he loses his dignity, degrade him and dishonor him.",
-      description: "Avili is sensibilisation experience about the position of woman as a player. This experience can serve as an entry point to open the dialogue and as such allow things to change.",
+      description: "Avili is a sensibilisation experience about the position of woman as a player. This experience can serve as an entry point to open the dialogue and as such allow things to change.",
     },
     credits: "Credits",
     dev: "Developers",

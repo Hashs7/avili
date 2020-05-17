@@ -14,7 +14,7 @@ import gsap from 'gsap';
 const wordsDef = [{
   text: 'Inutile',
   mass: 50,
-  position: new Vec3(127, 10, 0),
+  position: new Vec3(127, 10, -2),
   collide: false,
   movable: true,
   path: 'inutile.glb',
@@ -28,20 +28,20 @@ const wordsDef = [{
 }, {
   text: 'Moche',
   mass: 100,
-  position: new Vec3(140, 70, 0),
+  position: new Vec3(143, 70, 0),
   collide: true,
   movable: true,
   path: 'moche.glb',
 }, {
   text: 'Pute',
-  mass: 100,
+  mass: 150,
   position: new Vec3(157, 70, 0),
   collide: true,
   movable: false,
   path: 'pute.glb',
 }, {
   text: 'Salope',
-  mass: 100,
+  mass: 170,
   position: new Vec3(148, 70, -1),
   collide: true,
   movable: false,
@@ -52,6 +52,7 @@ export default class extends Scene {
   constructor(world, camera, manager, material, sections) {
     super();
     this.world = world;
+    this.manager = manager;
     this.sections = sections;
     this.scene.name = "WordScene";
     this.wordIndex = 0;
@@ -76,8 +77,8 @@ export default class extends Scene {
     //TODO enable after player enter section
     document.addEventListener('playerMoved', (e) => {
       this.detectWall(e);
-      let word = this.detectWord(e);
-      if(word) {
+      const word = this.detectWord(e);
+      if (word) {
         this.wordFadeIn(word);
       }
     });
@@ -109,10 +110,14 @@ export default class extends Scene {
     if(objs.length === 0) return;
     // TODO refacto
     if (objs[0].object.name === "m1") {
+      this.manager.world.getPlayer().spotLight.color.setHex( 0x6d51fb );
       this.dropWord();
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm1');
-      TestimonyManager.speak('first_badword.mp3', 'first_badword');
+
+      setTimeout(() => {
+        TestimonyManager.speak('first_badword.mp3', 'first_badword');
+      }, 5000)
     }
     if (objs[0].object.name === "m2") {
       this.dropWord();
@@ -123,19 +128,27 @@ export default class extends Scene {
       this.dropWord();
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm3');
-      TestimonyManager.speak('second_badword.mp3', 'second_badword');
+      setTimeout(() => {
+        TestimonyManager.speak('second_badword.mp3', 'second_badword');
+      }, 4000)
+
+
+      setTimeout(() => {
+        this.manager.world.indicationComponent.setIndication('words');
+      }, 7000)
     }
     if (objs[0].object.name === "m5") {
       this.dropWord();
+      this.manager.world.indicationComponent.removeIndication();
       objs[0].object.name += 'Passed';
       this.sections = this.sections.filter(s => s.name !== 'm3');
 
       setTimeout(() => {
         this.dropWord();
-      }, 2000);
+      }, 4000);
       setTimeout(() => {
         new State().goToState(GAME_STATES.final_black_screen);
-      }, 5000);
+      }, 8000);
     }
   }
 

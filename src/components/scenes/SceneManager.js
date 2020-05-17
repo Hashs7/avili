@@ -18,6 +18,8 @@ import NPCManager from "./NPCManager";
 import AudioManager from '../core/AudioManager';
 import { removeObjectOnce } from "../../utils";
 import Skybox from "../core/Skybox";
+import LoadManager from "../core/LoadManager";
+import TestimonyManager from "../core/TestimonyManager";
 
 export default class {
   constructor(world, worldPhysic, camera) {
@@ -33,7 +35,6 @@ export default class {
 
     this.matesPos = [];
     this.mainScene = new THREE.Scene();
-    this.initMainScene();
 
     this.colliders = [];
     this.sections = [];
@@ -65,14 +66,65 @@ export default class {
 
   initMainScene() {
     // new Skybox(this.mainScene, 'cloud');
-    this.globalLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0.7);
+    this.globalLight = new THREE.HemisphereLight(0xffffff, 0x444444, 0);
     this.addFloor();
     this.mainScene.add(this.globalLight);
     this.mainScene.fog = new THREE.Fog(0x365799, 30, 40);
-    this.mainScene.background = new THREE.Color(0x365799);
+    // this.mainScene.background = new THREE.Color(0x365799);
     /*setTimeout(() => {
      this.ambianceTransition()
      }, 6000)*/
+    this.blackFadeIn();
+  }
+
+  blackFadeIn() {
+    const player = this.world.getPlayer();
+    this.mainScene.background = new THREE.Color(0x000000);
+
+    const geometry = new THREE.PlaneBufferGeometry( window.innerWidth, window.innerHeight, 1 );
+    const material = new THREE.MeshBasicMaterial( {
+      color: 0x000000,
+      side: THREE.DoubleSide,
+      transparent: true,
+      opacity: 1,
+    });
+    const plane = new THREE.Mesh( geometry, material );
+    const camera = player.group.children.find(e => e.name === "MainCamera");
+    camera.add(plane);
+    plane.position.set(0, 0,-1);
+
+    const tl = gsap.timeline({ delay: 4 });
+
+    const color = new THREE.Color(0x365799);
+
+    tl.to(plane.material, {
+      opacity: 0,
+      duration: 1,
+      onComplete: () => {
+        camera.remove(plane);
+      }
+    }, 'fadeIn');
+    tl.to(this.mainScene.fog.color, {
+      r: color.r,
+      g: color.g,
+      b: color.b,
+      duration: 1,
+    }, 'fadeIn');
+    tl.to(this.mainScene.background, {
+      r: color.r,
+      g: color.g,
+      b: color.b,
+      duration: 1,
+    }, 'fadeIn');
+    tl.to(player.spotLight, {
+      intensity: 1,
+      duration: 3,
+      penumbra: 1,
+    }, 'fadeIn');
+    tl.to(this.globalLight, {
+      intensity: 0.7,
+      duration: 5,
+    }, 'fadeIn');
   }
 
   ambianceInfiltrationTransition() {
@@ -119,8 +171,8 @@ export default class {
       duration,
     }, 'start');
     tl.to(this.mainScene.fog, {
-      near: 10,
-      far: 20,
+      near: 18,
+      far: 25,
       duration,
     }, 'start');
   }
@@ -191,11 +243,9 @@ export default class {
       if(child.name.startsWith('z')) {
         this.landingAreas.push(child);
       }
-      if(child.name === 'fans001') {
-        console.log(child);
-        var axesHelper = new THREE.AxesHelper( 5 );
+      if(child.name === 'fansWood') {}
+      if(child.name === 'fans') {
         this.fans = child;
-        this.fans.add(axesHelper);
       }
       if(child.name === 'Crystal'){
         this.spawnCrystal = child;
@@ -384,13 +434,12 @@ export default class {
         this.stopUpdateScene('FieldOfViewScene');
         this.startUpdateScene('WordScene');
         this.startUpdateScene('FinalScene');
+        this.startUpdateScene('SpawnScene');
         state.goToState(GAME_STATES.words_sequence_start);
       }
 
       if (objs[0].object.name === "sectionSharing") {
         this.stopUpdateScene('WordScene');
-        this.startUpdateScene('SpawnScene');
-        AudioManager.stopEndLoopAudio();
         state.goToState(GAME_STATES.final_teleportation);
       }
 
@@ -425,8 +474,8 @@ export default class {
     for (let i = 0; i < this.updateScenes.length; i++) {
       this.updateScenes[i].instance.update();
     }
-    if (!this.fans) return;
-    // console.log(this.fans);
+    // if (!this.fans) return;
+    // this.fans.rotateX(0.01);
     // let invWorldRot = object.getWorldQuaternion(new THREE.Quaternion()).inverse();
     // axis.applyQuaternion(invWorldRot);
     //
@@ -448,3 +497,232 @@ export default class {
     // Dispose all objects
   }
 }
+
+
+//======================================================================
+// http://jsfiddle.net/0hoawrkn/
+/*function init() {
+
+  scene = new THREE.Scene();
+  scene.add(new THREE.AmbientLight(0x222222));
+
+  camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 1, 10000);
+  camera.position.x = 50;
+  camera.position.y = -120;
+  camera.position.z = 800;
+  camera.lookAt(0, 0, 0);
+  scene.add(camera);
+
+  //Plane02
+  var Plane02Geo = new THREE.PlaneGeometry(450, 450);
+  var Plane02Material = new THREE.MeshPhongMaterial({
+    side: THREE.DoubleSide
+  }, {
+    color: 0x660000
+  });
+  Plane02 = new THREE.Mesh(Plane02Geo, Plane02Material);
+  Plane02.position.set(0, 0, -120);
+  scene.add(Plane02);
+
+  //SPHERES
+  var t_Geometry = new THREE.SphereGeometry(10, 20, 20);
+  var t_Material = new THREE.MeshLambertMaterial({
+    color: 0xffffff,
+    opacity: 0.8
+  });
+  t_Material.transparent = true;
+  target = new THREE.Mesh(t_Geometry, t_Material);
+  scene.add(target);
+
+  var s_Geometry = new THREE.SphereGeometry(15, 20, 20);
+  var s1_Material = new THREE.MeshPhongMaterial({
+    color: 0x888888
+  });
+  var s2_Material = new THREE.MeshPhongMaterial({
+    color: 0x888888
+  });
+  var s3_Material = new THREE.MeshPhongMaterial({
+    color: 0x888888
+  });
+  var s4_Material = new THREE.MeshPhongMaterial({
+    color: 0x888888
+  });
+
+  s1 = new THREE.Mesh(s_Geometry, s1_Material);
+  s2 = new THREE.Mesh(s_Geometry, s2_Material);
+  s3 = new THREE.Mesh(s_Geometry, s3_Material);
+  s4 = new THREE.Mesh(s_Geometry, s4_Material);
+  s1.position.set(-140, -80, -120);
+  s2.position.set(-90, 140, -120);
+  s3.position.set(80, 80, -120);
+  s4.position.set(140, -80, -120);
+  scene.add(s1);
+  scene.add(s2);
+  scene.add(s3);
+  scene.add(s4);
+
+  //CONE
+  wc_geometry = new THREE.CylinderGeometry(3, 40, 120, 40, 10, false);
+  //... Following mod is as rec by WestLangley's answer at:-
+  //... http://stackoverflow.com/questions/13757483/three-js-lookat-seems-to-be-flipped
+  //... LookAt points the object's Z-axis at the target object.
+  wc_geometry.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI / 2));
+  wc_material = new THREE.MeshPhongMaterial({
+    color: 0xffffff
+  });
+  //wc_material = new THREE.MeshNormalMaterial( );//OK
+  //wc_material = new THREE.MeshLambertMaterial( {color: 0x00aaff, side: THREE.DoubleSide} ); //BAD
+  worldCone = new THREE.Mesh(wc_geometry, wc_material);
+  worldCone.scale.set(0.2, 0.5, 1);
+  worldCone.position.set(0, 0, 0);
+  var worldCone_axisHelper = new THREE.AxisHelper(100);
+  worldCone.add(worldCone_axisHelper);
+  scene.add(worldCone);
+
+  //LOCAL BOX
+
+  b_geometry = new THREE.BoxGeometry(60, 50, 40);
+  b_material = new THREE.MeshPhongMaterial({
+    color: 0xffaa00,
+    side: THREE.DoubleSide
+  });
+  worldBox = new THREE.Mesh(b_geometry, b_material);
+  worldBox.position.set(0, -90, 150);
+  var worldBox_axisHelper = new THREE.AxisHelper(100);
+  worldBox.add(worldBox_axisHelper);
+  scene.add(worldBox);
+
+  //LOCAL CONES
+  lc_geometry = new THREE.CylinderGeometry(3, 40, 120, 40, 10, false);
+  lc_geometry.applyMatrix(new THREE.Matrix4().makeRotationX(Math.PI / 2));
+
+  lc_material_R = new THREE.MeshPhongMaterial({
+    color: 0xff3300,
+    side: THREE.DoubleSide
+  });
+  lc_material_G = new THREE.MeshPhongMaterial({
+    color: 0xaaff00,
+    side: THREE.DoubleSide
+  });
+  lc_material_B = new THREE.MeshPhongMaterial({
+    color: 0x00aaff,
+    side: THREE.DoubleSide
+  });
+
+  localCone_R = new THREE.Mesh(lc_geometry, lc_material_R);
+  localCone_G = new THREE.Mesh(lc_geometry, lc_material_G);
+  localCone_B = new THREE.Mesh(lc_geometry, lc_material_B);
+
+  var localVec_axisHelper_R = new THREE.AxisHelper(100);
+  var localVec_axisHelper_G = new THREE.AxisHelper(100);
+  var localVec_axisHelper_B = new THREE.AxisHelper(100);
+
+  localCone_R.add(localVec_axisHelper_R);
+  localCone_G.add(localVec_axisHelper_G);
+  localCone_B.add(localVec_axisHelper_B);
+
+  localCone_R.scale.set(0.2, 0.5, 1);
+  localCone_G.scale.set(0.2, 0.5, 1);
+  localCone_B.scale.set(0.2, 0.5, 1);
+
+  localCone_R.position.set(80, 0, 0);
+  localCone_G.position.set(0, 80, 0);
+  localCone_B.position.set(0, 0, 80);
+
+  worldBox.add(localCone_R);
+  worldBox.add(localCone_G);
+  worldBox.add(localCone_B);
+
+
+  //ORBIT CONTROLS
+}
+
+//======================================================================
+
+function animate() {
+  dt = 0.1;
+  time += dt;
+
+  requestAnimationFrame(animate);
+
+  SOW_F_Position_Copy_from_vector3_to_Object3D(s1.position, target)
+
+
+  worldCone.lookAt(target.position); //... Works with the c_geometry rotation.
+  var worldVec = new THREE.Vector3();
+  //worldVec = target.position.clone(); ///... relative to World Origin(0,0,0)
+  //NOPE target.position.copy(worldVec);
+  worldVec.copy(target.position).sub(worldCone.position);
+
+  worldBox.rotation.x += 0.01;
+  worldBox.rotation.y += 0.03;
+  worldBox.rotation.z += 0.02;
+
+  var localVec = new THREE.Vector3();
+  localVec = localeDirection(worldBox, worldVec, localVec);
+
+  //=================================================================
+  function localeDirection(givenObject, WDV, LDV) {
+    givenObject.updateMatrixWorld();
+
+    //FLABBY method: - OK but verbose and excessive object creation
+    /!*
+     var ob_InvWorldQuaternion = new THREE.Quaternion();
+     ob_InvWorldQuaternion = ob_WorldQuaternion.inverse();
+     LDV.copy( WDV ).applyQuaternion( ob_InvWorldQuaternion );
+     *!/
+
+    //LEAN method: copies WDV value into LDV then applies inverse world quaternion of givenObject.
+
+    LDV.copy(WDV).applyQuaternion(givenObject.getWorldQuaternion().inverse());
+
+    return LDV;
+  }
+  //=================================================================
+
+  //... Apply localVec
+  //... Get the LocalCone to point in the direction of the LocalVec
+
+  var localCone_target_pos = new THREE.Vector3();
+
+  //... LHS becomes sum of two RHS vectors
+  localCone_target_pos.addVectors(localCone_G.position, localVec);
+
+  //... ORIENT THE CHILD CONES
+  localCone_R.lookAt(1, 0, 0);
+
+  localCone_G.lookAt(localCone_target_pos);
+
+  localCone_B.lookAt(1, 0, 0);
+  localCone_B.quaternion.multiply(worldBox.getWorldQuaternion().inverse());
+  localCone_B.quaternion.multiply(worldCone.quaternion);
+
+
+  //... Report to TextBox
+
+  var field = 'myTextField'
+  var text1 = //"WorldVec xyz: ( "
+    +Math.floor(worldVec.x * 100) / 100 + "," + Math.floor(worldVec.y * 100) / 100 + "," + Math.floor(worldVec.z * 100) / 100 //+")   ";
+  var text2 = //"LocalVec xyz: ( "
+    +Math.floor(localVec.x * 100) / 100 + "," + Math.floor(localVec.y * 100) / 100 + "," + Math.floor(localVec.z * 100) / 100 //+")";
+  var text = text1 + text2;
+  //var xxx = F_Update_textbox( field, text); //... superseded by DAT.GUI.
+
+  //... Report to DAT.GUI
+
+  //... METHOD 1 Selective fields updated ...works OK.
+  //... METHOD 2 Iterate over all gui controllers...
+  //for (var iii in gui.__controllers ) //...
+
+  for (var iii = 0; iii < gui.__controllers.length; iii++) {
+    gui.__controllers[iii].updateDisplay();
+  }
+
+  //------------------------------------
+
+  renderer.render(scene, camera);
+
+  if (time > 50) time = 0;
+
+
+}*/

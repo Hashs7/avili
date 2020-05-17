@@ -11,6 +11,7 @@
         </div>
         <div class="indication__txt" ref="txt">
           <p v-if="title === 'Déplacement'">Appuyez sur la touche <span class="indication__key"><Key /></span> pour avancer et utilisez votre souris pour vous orienter</p>
+          <p v-else-if="title === 'Movement'">Push <span class="indication__key"><Key /></span> to move forward and use your mouse to rotate</p>
           <p v-else>{{ text }}</p>
         </div>
       </div>
@@ -35,6 +36,7 @@
       return {
         background,
         show: false,
+        movement: false,
         tl: null,
         title: null,
         text: null,
@@ -81,9 +83,13 @@
         this.title = this.$t(`indications.${name}.title`);
         this.text = this.$t(`indications.${name}.text`);
         this.show = true;
+        if (name === 'start') {
+          this.movement = true;
+        }
       },
       removeIndication() {
         this.show = false;
+        this.movement = false;
       }
     },
   }

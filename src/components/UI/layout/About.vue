@@ -39,6 +39,11 @@
               <p>Sulyvan Batt — Antoine Rault</p>
             </div>
           </div>
+
+          <div class="logos" ref="content5">
+            <img ref="img" src="@/assets/img/gobelins.png" alt="logo" draggable="false" class="logo-gobelins">
+            <img ref="img" src="@/assets/img/cci.png" alt="logo" draggable="false" class="logo-cci">
+          </div>
         </div>
       </div>
     </div>
@@ -74,7 +79,7 @@
         x: 0,
         duration: .7,
       });
-      this.tl.from([this.$refs.content1, this.$refs.content2, this.$refs.content3, this.$refs.content4], {
+      this.tl.from([this.$refs.content1, this.$refs.content2, this.$refs.content3, this.$refs.content4, this.$refs.content5], {
         y: 10,
         opacity: 0,
         stagger: .15,
@@ -148,6 +153,7 @@
     padding: 0;
     width: 75px;
     height: 75px;
+    box-shadow: 0 3px 6px 0 rgba(0,0,0,0.15);
   }
 
   .lines {
@@ -229,6 +235,19 @@
 
     p {
       font-size: 16px;
+    }
+  }
+
+  .logos {
+    display: block;
+    margin-top: 40px;
+
+    .logo-gobelins {
+      margin-right: 30px;
+      vertical-align: middle;
+    }
+    .logo-cci {
+      vertical-align: middle;
     }
   }
 </style>

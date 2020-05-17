@@ -31,6 +31,7 @@ class AudioManager {
       'second_badword.mp3',
       'spawn_mates.mp3',
       'spawn_player.mp3',
+      'narrateur_lou.mp3',
     ];
     audioTestimony.forEach(file => {
       LoadManager.loadAudio(prefixTestimony + file, (buffer) => {
@@ -66,9 +67,15 @@ class AudioManager {
 
   stopIntroLoopAudio() {
     if (!this.introAudio) return;
-    this.introAudio.pause();
-    this.introAudio.currentTime = 0;
-    this.introAudio.removeEventListener('ended', this.bindIntro);
+    gsap.to(this.introAudio, {
+      volume: 0,
+      duration: 1,
+      onComplete: () => {
+        this.introAudio.pause();
+        this.introAudio.currentTime = 0;
+        this.introAudio.removeEventListener('ended', this.bindEnd);
+      }
+    });
   }
 
   setWindLoopAudio() {
@@ -79,9 +86,15 @@ class AudioManager {
 
   stopWindLoopAudio() {
     if (!this.windAudio) return;
-    this.windAudio.pause();
-    this.windAudio.currentTime = 0;
-    this.windAudio.removeEventListener('ended', this.bindWind);
+    gsap.to(this.windAudio, {
+      volume: 0,
+      duration: 1,
+      onComplete: () => {
+        this.windAudio.pause();
+        this.windAudio.currentTime = 0;
+        this.windAudio.removeEventListener('ended', this.bindEnd);
+      }
+    })
   }
 
   setEndLoopAudio() {
@@ -92,9 +105,15 @@ class AudioManager {
 
   stopEndLoopAudio() {
     if (!this.endAudio) return;
-    this.endAudio.pause();
-    this.endAudio.currentTime = 0;
-    this.endAudio.removeEventListener('ended', this.bindEnd);
+    gsap.to(this.endAudio, {
+      volume: 0,
+      duration: 1,
+      onComplete: () => {
+        this.endAudio.pause();
+        this.endAudio.currentTime = 0;
+        this.endAudio.removeEventListener('ended', this.bindEnd);
+      }
+    })
   }
 
   groupListener(group) {

@@ -5,6 +5,7 @@ import * as THREE from "three";
 import {toRadian} from "../../../utils";
 import TestimonyManager from "../../core/TestimonyManager";
 import LoadManager from "../../core/LoadManager";
+import AudioManager from "../../core/AudioManager";
 
 export default class extends Scene {
   constructor(manager) {
@@ -20,10 +21,11 @@ export default class extends Scene {
       }
       else if (e.detail === GAME_STATES.final_teleportation){
         const group = this.manager.world.getPlayer().group;
+
         const pseudo = group.children.find(e => e.name === "pseudo");
-        const player = group.children.find(e => e.name === "Emilie");
+        const npc = group.children.find(e => e.name === "npc");
         pseudo.visible = false;
-        player.visible = false;
+        npc.visible = false;
 
         this.addWhiteScreen()
       }
@@ -65,11 +67,12 @@ export default class extends Scene {
 
     tl.add(gsap.delayedCall(5, async () => {
       player.teleport(new THREE.Vector3(0, 0, 0));
+      const gltf = await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
+      player.changeAppareance(gltf, 'npc');
       player.addPseudo();
       this.manager.mainScene.fog.near = 20;
       this.manager.mainScene.fog.far = 30;
-      const gltf = await LoadManager.loadGLTF('./assets/models/characters/npc.glb');
-      player.changeAppareance(gltf, 'npc');
+      AudioManager.stopEndLoopAudio();
     }));
 
     const color = new THREE.Color(0x96e1ff);
@@ -78,21 +81,28 @@ export default class extends Scene {
       r: color.r,
       g: color.g,
       b: color.b,
+      delay: 3,
       duration: 1,
+      onComplete: () => {
+        TestimonyManager.speak('narrateur_lou.mp3', 'final');
+      }
     }, 'fadeIn');
     tl.to(this.manager.mainScene.background, {
       r: color.r,
       g: color.g,
       b: color.b,
+      delay: 3,
       duration: 1,
     }, 'fadeIn');
     tl.to(player.spotLight, {
       intensity: 1,
       duration: 3,
+      delay: 3,
       penumbra: 1,
     }, 'fadeIn');
     tl.to(this.manager.globalLight, {
       intensity: 0.7,
+      delay: 3,
       duration: 5,
     }, 'fadeIn');
   }
@@ -111,6 +121,8 @@ export default class extends Scene {
   }
 
   addWhiteScreen() {
+    this.manager.world.store.commit('setFinal', true);
+
     const geometry = new THREE.PlaneBufferGeometry( window.innerWidth, window.innerHeight, 1 );
     const material = new THREE.MeshBasicMaterial( {
       color: 0xffffff,
@@ -119,7 +131,7 @@ export default class extends Scene {
       opacity: 0,
     });
     const plane = new THREE.Mesh( geometry, material );
-    const camera = this.manager.world.player.group.children.find(e => e.name === "MainCamera")
+    const camera = this.manager.world.player.group.children.find(e => e.name === "MainCamera");
     camera.add(plane);
     plane.position.set(0, 0,-1);
 
@@ -127,7 +139,7 @@ export default class extends Scene {
       opacity: 1,
       duration: 2,
       onComplete: () => {
-        this.manager.world.store.commit('setFinal', true);
+        // this.manager.world.store.commit('setFinal', true);
         this.manager.world.destroy();
       }
     });

@@ -71,10 +71,11 @@ export default class extends Character {
   groupCamera() {
     this.group.position.set(0, 0, 0);
 
-    this.spotLight = new THREE.SpotLight( 0xAD9DFB, 1, 0, Math.PI/10, 1);
+    this.spotLight = new THREE.SpotLight( 0xAD9DFB, 0, 0, Math.PI/10, 1);
     this.spotLight.position.copy(new THREE.Vector3(-12, 15, 5).add(this.group.position));
     // this.spotLight.castShadow = true;
     this.spotLight.target = this.group;
+    this.spotLight.name = "playerSpotlight"
 
     // this.spotLight.lookAt(this.character.position);
     this.sceneManager.mainScene.add(this.spotLight);
@@ -142,7 +143,10 @@ export default class extends Character {
       this.prepareCrossFade(this.idleAction);
     }
 
-    if(this.sceneManager.world.indicationComponent && this.sceneManager.world.indicationComponent.show) {
+    if (this.sceneManager.world.indicationComponent &&
+      this.sceneManager.world.indicationComponent.show &&
+      this.sceneManager.world.indicationComponent.movement &&
+      this.inputManager.controls.up) {
       this.sceneManager.world.indicationComponent.removeIndication();
     }
 
@@ -206,6 +210,7 @@ export default class extends Character {
     // const speed = isStrafing ? this.speed / 2 : this.speed;
     // this.character.body.position.x += Math.sin(this.character.rotation.y + decay) * this.speed;
     // this.character.body.position.z += Math.cos(this.character.rotation.y + decay) * this.speed;
+    //console.log(this.group.position);
 
     if(!this.walkable) return;
     this.nextPosition = {
