@@ -243,7 +243,9 @@ export default class {
       if(child.name.startsWith('z')) {
         this.landingAreas.push(child);
       }
-      if(child.name === 'fansWood') {}
+      if(child.name === 'fansWood') {
+        this.fansWood = child;
+      }
       if(child.name === 'fans') {
         this.fans = child;
       }
