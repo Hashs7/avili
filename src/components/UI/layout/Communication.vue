@@ -37,6 +37,7 @@
     vertical-align: top;
     font-family: $font-pseudo;
     text-shadow: -2px 2px $primary;
+    user-select: none;
   }
 
   .communication__icon {
@@ -44,5 +45,6 @@
     width: 30px;
     vertical-align: middle;
     margin-left: 10px;
+    user-select: none;
   }
 </style>

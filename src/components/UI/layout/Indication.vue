@@ -112,6 +112,7 @@
     font-weight: 400;
     font-size: 32px;
     text-transform: uppercase;
+    user-select: none;
   }
 
   .indication__chevron {
@@ -137,9 +138,11 @@
     padding: 0 16px;
     color: $white;
     text-align: center;
+    user-select: none;
   }
 
   .indication__txt {
+    user-select: none;
     margin-top: 20px;
     font-weight: bold;
     font-size: 20px;

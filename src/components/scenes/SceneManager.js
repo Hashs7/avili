@@ -79,7 +79,6 @@ export default class {
 
   blackFadeIn() {
     const player = this.world.getPlayer();
-    console.log(this.world);
     this.mainScene.background = new THREE.Color(0x000000);
 
     const geometry = new THREE.PlaneBufferGeometry( window.innerWidth, window.innerHeight, 1 );
@@ -244,11 +243,9 @@ export default class {
       if(child.name.startsWith('z')) {
         this.landingAreas.push(child);
       }
-      if(child.name === 'fans001') {
-        console.log(child);
-        var axesHelper = new THREE.AxesHelper( 5 );
+      if(child.name === 'fansWood') {}
+      if(child.name === 'fans') {
         this.fans = child;
-        this.fans.add(axesHelper);
       }
       if(child.name === 'Crystal'){
         this.spawnCrystal = child;
@@ -437,12 +434,12 @@ export default class {
         this.stopUpdateScene('FieldOfViewScene');
         this.startUpdateScene('WordScene');
         this.startUpdateScene('FinalScene');
+        this.startUpdateScene('SpawnScene');
         state.goToState(GAME_STATES.words_sequence_start);
       }
 
       if (objs[0].object.name === "sectionSharing") {
         this.stopUpdateScene('WordScene');
-        this.startUpdateScene('SpawnScene');
         state.goToState(GAME_STATES.final_teleportation);
       }
 
@@ -477,8 +474,8 @@ export default class {
     for (let i = 0; i < this.updateScenes.length; i++) {
       this.updateScenes[i].instance.update();
     }
-    if (!this.fans) return;
-    this.fans.rotateZ(0.01);
+    // if (!this.fans) return;
+    // this.fans.rotateX(0.01);
     // let invWorldRot = object.getWorldQuaternion(new THREE.Quaternion()).inverse();
     // axis.applyQuaternion(invWorldRot);
     //
