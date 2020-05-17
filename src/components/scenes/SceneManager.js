@@ -79,7 +79,6 @@ export default class {
 
   blackFadeIn() {
     const player = this.world.getPlayer();
-    console.log(this.world);
     this.mainScene.background = new THREE.Color(0x000000);
 
     const geometry = new THREE.PlaneBufferGeometry( window.innerWidth, window.innerHeight, 1 );

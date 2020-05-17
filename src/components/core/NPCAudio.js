@@ -185,7 +185,6 @@ export default class NPCAudio {
    */
   insultsSequence(pseudo) {
     // TODO en fonction du pseudo du fov
-    console.log(fovAudio[this.fovDetected], this.fovDetected);
     const { name, sound, time } = fovAudio[this.fovDetected];
     this.play(name, sound, time);
     this.fovDetected !== 2 ?

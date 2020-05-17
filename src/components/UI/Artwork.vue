@@ -1,12 +1,16 @@
 <template>
   <div>
     <div class="ui-container">
-      <div class="btn-play">
-        <button class="btn-container" data-hover="big" data-click="disapear" @click="play">
-          <span class="text">{{ $t('ui.play') }}</span>
-          <span class="icon"><PlayIcon/></span>
-        </button>
+      <div class="logo-container">
+        <img ref="img" src="@/assets/img/logo.png" alt="logo" draggable="false" class="logo">
+        <div class="btn-play">
+          <button class="btn-container" data-hover="big" data-click="disapear" @click="play">
+            <span class="text">{{ $t('ui.play') }}</span>
+            <span class="icon"><PlayIcon/></span>
+          </button>
+        </div>
       </div>
+
       <button class="btn-about" data-hover="big" data-click="disapear" @click="showAbout">{{ $t('ui.about') }}</button>
       <div class="lang-container">
         <button :class="{current: $i18n.locale() === 'fr'}" class="btn-lang fr" data-hover="big"
@@ -84,6 +88,15 @@
     z-index: 1000;
   }
 
+  .logo-container {
+    position: absolute;
+    top: 170px;
+    left: 170px;
+    .logo {
+      width: 520px;
+    }
+  }
+
   .vignettage {
     position: absolute;
     z-index: 10;
@@ -96,11 +109,7 @@
   }
 
   .btn-play {
-    position: absolute;
-    bottom: 80px;
-    left: 0;
-    right: 0;
-    margin: auto;
+    margin: 64px auto 0 auto;
     width: 220px;
     height: 70px;
     font-size: 30px;
