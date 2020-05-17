@@ -84,7 +84,9 @@ export default class extends Scene {
       delay: 3,
       duration: 1,
       onComplete: () => {
-        TestimonyManager.speak('narrateur_lou.mp3', 'final');
+        setTimeout(()=>{
+          TestimonyManager.speak('narrateur_lou.mp3', 'final');
+        }, 2000)
       }
     }, 'fadeIn');
     tl.to(this.manager.mainScene.background, {

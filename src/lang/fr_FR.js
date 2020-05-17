@@ -113,7 +113,7 @@ export default {
       last: 'false',
     },
     1: {
-      sentence: "Genre y a des gens qui utilise mon pseudo pour me harceler sur d'autre plateforme",
+      sentence: "Genre y a des gens qui utilise mon pseudo pour me harceler sur d'autres plateformes",
       time: '5000',
       last: 'false',
     },
@@ -135,7 +135,7 @@ export default {
       last: 'false',
     },
     2: {
-      sentence: "Pour éviter cette situation le meilleur moyen c’est dans parler.",
+      sentence: "Pour éviter cette situation le meilleur moyen c’est d'en parler.",
       time: '5000',
       last: 'true',
     },
