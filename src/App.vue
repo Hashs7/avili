@@ -51,7 +51,7 @@
         return this.$store.state.renderer;
       },
       notSupported() {
-        return this.width < 425;
+        return this.width < 900;
       },
       loaderVisible() {
         return this.$store.state.loaderVisible;
@@ -83,6 +83,8 @@
       }
     },
     mounted() {
+      this.resize();
+      window.addEventListener('resize', this.resize);
       document.addEventListener("contextmenu", (e) => e.preventDefault(), false);
       if (!this.isPlaying && !this.world) return;
       this.$nextTick(() => {
@@ -97,7 +99,6 @@
         this.world.setIndication(this.$refs.indication, this.$t);
         this.world.setFollower(this.$refs.follower);
         this.resize();
-        window.addEventListener('resize', this.resize);
       },
       resize() {
         this.width = window.innerWidth;
@@ -117,7 +118,7 @@
   }
 
   .not-supported {
-    z-index: 1000;
+    z-index: 10000;
     position: fixed;
     top: 0;
     bottom: 0;
