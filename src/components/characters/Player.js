@@ -10,7 +10,7 @@ export default class extends Character {
     super(gltf, world, sceneManager, name);
     this.camera = camera;
     // this.speed = 0.1;
-    this.speed = 0.05;
+    this.speed = 0.06;
     this.orientable = true;
     // False for full intro | True to skip
     this.walkable = true;
@@ -214,8 +214,8 @@ export default class extends Character {
 
     if(!this.walkable) return;
     this.nextPosition = {
-      x: Math.sin(this.character.rotation.y + decay) * ((timeStep + 0.984) * this.speed),
-      z: Math.cos(this.character.rotation.y + decay) * ((timeStep + 0.984) * this.speed)
+      x: Math.sin(this.character.rotation.y + decay) * this.speed,
+      z: Math.cos(this.character.rotation.y + decay) * this.speed
     };
 
     if (this.detectWallCollision(this.nextPosition)) {
