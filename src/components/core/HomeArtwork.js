@@ -55,7 +55,7 @@ export default class {
 
   setQuality() {
     switch (this.quality) {
-      case 'Basse':
+      case 'Bas':
         this.renderer.antialias = false;
         this.renderer.powerPreference  = 'low-power';
         break;

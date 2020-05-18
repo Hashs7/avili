@@ -117,7 +117,7 @@ export default class {
   async loadAssets() {
     const assetsDef = [{
       name: 'mapGltf',
-      path: './assets/models/map/map17-05.glb',
+      path: './assets/models/map/map15-05-low3.glb',
     },{
       name: 't1Gltf',
       path: './assets/models/environment/environment_tower_v2.glb',
@@ -205,7 +205,7 @@ export default class {
 
   setQuality(name) {
     switch (name) {
-      case 'Basse':
+      case 'Bas':
         this.renderer.antialias = false;
         this.renderer.powerPreference  = 'low-power';
         break;

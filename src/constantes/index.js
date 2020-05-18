@@ -1,11 +1,11 @@
 export const QUALITY_SETTING = [{
-  name: 'Basse',
+  name: 'Bas',
   recommended: false,
 },{
-  name: 'Moyenne',
+  name: 'Moyen',
   recommended: false,
 },{
-  name: 'Élevée',
+  name: 'Élevé',
   recommended: true,
 }]
 
